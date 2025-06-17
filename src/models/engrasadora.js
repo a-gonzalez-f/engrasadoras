@@ -13,7 +13,6 @@ const EngrasadoraSchema = new mongoose.Schema({
   set_ejes: { type: Number }, // Cantidad de ejes requeridos para accionar
 
   // Sensado actual
-  sens_ejes: { type: Number }, // Contador de ejes en tiempo real
   sens_corriente: { type: Number }, // Corriente eléctrica detectada
   sens_flujo: { type: Boolean }, // Detección de flujo de grasa (true/false)
   sens_power: { type: Boolean }, // Detección de alimentación eléctrica (true/false)

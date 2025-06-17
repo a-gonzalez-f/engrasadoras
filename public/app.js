@@ -13,7 +13,6 @@ async function cargarEngrasadoras() {
           <td>${e.modelo}</td>
           <td>${e.set_tiempodosif}</td>
           <td>${e.set_ejes}</td>
-          <td>${e.sens_ejes}</td>
           <td>${e.sens_corriente}</td>
           <td>${e.sens_flujo}</td>
           <td>${e.sens_power}</td>
