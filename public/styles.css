@@ -1,0 +1,22 @@
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  margin: 20px;
+}
+canvas {
+  max-width: 400px;
+  margin-bottom: 30px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 30px;
+}
+th,
+td {
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  text-align: left;
+}
+th {
+  background-color: #f3f3f3;
+}
