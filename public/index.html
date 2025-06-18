@@ -1,3 +1,5 @@
+<!-- index.html -->
+
 <!DOCTYPE html>
 <html lang="es">
   <head>
@@ -9,6 +11,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Engrasadoras Site</title>
   </head>
   <body>
@@ -18,7 +21,149 @@
       <button><span class="material-symbols-outlined"> menu </span></button>
     </header>
     <main>
-      <canvas id="chartGlobal"></canvas>
+      <div class="dashboard">
+        <h3 class="subtitle">ESTADO GLOBAL</h3>
+        <div>
+          <canvas id="chartGlobal"></canvas>
+        </div>
+        <div id="detalle-global">
+          <div>
+            <h4 class="funcionando">Funcionando</h4>
+            <span id="func-global" class="funcionando"></span>
+          </div>
+          <div>
+            <h4 class="alerta">Alerta</h4>
+            <span id="alerta-global" class="alerta"></span>
+          </div>
+          <div>
+            <h4 class="desconectada">Sin conexion</h4>
+            <span id="sc-global" class="desconectada"></span>
+          </div>
+        </div>
+      </div>
+      <div class="dashboard">
+        <h3 class="subtitle">ESTADO POR LÍNEA</h3>
+        <div class="linea A">
+          <h4>LINEA A</h4>
+          <div>
+            <canvas id="chartA"></canvas>
+          </div>
+          <div id="detalle-A">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-A" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-A" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-A" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+        <div class="linea B">
+          <h4>LINEA B</h4>
+          <div>
+            <canvas id="chartB"></canvas>
+          </div>
+          <div id="detalle-B">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-B" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-B" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-B" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+        <div class="linea C">
+          <h4>LINEA C</h4>
+          <div>
+            <canvas id="chartC"></canvas>
+          </div>
+          <div id="detalle-C">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-C" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-C" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-C" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+        <div class="linea D">
+          <h4>LINEA D</h4>
+          <div>
+            <canvas id="chartD"></canvas>
+          </div>
+          <div id="detalle-D">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-D" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-D" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-D" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+        <div class="linea E">
+          <h4>LINEA E</h4>
+          <div>
+            <canvas id="chartE"></canvas>
+          </div>
+          <div id="detalle-E">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-E" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-E" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-E" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+        <div class="linea H">
+          <h4>LINEA H</h4>
+          <div>
+            <canvas id="chartH"></canvas>
+          </div>
+          <div id="detalle-H">
+            <div>
+              <h4 class="funcionando">Funcionando</h4>
+              <span id="func-H" class="funcionando"></span>
+            </div>
+            <div>
+              <h4 class="alerta">Alerta</h4>
+              <span id="alerta-H" class="alerta"></span>
+            </div>
+            <div>
+              <h4 class="desconectada">Sin conexion</h4>
+              <span id="sc-H" class="desconectada"></span>
+            </div>
+          </div>
+        </div>
+      </div>
       <table>
         <thead>
           <tr>

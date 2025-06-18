@@ -2,9 +2,10 @@
   --color-primario: #11202a;
   --color-secundario: #1f3a3b;
   --color-fondo: #252525;
-  --color-texto: #ffffff;
+  --color-texto: #ede7d8;
   --color-alerta: #fca311;
   --color-error: #d90429;
+  --color-pstv: #0dae1a;
 }
 
 * {
@@ -26,29 +27,11 @@ main {
 
 header {
   display: flex;
-  padding: 0.3rem 1rem;
+  padding: 0.3rem 0.5rem;
   align-items: center;
   justify-content: space-between;
   background-color: var(--color-fondo);
   box-shadow: 0px 0px 3dvi 10px rgba(0, 0, 0, 0.5);
-}
-
-canvas {
-  max-width: 400px;
-  margin-bottom: 30px;
-}
-
-table {
-  border-collapse: collapse;
-  width: 100%;
-  margin-top: 30px;
-}
-
-th,
-td {
-  border: 0px transparent;
-  padding: 6px 10px;
-  text-align: left;
 }
 
 button {
@@ -65,4 +48,89 @@ button > span {
 
 button:hover {
   background-color: rgba(128, 128, 128, 0.5);
+}
+
+.funcionando > td,
+.funcionando {
+  color: var(--color-pstv) !important;
+  /* background-color: var(--color-pstv * 0.5) !important; */
+}
+
+.alerta > td,
+.alerta {
+  color: var(--color-alerta) !important;
+  /* background-color: var(--color-alerta) !important; */
+}
+
+.desconectada > td,
+.desconectada {
+  color: #888 !important;
+  /* background-color: grey !important; */
+}
+
+.dashboard {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.subtitle {
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.dashboard > div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+canvas {
+  margin: 1rem;
+}
+
+#chartGlobal {
+  width: 400px;
+  height: 400px;
+}
+
+#detalle-global {
+  align-items: start;
+  gap: 1rem;
+}
+
+#detalle-global > * {
+  font-size: 20px;
+}
+
+#detalle-global > div {
+  display: flex;
+  justify-content: space-between;
+  min-width: 280px;
+}
+
+#detalle-global > div > h4,
+#detalle-global > div > span {
+  font-weight: 700;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+th,
+td {
+  border: 0px transparent;
+  padding: 6px 10px;
+  text-align: left;
 }
