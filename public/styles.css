@@ -6,6 +6,12 @@
   --color-alerta: #fca311;
   --color-error: #d90429;
   --color-pstv: #0dae1a;
+  --linea-A: #1b93c2;
+  --linea-B: #cf1222;
+  --linea-C: #015a9b;
+  --linea-D: #05735f;
+  --linea-E: #661371;
+  --linea-H: #f0cd1f;
 }
 
 * {
@@ -16,9 +22,65 @@
   color: var(--color-texto);
 }
 
+html,
+body {
+  scroll-behavior: smooth;
+}
+
 body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background-color: var(--color-fondo);
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+}
+
+.funcionando > td,
+.funcionando {
+  color: var(--color-pstv) !important;
+  /* background-color: var(--color-pstv * 0.5) !important; */
+}
+
+.alerta > td,
+.alerta {
+  color: var(--color-alerta) !important;
+  /* background-color: var(--color-alerta) !important; */
+}
+
+.desconectada > td,
+.desconectada {
+  color: #888 !important;
+  /* background-color: grey !important; */
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  font-weight: 700;
+  color: var(--color-fondo);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.A {
+  background-color: var(--linea-A);
+}
+.B {
+  background-color: var(--linea-B);
+}
+.C {
+  background-color: var(--linea-C);
+}
+.D {
+  background-color: var(--linea-D);
+}
+.E {
+  background-color: var(--linea-E);
+}
+.H {
+  background-color: var(--linea-H);
 }
 
 main {
@@ -50,24 +112,6 @@ button:hover {
   background-color: rgba(128, 128, 128, 0.5);
 }
 
-.funcionando > td,
-.funcionando {
-  color: var(--color-pstv) !important;
-  /* background-color: var(--color-pstv * 0.5) !important; */
-}
-
-.alerta > td,
-.alerta {
-  color: var(--color-alerta) !important;
-  /* background-color: var(--color-alerta) !important; */
-}
-
-.desconectada > td,
-.desconectada {
-  color: #888 !important;
-  /* background-color: grey !important; */
-}
-
 .dashboard {
   width: 100%;
   height: 100vh;
@@ -78,6 +122,7 @@ button:hover {
   flex-wrap: wrap;
   gap: 2rem;
   padding: 0 1rem;
+  scroll-snap-align: start;
 }
 
 .subtitle {
@@ -126,6 +171,7 @@ canvas {
 table {
   border-collapse: collapse;
   width: 100%;
+  scroll-snap-align: start;
 }
 
 th,
