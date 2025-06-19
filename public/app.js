@@ -73,6 +73,8 @@ async function cargarEngrasadoras() {
   ).innerText = `${sinConexion} / ${total} (${Math.round(
     (sinConexion / total) * 100
   )}%)`;
+
+  renderEstadoPorLinea(data);
 }
 
 cargarEngrasadoras();
@@ -94,4 +96,63 @@ function formatearEstado(estado) {
     default:
       return estado;
   }
+}
+
+function renderEstadoPorLinea(data) {
+  const lineas = ["A", "B", "C", "D", "E", "H"];
+
+  lineas.forEach((linea) => {
+    const dataLinea = data.filter((e) => e.linea === linea);
+    const total = dataLinea.length;
+
+    const funcionando = dataLinea.filter(
+      (e) => e.estado === "funcionando"
+    ).length;
+    const alerta = dataLinea.filter((e) => e.estado === "alerta").length;
+    const desconectada = dataLinea.filter(
+      (e) => e.estado === "desconectada"
+    ).length;
+
+    // Render gráfico
+    const canvas = document.getElementById(`chart${linea}`);
+    if (canvas) {
+      new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          datasets: [
+            {
+              data: [funcionando, alerta, desconectada],
+              backgroundColor: ["#0dae1a", "#fca311", "#888"],
+              borderWidth: 0,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          cutout: "50%",
+          plugins: {
+            title: { display: false },
+            legend: { display: false },
+          },
+        },
+      });
+    }
+
+    // Render detalle
+    document.getElementById(
+      `func-${linea}`
+    ).innerText = `${funcionando} / ${total} (${Math.round(
+      (funcionando / total) * 100
+    )}%)`;
+    document.getElementById(
+      `alerta-${linea}`
+    ).innerText = `${alerta} / ${total} (${Math.round(
+      (alerta / total) * 100
+    )}%)`;
+    document.getElementById(
+      `sc-${linea}`
+    ).innerText = `${desconectada} / ${total} (${Math.round(
+      (desconectada / total) * 100
+    )}%)`;
+  });
 }

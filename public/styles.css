@@ -120,7 +120,6 @@ button:hover {
   justify-content: center;
   align-content: center;
   flex-wrap: wrap;
-  gap: 2rem;
   padding: 0 1rem;
   scroll-snap-align: start;
 }
@@ -131,6 +130,7 @@ button:hover {
   text-align: center;
   letter-spacing: 2px;
   font-weight: 600;
+  padding-bottom: 3rem;
 }
 
 .dashboard > div {
@@ -166,6 +166,11 @@ canvas {
 #detalle-global > div > h4,
 #detalle-global > div > span {
   font-weight: 700;
+}
+
+.donutLinea {
+  width: 200px;
+  height: 200px;
 }
 
 table {

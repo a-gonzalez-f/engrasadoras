@@ -11,4 +11,14 @@ const getTodas = async (req, res) => {
   }
 };
 
-module.exports = { getTodas };
+const crearEngrasadora = async (req, res) => {
+  try {
+    const nueva = new Engrasadora(req.body);
+    await nueva.save();
+    res.status(201).json(nueva);
+  } catch (error) {
+    res.status(400).json({ error: "Error al crear la engrasadora" });
+  }
+};
+
+module.exports = { getTodas, crearEngrasadora };
