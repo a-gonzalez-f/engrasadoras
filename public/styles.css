@@ -124,6 +124,26 @@ header {
   display: flex;
 }
 
+.aA:hover {
+  background-color: var(--linea-A) !important;
+}
+.aB:hover {
+  background-color: var(--linea-B) !important;
+}
+.aC:hover {
+  background-color: var(--linea-C) !important;
+}
+.aD:hover {
+  background-color: var(--linea-D) !important;
+}
+.aE:hover {
+  background-color: var(--linea-E) !important;
+}
+.aH:hover {
+  background-color: var(--linea-H) !important;
+  color: var(--color-fondo) !important;
+}
+
 button {
   background-color: transparent;
   all: unset;
@@ -141,7 +161,7 @@ button:hover {
 }
 
 .mandatory-scroll-snapping {
-  scroll-snap-type: y mandatory;
+  scroll-snap-type: y proximity;
   overflow-y: auto;
   height: 100vh;
 }
@@ -170,7 +190,7 @@ button:hover {
 
 .dashboard {
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -181,7 +201,7 @@ button:hover {
 }
 
 section {
-  scroll-snap-align: center;
+  scroll-snap-align: start;
 }
 
 .subtitle {
@@ -208,13 +228,14 @@ canvas {
 }
 
 #chartGlobal {
-  width: 400px;
-  height: 400px;
+  width: 25vw;
+  height: auto;
 }
 
 #detalle-global {
   align-items: start;
   gap: 1rem;
+  margin-left: 2rem;
 }
 
 #detalle-global > * {
@@ -233,13 +254,17 @@ canvas {
   font-weight: 700;
 }
 
+.porLinea {
+  justify-content: space-evenly;
+}
+
 .donutLinea {
-  width: 200px;
-  height: 200px;
+  width: 12vw;
+  height: auto;
 }
 
 .linea {
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .linea > div > div {
@@ -267,4 +292,33 @@ td {
 
 tr:hover {
   background-color: var(--color-fondo-hover);
+}
+
+.buscador {
+  width: 100%;
+  /* scroll-snap-align: unset !important;
+  scroll-snap-align: none !important; */
+  height: auto;
+  padding: 0 2rem;
+  min-height: 100vh;
+}
+
+.buscador > h3 {
+  width: 100%;
+  text-align: center;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  padding: 2rem;
+}
+
+#buscador {
+  width: 300px;
+  color: black;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+}
+
+.buscador > table {
+  margin: 1rem 0 5rem 0;
 }

@@ -1,10 +1,10 @@
 // app.js
 
+// menu
 function toggleMenu() {
   document.getElementById("menu").classList.toggle("show-menu");
 }
 
-// Cierra el menú si haces clic fuera
 document.addEventListener("click", function (e) {
   const menu = document.getElementById("menu");
   const menuBtn = e.target.closest("button");
@@ -13,30 +13,33 @@ document.addEventListener("click", function (e) {
   }
 });
 
+// logica
+let datosEngrasadoras = [];
+
 async function cargarEngrasadoras() {
   const res = await fetch("/api/engrasadoras");
   const data = await res.json();
 
-  // Mostrar en tabla
-  const tbody = document.getElementById("tablaEngrasadoras");
-  data.forEach((e) => {
-    const fila = document.createElement("tr");
-    fila.classList.add(`${e.estado}`);
-    fila.innerHTML = `
-  <td>${new Date(e.date).toLocaleString("es-AR")}</td>
-  <td>${e.linea}</td>
-  <td>${e.nombre}</td>
-  <td>${e.modelo}</td>
-  <td>${e.set_tiempodosif}</td>
-  <td>${e.set_ejes}</td>
-  <td>${e.sens_corriente}</td>
-  <td>${booleanToIcon(e.sens_flujo)}</td>
-  <td>${booleanToIcon(e.sens_power)}</td>
-  <td>${e.cont_accionam}</td>
-  <td>${formatearEstado(e.estado)}</td>
-`;
+  datosEngrasadoras = data;
 
-    tbody.appendChild(fila);
+  renderTabla([]);
+
+  document.getElementById("buscador").addEventListener("input", (e) => {
+    const texto = e.target.value.toLowerCase();
+
+    if (texto === "") {
+      renderTabla([]);
+      return;
+    }
+
+    const filtrados = datosEngrasadoras.filter(
+      (item) =>
+        item.nombre.toLowerCase().includes(texto) ||
+        item.modelo.toLowerCase().includes(texto) ||
+        item.linea.toLowerCase().includes(texto)
+    );
+
+    renderTabla(filtrados);
   });
 
   // Calcular gráfico de estado global
@@ -60,10 +63,7 @@ async function cargarEngrasadoras() {
       responsive: true,
       cutout: "50%",
       plugins: {
-        title: {
-          display: false,
-          text: "Estado Global",
-        },
+        title: { display: false },
       },
     },
     animation: {
@@ -90,7 +90,38 @@ async function cargarEngrasadoras() {
   renderEstadoPorLinea(data);
 }
 
-cargarEngrasadoras();
+function renderTabla(data) {
+  const tbody = document.getElementById("tablaEngrasadoras");
+  const thead = document.getElementById("theadbuscador");
+  tbody.innerHTML = "";
+
+  if (data.length === 0) {
+    thead.style.display = "none";
+    tbody.innerHTML = `<tr><td colspan="11" style="text-align:center; color:grey;">No se encontraron resultados</td></tr>`;
+    return;
+  }
+
+  thead.style.display = "table-header-group";
+
+  data.forEach((e) => {
+    const fila = document.createElement("tr");
+    fila.classList.add(`${e.estado}`);
+    fila.innerHTML = `
+      <td>${new Date(e.date).toLocaleString("es-AR")}</td>
+      <td>${e.linea}</td>
+      <td>${e.nombre}</td>
+      <td>${e.modelo}</td>
+      <td>${e.set_tiempodosif}</td>
+      <td>${e.set_ejes}</td>
+      <td>${e.sens_corriente}</td>
+      <td>${booleanToIcon(e.sens_flujo)}</td>
+      <td>${booleanToIcon(e.sens_power)}</td>
+      <td>${e.cont_accionam}</td>
+      <td>${formatearEstado(e.estado)}</td>
+    `;
+    tbody.appendChild(fila);
+  });
+}
 
 function booleanToIcon(valor) {
   return valor
@@ -168,3 +199,5 @@ function renderEstadoPorLinea(data) {
     document.getElementById(`total-${linea}`).innerText = `${total}`;
   });
 }
+
+cargarEngrasadoras();

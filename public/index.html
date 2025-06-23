@@ -25,7 +25,12 @@
       </button>
       <nav id="menu" class="menu">
         <a href="/Ingreso">Ingreso</a>
-        <a href="/pagina2">Página 2</a>
+        <a class="aA" href="/detalle?linea=A">Detalle A</a>
+        <a class="aB" href="/detalle?linea=B">Detalle B</a>
+        <a class="aC" href="/detalle?linea=C">Detalle C</a>
+        <a class="aD" href="/detalle?linea=D">Detalle D</a>
+        <a class="aE" href="/detalle?linea=E">Detalle E</a>
+        <a class="aH" href="/detalle?linea=H">Detalle H</a>
         <a href="/configuracion">Configuración</a>
       </nav>
     </header>
@@ -52,7 +57,7 @@
           </div>
         </div>
       </section>
-      <section class="dashboard">
+      <section class="dashboard porLinea">
         <h3 class="subtitle">ESTADO POR LÍNEA</h3>
         <div class="linea">
           <h4 class="circle A" onclick="location.href='/detalle?linea=A'">A</h4>
@@ -223,10 +228,15 @@
           </div>
         </div>
       </section>
-      <section class="dashboard">
-        <h3 class="subtitle">LISTADO GENERAL</h3>
+      <section class="buscador">
+        <h3>LISTADO GENERAL</h3>
+        <input
+          type="text"
+          id="buscador"
+          placeholder="Buscar por nombre, modelo o línea..."
+        />
         <table>
-          <thead>
+          <thead id="theadbuscador">
             <tr>
               <th>Fecha</th>
               <th>Línea</th>
