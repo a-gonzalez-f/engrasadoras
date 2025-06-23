@@ -84,10 +84,6 @@ body {
   background-color: var(--linea-H);
 }
 
-main {
-  padding: 0 1rem;
-}
-
 header {
   display: flex;
   padding: 0.3rem 0.5rem;
@@ -202,6 +198,11 @@ button:hover {
 
 section {
   scroll-snap-align: start;
+  transition: box-shadow 0.3s;
+}
+
+section:hover {
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, 0.1);
 }
 
 .subtitle {
@@ -299,7 +300,7 @@ tr:hover {
   /* scroll-snap-align: unset !important;
   scroll-snap-align: none !important; */
   height: auto;
-  padding: 0 2rem;
+  padding: 2rem;
   min-height: 100vh;
 }
 
@@ -313,6 +314,7 @@ tr:hover {
 }
 
 #buscador {
+  background-color: var(--color-texto);
   width: 300px;
   color: black;
   padding: 0.5rem 1rem;
