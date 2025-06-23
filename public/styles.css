@@ -3,7 +3,7 @@
   --color-secundario: #1f3a3b;
   --color-fondo: #252525;
   --color-fondo-hover: #0000004b;
-  --color-texto: #ede7d8;
+  --color-texto: #fff8e9;
   --color-alerta: #fca311;
   --color-error: #d90429;
   --color-pstv: #0dae1a;
@@ -56,17 +56,9 @@ body {
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   cursor: pointer;
-}
-
-.circle > a {
   color: var(--color-fondo);
   font-weight: 700;
-  text-decoration: none;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 1rem;
 }
 
 .circle:hover {
@@ -232,7 +224,8 @@ canvas {
 #detalle-global > div {
   display: flex;
   justify-content: space-between;
-  min-width: 280px;
+  align-items: center;
+  min-width: 200px;
 }
 
 #detalle-global > div > h4,
@@ -243,6 +236,10 @@ canvas {
 .donutLinea {
   width: 200px;
   height: 200px;
+}
+
+.linea {
+  gap: 1rem;
 }
 
 .linea > div > div {

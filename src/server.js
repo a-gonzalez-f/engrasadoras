@@ -28,3 +28,7 @@ mongoose
 app.get("/ingreso", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/ingresoMaq.html"));
 });
+
+app.get("/detalle", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/detalle.html"));
+});

@@ -27,6 +27,7 @@ form select {
   border: 1px solid #ccc;
   border-radius: 4px;
   margin-top: 0.25rem;
+  background-color: var(--color-texto);
 }
 
 form input[type="checkbox"] {

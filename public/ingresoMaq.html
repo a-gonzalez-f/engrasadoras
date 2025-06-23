@@ -20,7 +20,14 @@
         <span class="material-symbols-outlined"> home </span>
       </button>
       <h2>INGRESO ENGRASADORAS</h2>
-      <button><span class="material-symbols-outlined"> menu </span></button>
+      <button onclick="toggleMenu()">
+        <span class="material-symbols-outlined"> menu </span>
+      </button>
+      <nav id="menu" class="menu">
+        <a href="/Ingreso">Ingreso</a>
+        <a href="/pagina2">Página 2</a>
+        <a href="/configuracion">Configuración</a>
+      </nav>
     </header>
     <main>
       <form id="formEngrasadora" class="formulario">
@@ -134,6 +141,7 @@
       </form>
     </main>
 
+    <script src="./app.js"></script>
     <script src="./ingresoMaq.js"></script>
   </body>
 </html>
