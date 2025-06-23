@@ -16,11 +16,20 @@
   </head>
   <body>
     <header>
-      <button><span class="material-symbols-outlined"> home </span></button>
+      <button onclick="location.href='/'">
+        <span class="material-symbols-outlined"> home </span>
+      </button>
       <h2>MONITOREO ENGRASADORAS</h2>
-      <button><span class="material-symbols-outlined"> menu </span></button>
+      <button onclick="toggleMenu()">
+        <span class="material-symbols-outlined"> menu </span>
+      </button>
+      <nav id="menu" class="menu">
+        <a href="/Ingreso">Ingreso</a>
+        <a href="/pagina2">Página 2</a>
+        <a href="/configuracion">Configuración</a>
+      </nav>
     </header>
-    <main>
+    <main class="mandatory-scroll-snapping">
       <section class="dashboard">
         <h3 class="subtitle">ESTADO GLOBAL</h3>
         <div>
@@ -28,15 +37,17 @@
         </div>
         <div id="detalle-global">
           <div>
-            <h4 class="funcionando">Funcionando</h4>
+            <span class="material-symbols-outlined funcionando"
+              >check_circle</span
+            >
             <span id="func-global" class="funcionando"></span>
           </div>
           <div>
-            <h4 class="alerta">Alerta</h4>
+            <span class="material-symbols-outlined alerta">error</span>
             <span id="alerta-global" class="alerta"></span>
           </div>
           <div>
-            <h4 class="desconectada">Sin conexion</h4>
+            <span class="material-symbols-outlined desconectada">wifi_off</span>
             <span id="sc-global" class="desconectada"></span>
           </div>
         </div>
@@ -50,16 +61,24 @@
           </div>
           <div id="detalle-A">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-A" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-A" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-A" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-A"></span>
             </div>
           </div>
         </div>
@@ -70,16 +89,24 @@
           </div>
           <div id="detalle-B">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-B" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-B" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-B" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-B"></span>
             </div>
           </div>
         </div>
@@ -90,16 +117,24 @@
           </div>
           <div id="detalle-C">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-C" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-C" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-C" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-C"></span>
             </div>
           </div>
         </div>
@@ -110,16 +145,24 @@
           </div>
           <div id="detalle-D">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-D" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-D" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-D" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-D"></span>
             </div>
           </div>
         </div>
@@ -130,16 +173,24 @@
           </div>
           <div id="detalle-E">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-E" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-E" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-E" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-E"></span>
             </div>
           </div>
         </div>
@@ -150,38 +201,49 @@
           </div>
           <div id="detalle-H">
             <div>
-              <h4 class="funcionando">Funcionando</h4>
+              <span class="material-symbols-outlined funcionando"
+                >check_circle</span
+              >
               <span id="func-H" class="funcionando"></span>
             </div>
             <div>
-              <h4 class="alerta">Alerta</h4>
+              <span class="material-symbols-outlined alerta">error</span>
               <span id="alerta-H" class="alerta"></span>
             </div>
             <div>
-              <h4 class="desconectada">Sin conexion</h4>
+              <span class="material-symbols-outlined desconectada"
+                >wifi_off</span
+              >
               <span id="sc-H" class="desconectada"></span>
+            </div>
+            <div>
+              <span>TOTAL</span>
+              <span id="total-H"></span>
             </div>
           </div>
         </div>
       </section>
-      <table>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Línea</th>
-            <th>Nombre</th>
-            <th>Modelo</th>
-            <th>Tiempo Dosif.</th>
-            <th>Cant. de ejes</th>
-            <th>Corriente</th>
-            <th>Flujo</th>
-            <th>Power</th>
-            <th>Cant. Accionamientos</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody id="tablaEngrasadoras"></tbody>
-      </table>
+      <section class="dashboard">
+        <h3 class="subtitle">LISTADO GENERAL</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Línea</th>
+              <th>Nombre</th>
+              <th>Modelo</th>
+              <th>Tiempo Dosif.</th>
+              <th>Cant. de ejes</th>
+              <th>Corriente</th>
+              <th>Flujo</th>
+              <th>Power</th>
+              <th>Cant. Accionamientos</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tablaEngrasadoras"></tbody>
+        </table>
+      </section>
     </main>
     <script src="./app.js"></script>
   </body>

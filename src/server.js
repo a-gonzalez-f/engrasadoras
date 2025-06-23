@@ -24,3 +24,7 @@ mongoose
     );
   })
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
+
+app.get("/ingreso", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/ingresoMaq.html"));
+});

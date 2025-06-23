@@ -1,5 +1,18 @@
 // app.js
 
+function toggleMenu() {
+  document.getElementById("menu").classList.toggle("show-menu");
+}
+
+// Cierra el menú si haces clic fuera
+document.addEventListener("click", function (e) {
+  const menu = document.getElementById("menu");
+  const menuBtn = e.target.closest("button");
+  if (!menu.contains(e.target) && !menuBtn) {
+    menu.classList.remove("show-menu");
+  }
+});
+
 async function cargarEngrasadoras() {
   const res = await fetch("/api/engrasadoras");
   const data = await res.json();
@@ -141,18 +154,17 @@ function renderEstadoPorLinea(data) {
     // Render detalle
     document.getElementById(
       `func-${linea}`
-    ).innerText = `${funcionando} / ${total} (${Math.round(
+    ).innerText = `${funcionando} (${Math.round(
       (funcionando / total) * 100
     )}%)`;
     document.getElementById(
       `alerta-${linea}`
-    ).innerText = `${alerta} / ${total} (${Math.round(
-      (alerta / total) * 100
-    )}%)`;
+    ).innerText = `${alerta} (${Math.round((alerta / total) * 100)}%)`;
     document.getElementById(
       `sc-${linea}`
-    ).innerText = `${desconectada} / ${total} (${Math.round(
+    ).innerText = `${desconectada} (${Math.round(
       (desconectada / total) * 100
     )}%)`;
+    document.getElementById(`total-${linea}`).innerText = `${total}`;
   });
 }
