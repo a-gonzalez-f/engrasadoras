@@ -20,7 +20,7 @@
       <button onclick="location.href='/'">
         <span class="material-symbols-outlined"> home </span>
       </button>
-      <h2>DETALLE</h2>
+      <h2>DETALLE LINEA <span id="tituloLinea"></span></h2>
       <button onclick="toggleMenu()">
         <span class="material-symbols-outlined"> menu </span>
       </button>
@@ -32,24 +32,7 @@
     </header>
     <main>
       <section class="dashboard">
-        <h3 class="subtitle" id="tituloLinea"></h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Fecha</th>
-              <th>Nombre</th>
-              <th>Modelo</th>
-              <th>Tiempo Dosif.</th>
-              <th>Cant. de ejes</th>
-              <th>Corriente</th>
-              <th>Flujo</th>
-              <th>Power</th>
-              <th>Accionamientos</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="tablaDetalle"></tbody>
-        </table>
+        <div id="contenedorMaquinas" class="contenedor-maquinas"></div>
       </section>
     </main>
     <script src="./app.js"></script>
