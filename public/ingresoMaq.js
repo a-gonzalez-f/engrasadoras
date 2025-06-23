@@ -4,6 +4,8 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const formData = new FormData(form);
+  const cantidadIngresos = Number(formData.get("cantidadIngresos")) || 1;
+  formData.delete("cantidadIngresos"); // No lo mandamos al backend
   const body = {};
   formData.forEach((value, key) => {
     if (key === "sens_flujo" || key === "sens_power") {
@@ -23,17 +25,22 @@ form.addEventListener("submit", async (e) => {
   });
 
   try {
-    const res = await fetch("/api/engrasadoras", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    let errores = 0;
+    for (let i = 0; i < cantidadIngresos; i++) {
+      const res = await fetch("/api/engrasadoras", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
 
-    if (res.ok) {
-      alert("Engrasadora guardada correctamente");
+      if (!res.ok) errores++;
+    }
+
+    if (errores === 0) {
+      alert(`Engrasadora guardada ${cantidadIngresos} veces correctamente`);
       form.reset();
     } else {
-      alert("Error al guardar la engrasadora");
+      alert(`Error en ${errores} de ${cantidadIngresos} envíos`);
     }
   } catch (err) {
     console.error(err);

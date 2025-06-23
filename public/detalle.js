@@ -27,19 +27,36 @@ async function cargarDetalle() {
     filtradas.forEach((e) => {
       const card = document.createElement("div");
       card.classList.add("card-maquina");
-      card.innerHTML = `
-        <div class="nombre">${e.nombre.toUpperCase()}</div>
-        <div class="estado">${formatearEstado(e.estado)}</div>
-      `;
 
-      card.addEventListener("click", () => {
-        alert(
-          `Detalles de ${e.nombre}\nModelo: ${e.modelo}\nCorriente: ${
-            e.sens_corriente
-          } A\nFlujo: ${e.sens_flujo ? "Sí" : "No"}\nPower: ${
-            e.sens_power ? "Sí" : "No"
-          }\nAccionamientos: ${e.cont_accionam}\nEstado: ${e.estado}`
-        );
+      const detalle = document.createElement("div");
+      detalle.classList.add("detalle-hover");
+      detalle.innerHTML = `
+    <strong>${e.nombre.toUpperCase()}</strong><br>
+    ${e.modelo.toUpperCase()}<br>
+    Corriente: ${e.sens_corriente} A<br>
+    Flujo: ${e.sens_flujo ? "Sí" : "No"}<br>
+    Power: ${e.sens_power ? "Sí" : "No"}<br>
+    Accionamientos: ${e.cont_accionam}<br>
+  `;
+
+      card.innerHTML = `
+    <div class="nombre">${e.nombre.toUpperCase()}</div>
+    <div class="estado">${formatearEstado(e.estado)}</div>
+  `;
+
+      document.body.appendChild(detalle);
+
+      card.addEventListener("mouseenter", () => {
+        detalle.style.display = "block";
+      });
+
+      card.addEventListener("mousemove", (eMouse) => {
+        detalle.style.top = `${eMouse.clientY + 10}px`;
+        detalle.style.left = `${eMouse.clientX + 10}px`;
+      });
+
+      card.addEventListener("mouseleave", () => {
+        detalle.style.display = "none";
       });
 
       contenedor.appendChild(card);
