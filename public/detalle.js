@@ -162,7 +162,9 @@ async function cargarDetalle() {
               </div>
               <div>
                 <h4 style="font-weight:700">Ultimo comentario:</h4>
-                <p>${comentarioHtml}</p>
+                <div id="ultimoComentario">
+                ${comentarioHtml}
+                </div>
                 <button>Ver todos</button>
               </div>
             </div>
@@ -277,8 +279,23 @@ async function cargarDetalle() {
             .then((data) => {
               alert("Comentario agregado");
               document.getElementById("newComment").value = "";
-              // Opcional: recargar modal para ver el comentario actualizado
-              cargarDetalle();
+
+              const ultComentario =
+                data.comentarios[data.comentarios.length - 1];
+
+              const comentarioHtmlActualizado = `
+              <div>
+                <div class="dataComment">
+                  <span>${ultComentario.user || "Anónimo"}</span> - ${new Date(
+                ultComentario.date
+              ).toLocaleString("es-AR")}<br>
+                </div>
+                ${ultComentario.comentario}    
+              </div>
+            `;
+
+              document.getElementById("ultimoComentario").innerHTML =
+                comentarioHtmlActualizado;
             })
             .catch((err) => alert(err.message));
         });
