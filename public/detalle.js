@@ -105,6 +105,22 @@ async function cargarDetalle() {
         }
         historialHtml += `</tbody></table>`;
 
+        let comentarioHtml = "Sin comentarios";
+
+        if (e.comentarios && e.comentarios.length > 0) {
+          const ultimo = e.comentarios[e.comentarios.length - 1];
+          comentarioHtml = `
+          <div>
+            <div class="dataComment">
+              <span>${ultimo.user || "Anónimo"}</span> - ${new Date(
+            ultimo.date
+          ).toLocaleString("es-AR")}<br>
+            </div>
+              ${ultimo.comentario}    
+          </div>      
+        `;
+        }
+
         const contenido = `
         <h5>${e.nombre.toUpperCase()} | <span>${e.modelo.toUpperCase()}</span> | <span class="${
           e.estado
@@ -146,7 +162,7 @@ async function cargarDetalle() {
               </div>
               <div>
                 <h4 style="font-weight:700">Ultimo comentario:</h4>
-                <p>bla blba balbalbalba lba bla bla lbal ba lba lba ba lbal bal bal bal bal ba lba lba lba lba lba</p>
+                <p>${comentarioHtml}</p>
                 <button>Ver todos</button>
               </div>
             </div>
@@ -234,6 +250,37 @@ async function cargarDetalle() {
               })
               .catch((err) => alert(err.message));
           }
+        });
+
+        document.getElementById("addComment").addEventListener("click", () => {
+          const textoComentario = document
+            .getElementById("newComment")
+            .value.trim();
+
+          if (textoComentario === "") {
+            alert("Ingrese un comentario");
+            return;
+          }
+
+          fetch(`/api/engrasadoras/${e._id}/comentarios`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              comentario: textoComentario,
+              user: "usuarioX",
+            }), // Reemplazá user por el usuario real si lo tenés
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error("Error al agregar comentario");
+              return res.json();
+            })
+            .then((data) => {
+              alert("Comentario agregado");
+              document.getElementById("newComment").value = "";
+              // Opcional: recargar modal para ver el comentario actualizado
+              cargarDetalle();
+            })
+            .catch((err) => alert(err.message));
         });
       });
 

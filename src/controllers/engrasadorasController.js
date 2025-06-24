@@ -45,11 +45,9 @@ const actualizarSeteo = async (req, res) => {
   }
 
   try {
-    // Primero obtener el registro actual
     const engrasadora = await Engrasadora.findById(id);
     if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
 
-    // Crear un objeto para el historial con el snapshot actual + fecha
     const snapshot = {
       fecha: new Date(),
       estado: engrasadora.estado,
@@ -65,13 +63,10 @@ const actualizarSeteo = async (req, res) => {
       date: engrasadora.date,
     };
 
-    // Agregar snapshot al historial
     engrasadora.historial.push(snapshot);
 
-    // Actualizar los campos modificados
     Object.assign(engrasadora, update);
 
-    // Guardar cambios
     const result = await engrasadora.save();
 
     res.json(result);
@@ -81,4 +76,30 @@ const actualizarSeteo = async (req, res) => {
   }
 };
 
-module.exports = { getTodas, actualizarSeteo };
+const agregarComentario = async (req, res) => {
+  const { id } = req.params;
+  const { comentario, user } = req.body;
+
+  if (!comentario || typeof comentario !== "string") {
+    return res.status(400).send("Comentario inválido");
+  }
+
+  try {
+    const engrasadora = await Engrasadora.findById(id);
+    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+
+    engrasadora.comentarios.push({
+      date: new Date(),
+      comentario,
+      user: user || "Anónimo",
+    });
+
+    const result = await engrasadora.save();
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al agregar comentario");
+  }
+};
+
+module.exports = { getTodas, actualizarSeteo, agregarComentario };
