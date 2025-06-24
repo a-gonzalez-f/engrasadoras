@@ -83,9 +83,9 @@ async function cargarDetalle() {
             .reverse()
             .map(
               (h) => `
-            <tr class="historial-item">
+            <tr class="historial-item ${h.estado}">
               <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
-              <td>${h.estado}</td>
+              <td>${h.estado.toUpperCase()}</td>
               <td>${h.set_tiempodosif}</td>
               <td>${h.set_ejes}</td>
               <td>${h.sens_corriente} A</td>
@@ -114,13 +114,17 @@ async function cargarDetalle() {
             <h6>SETEO</h6>
             <div>
               <p>Tiempo Dosif.:</p>
-              <p id="tiempoDosif">${e.set_tiempodosif}</p>
-              <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
+              <div>
+                <p id="tiempoDosif">${e.set_tiempodosif}</p>
+                <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
+              </div>
             </div>
             <div>
               <p>Cant. de ejes:</p>
-              <p id="cantEjes">${e.set_ejes}</p>
-              <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
+              <div>
+                <p id="cantEjes">${e.set_ejes}</p>
+                <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
+              </div>
             </div>   
           </div>
           <div class="subCont">
@@ -132,6 +136,20 @@ async function cargarDetalle() {
             <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
             <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
             <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
+          </div>
+          <div class="subCont contComments">
+            <h6>COMENTARIOS</h6>
+            <div class=commContainer>
+              <div>
+                <textarea id="newComment" name="comentario" rows="5" cols="40" placeholder="Ingrese su comentario"></textarea>
+                <button id="addComment">Comentar</button>
+              </div>
+              <div>
+                <h4 style="font-weight:700">Ultimo comentario:</h4>
+                <p>bla blba balbalbalba lba bla bla lbal ba lba lba ba lbal bal bal bal bal ba lba lba lba lba lba</p>
+                <button>Ver todos</button>
+              </div>
+            </div>
           </div>
           <div class="subCont historial">
             <h6>HISTORIAL</h6>

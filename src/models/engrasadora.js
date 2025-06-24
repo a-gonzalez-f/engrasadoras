@@ -15,6 +15,13 @@ const historialSchema = new mongoose.Schema({
   modelo: String,
   linea: String,
   date: Date,
+  user: String,
+});
+
+const comentariosschema = new mongoose.Schema({
+  date: Date,
+  comentario: String,
+  user: String,
 });
 
 const EngrasadoraSchema = new mongoose.Schema({
@@ -35,6 +42,7 @@ const EngrasadoraSchema = new mongoose.Schema({
   estado: { type: String },
 
   historial: [historialSchema],
+  comentarios: [comentariosschema],
 });
 
 module.exports = mongoose.model("engrasadora", EngrasadoraSchema);

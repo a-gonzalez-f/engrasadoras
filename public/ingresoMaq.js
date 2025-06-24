@@ -5,7 +5,7 @@ form.addEventListener("submit", async (e) => {
 
   const formData = new FormData(form);
   const cantidadIngresos = Number(formData.get("cantidadIngresos")) || 1;
-  formData.delete("cantidadIngresos"); // No lo mandamos al backend
+  formData.delete("cantidadIngresos");
   const body = {};
   formData.forEach((value, key) => {
     if (key === "sens_flujo" || key === "sens_power") {
