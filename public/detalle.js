@@ -60,39 +60,85 @@ async function cargarDetalle() {
       });
 
       card.addEventListener("click", () => {
+        let historialHtml = `
+          <table class="tabla-historial">
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Tiempo Dosif.</th>
+                <th>Cant. Ejes</th>
+                <th>Corriente</th>
+                <th>Flujo</th>
+                <th>Power</th>
+                <th>Accionamientos</th>
+              </tr>
+            </thead>
+            <tbody>
+          `;
+
+        if (e.historial && e.historial.length > 0) {
+          historialHtml += e.historial
+            .slice(-10)
+            .reverse()
+            .map(
+              (h) => `
+            <tr class="historial-item">
+              <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
+              <td>${h.estado}</td>
+              <td>${h.set_tiempodosif}</td>
+              <td>${h.set_ejes}</td>
+              <td>${h.sens_corriente} A</td>
+              <td>${h.sens_flujo ? "Sí" : "No"}</td>
+              <td>${h.sens_power ? "Sí" : "No"}</td>
+              <td>${h.cont_accionam}</td>
+            </tr>
+            `
+            )
+            .join("");
+        } else {
+          historialHtml += `
+            <tr>
+              <td colspan="8" style="text-align:center">No hay historial registrado</td>
+            </tr>
+          `;
+        }
+        historialHtml += `</tbody></table>`;
+
         const contenido = `
-          <h5>${e.nombre.toUpperCase()} | <span>${e.modelo.toUpperCase()}</span> | <span class="${
+        <h5>${e.nombre.toUpperCase()} | <span>${e.modelo.toUpperCase()}</span> | <span class="${
           e.estado
         }">${e.estado.toUpperCase()}</span></h5>
-          <div class="cont">
-            <div class="subCont">
-              <h6>SETEO</h6>
-                <div>
-                  <p>Tiempo Dosif.:</p>
-                  <p id="tiempoDosif">${e.set_tiempodosif}</p>
-                  <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
-                </div>
-                <div>
-                  <p>Cant. de ejes:</p>
-                  <p id="cantEjes">${e.set_ejes}</p>
-                  <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
-                </div>   
+        <div class="cont">
+          <div class="subCont">
+            <h6>SETEO</h6>
+            <div>
+              <p>Tiempo Dosif.:</p>
+              <p id="tiempoDosif">${e.set_tiempodosif}</p>
+              <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
             </div>
-            <div class="subCont">
-              <h6>ULTIMO SENSADO</h6>
-                <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString(
-                  "es-AR"
-                )}</p></div>              
-                <div><p>Accionamientos:</p><p>${e.cont_accionam}</p></div>
-                <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
-                <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
-                <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
-            </div>
-            <div class="subCont historial">
-              <h6>HISTORIAL</h6>
-            </div>
-          </div>  
-        `;
+            <div>
+              <p>Cant. de ejes:</p>
+              <p id="cantEjes">${e.set_ejes}</p>
+              <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
+            </div>   
+          </div>
+          <div class="subCont">
+            <h6>ULTIMO SENSADO</h6>
+            <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString(
+              "es-AR"
+            )}</p></div>              
+            <div><p>Accionamientos:</p><p>${e.cont_accionam}</p></div>
+            <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
+            <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
+            <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
+          </div>
+          <div class="subCont historial">
+            <h6>HISTORIAL</h6>
+            ${historialHtml}
+          </div>
+        </div>  
+      `;
 
         document.getElementById("contenidoModal").innerHTML = contenido;
         document.getElementById("modalDetalle").style.display = "flex";
@@ -138,7 +184,7 @@ async function cargarDetalle() {
 
         document.getElementById("editarEjes").addEventListener("click", () => {
           const nuevoValor = prompt(
-            "Ingrese la nueva cantidad de ejes:",
+            "Ingrese la nueva cantidad de ejes (1 - 128):",
             e.set_ejes
           );
 

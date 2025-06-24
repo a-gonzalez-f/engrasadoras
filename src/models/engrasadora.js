@@ -2,26 +2,39 @@
 
 const mongoose = require("mongoose");
 
+const historialSchema = new mongoose.Schema({
+  fecha: { type: Date, default: Date.now },
+  estado: String,
+  set_tiempodosif: Number,
+  set_ejes: Number,
+  sens_corriente: Number,
+  sens_flujo: Boolean,
+  sens_power: Boolean,
+  cont_accionam: Number,
+  nombre: String,
+  modelo: String,
+  linea: String,
+  date: Date,
+});
+
 const EngrasadoraSchema = new mongoose.Schema({
-  date: { type: Date }, // Fecha del último evento registrado
-  linea: { type: String }, // Línea de subte (ej. "A", "B", etc.)
-  nombre: { type: String }, // Nombre identificador de la engrasadora
-  modelo: { type: String }, // Modelo de la engrasadora
+  date: { type: Date },
+  linea: { type: String },
+  nombre: { type: String },
+  modelo: { type: String },
 
-  // Seteos configurados en la máquina
-  set_tiempodosif: { type: Number }, // Tiempo de dosificación seteado (segundos)
-  set_ejes: { type: Number }, // Cantidad de ejes requeridos para accionar
+  set_tiempodosif: { type: Number },
+  set_ejes: { type: Number },
 
-  // Sensado actual
-  sens_corriente: { type: Number }, // Corriente eléctrica detectada
-  sens_flujo: { type: Boolean }, // Detección de flujo de grasa (true/false)
-  sens_power: { type: Boolean }, // Detección de alimentación eléctrica (true/false)
+  sens_corriente: { type: Number },
+  sens_flujo: { type: Boolean },
+  sens_power: { type: Boolean },
 
-  // Contadores
-  cont_accionam: { type: Number }, // Cantidad total de accionamientos
+  cont_accionam: { type: Number },
 
-  // Estado general de la máquina (ej. "funcionando", "fallando", "desconectada")
   estado: { type: String },
+
+  historial: [historialSchema],
 });
 
 module.exports = mongoose.model("engrasadora", EngrasadoraSchema);

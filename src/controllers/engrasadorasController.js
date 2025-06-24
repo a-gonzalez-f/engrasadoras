@@ -45,11 +45,34 @@ const actualizarSeteo = async (req, res) => {
   }
 
   try {
-    const result = await Engrasadora.findByIdAndUpdate(id, update, {
-      new: true,
-    });
+    // Primero obtener el registro actual
+    const engrasadora = await Engrasadora.findById(id);
+    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
 
-    if (!result) return res.status(404).send("Engrasadora no encontrada");
+    // Crear un objeto para el historial con el snapshot actual + fecha
+    const snapshot = {
+      fecha: new Date(),
+      estado: engrasadora.estado,
+      set_tiempodosif: engrasadora.set_tiempodosif,
+      set_ejes: engrasadora.set_ejes,
+      sens_corriente: engrasadora.sens_corriente,
+      sens_flujo: engrasadora.sens_flujo,
+      sens_power: engrasadora.sens_power,
+      cont_accionam: engrasadora.cont_accionam,
+      nombre: engrasadora.nombre,
+      modelo: engrasadora.modelo,
+      linea: engrasadora.linea,
+      date: engrasadora.date,
+    };
+
+    // Agregar snapshot al historial
+    engrasadora.historial.push(snapshot);
+
+    // Actualizar los campos modificados
+    Object.assign(engrasadora, update);
+
+    // Guardar cambios
+    const result = await engrasadora.save();
 
     res.json(result);
   } catch (err) {

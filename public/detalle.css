@@ -72,7 +72,7 @@
   background: var(--color-primario);
   border-radius: 10px;
   width: 90%;
-  max-width: 700px;
+  max-width: 1000px;
   height: 80%;
   max-height: 700px;
   position: relative;
@@ -138,3 +138,7 @@ h6 {
 .icono-editar:hover {
   color: var(--color-pstv);
 }
+
+/* .tabla-historial > * {
+  font-size: 14px;
+} */
