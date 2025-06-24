@@ -48,6 +48,8 @@ const actualizarSeteo = async (req, res) => {
     const engrasadora = await Engrasadora.findById(id);
     if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
 
+    Object.assign(engrasadora, update);
+
     const snapshot = {
       fecha: new Date(),
       estado: engrasadora.estado,
@@ -64,8 +66,6 @@ const actualizarSeteo = async (req, res) => {
     };
 
     engrasadora.historial.push(snapshot);
-
-    Object.assign(engrasadora, update);
 
     const result = await engrasadora.save();
 
