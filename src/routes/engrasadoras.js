@@ -2,9 +2,12 @@
 
 const express = require("express");
 const router = express.Router();
-const controller = require("../controllers/engrasadorasController");
+const {
+  getTodas,
+  actualizarSeteo,
+} = require("../controllers/engrasadorasController");
 
-router.get("/", controller.getTodas);
-router.post("/", controller.crearEngrasadora);
+router.get("/", getTodas);
+router.put("/:id", actualizarSeteo);
 
 module.exports = router;

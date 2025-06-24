@@ -6,6 +6,7 @@
   gap: 1rem;
   justify-content: center;
   margin-top: 1rem;
+  padding: 0 2rem;
 }
 
 .card-maquina {
@@ -128,4 +129,12 @@ h6 {
 
 .historial {
   width: 100%;
+}
+
+.icono-editar {
+  cursor: pointer;
+}
+
+.icono-editar:hover {
+  color: var(--color-pstv);
 }

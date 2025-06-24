@@ -61,13 +61,23 @@ async function cargarDetalle() {
 
       card.addEventListener("click", () => {
         const contenido = `
-          <h5>${e.nombre.toUpperCase()} - <span>${e.modelo}</span></h5>
+          <h5>${e.nombre.toUpperCase()} | <span>${e.modelo.toUpperCase()}</span> | <span class="${
+          e.estado
+        }">${e.estado.toUpperCase()}</span></h5>
           <div class="cont">
             <div class="subCont">
               <h6>SETEO</h6>
-                <div><p>Tiempo Dosif.:</p><p>${e.set_tiempodosif}</p></div>
-                <div><p>Cant. de ejes:</p><p>${e.set_ejes}</p></div>   
-            </div>    
+                <div>
+                  <p>Tiempo Dosif.:</p>
+                  <p id="tiempoDosif">${e.set_tiempodosif}</p>
+                  <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
+                </div>
+                <div>
+                  <p>Cant. de ejes:</p>
+                  <p id="cantEjes">${e.set_ejes}</p>
+                  <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
+                </div>   
+            </div>
             <div class="subCont">
               <h6>ULTIMO SENSADO</h6>
                 <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString(
@@ -77,9 +87,6 @@ async function cargarDetalle() {
                 <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
                 <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
                 <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
-                <div><p>Estado:</p><p class="${
-                  e.estado
-                }">${e.estado.toUpperCase()}</p></div>
             </div>
             <div class="subCont historial">
               <h6>HISTORIAL</h6>
@@ -89,6 +96,81 @@ async function cargarDetalle() {
 
         document.getElementById("contenidoModal").innerHTML = contenido;
         document.getElementById("modalDetalle").style.display = "flex";
+
+        document
+          .getElementById("editarTiempo")
+          .addEventListener("click", () => {
+            const nuevoValor = prompt(
+              "Ingrese el nuevo tiempo de dosificación (0.2s - 0.8s):",
+              e.set_tiempodosif
+            );
+
+            if (nuevoValor !== null) {
+              const numValor = parseFloat(nuevoValor);
+
+              if (isNaN(numValor) || numValor < 0.2) {
+                alert("El tiempo de dosificación debe ser a partir de 0.2");
+                return;
+              }
+
+              if (numValor > 0.8) {
+                alert("El tiempo de dosificación debe ser menor a 0.8");
+                return;
+              }
+
+              fetch(`/api/engrasadoras/${e._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ set_tiempodosif: numValor }),
+              })
+                .then((res) => {
+                  if (!res.ok) throw new Error("Error al actualizar");
+                  return res.json();
+                })
+                .then((data) => {
+                  e.set_tiempodosif = data.set_tiempodosif;
+                  document.getElementById("tiempoDosif").innerText =
+                    data.set_tiempodosif;
+                })
+                .catch((err) => alert(err.message));
+            }
+          });
+
+        document.getElementById("editarEjes").addEventListener("click", () => {
+          const nuevoValor = prompt(
+            "Ingrese la nueva cantidad de ejes:",
+            e.set_ejes
+          );
+
+          if (nuevoValor !== null) {
+            const numValor = parseInt(nuevoValor);
+
+            if (isNaN(numValor) || numValor < 1) {
+              alert("La cantidad de ejes debe ser a partir de 1");
+              return;
+            }
+
+            if (numValor > 128) {
+              alert("La cantidad de ejes debe ser menor a 128");
+              return;
+            }
+
+            fetch(`/api/engrasadoras/${e._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ set_ejes: numValor }),
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error("Error al actualizar");
+                return res.json();
+              })
+              .then((data) => {
+                e.set_ejes = data.set_ejes;
+                document.getElementById("cantEjes").innerText = data.set_ejes;
+              })
+              .catch((err) => alert(err.message));
+          }
+        });
       });
 
       contenedor.appendChild(card);
