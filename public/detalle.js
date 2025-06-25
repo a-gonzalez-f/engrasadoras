@@ -165,7 +165,7 @@ async function cargarDetalle() {
                 <div id="ultimoComentario">
                 ${comentarioHtml}
                 </div>
-                <button>Ver todos</button>
+                <button onclick="listarComentarios()">Ver todos</button>
               </div>
             </div>
           </div>
