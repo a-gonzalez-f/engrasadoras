@@ -354,7 +354,7 @@ function listarComentarios(maquina) {
       .map(
         (c, index) => `
         <div class="comentario-item">
-          <div>
+          <div class="dataComment">
             <strong>${c.user || "Anónimo"}</strong> - ${new Date(
           c.date
         ).toLocaleString("es-AR")}
@@ -362,7 +362,7 @@ function listarComentarios(maquina) {
           <div>${c.comentario}</div>
           <button onclick="eliminarComentario('${
             maquina._id
-          }', ${index})">Eliminar</button>
+          }', ${index})"><span class="material-symbols-outlined deleteBtn">delete</span></button>
           <hr>
         </div>
       `
@@ -416,6 +416,14 @@ function eliminarComentario(idMaquina, indexComentario) {
     .catch((err) => alert(err.message));
 }
 
+// Cierre al hacer click fuera del modal
+document.getElementById("modalComentarios").addEventListener("click", (e) => {
+  if (e.target.id === "modalComentarios") {
+    document.getElementById("modalComentarios").style.display = "none";
+  }
+});
+
+// Cierre al hacer click en la cruz
 document.getElementById("cerrarComentarios").addEventListener("click", () => {
   document.getElementById("modalComentarios").style.display = "none";
 });
