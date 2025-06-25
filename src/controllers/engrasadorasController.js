@@ -102,4 +102,29 @@ const agregarComentario = async (req, res) => {
   }
 };
 
-module.exports = { getTodas, actualizarSeteo, agregarComentario };
+const eliminarComentario = async (req, res) => {
+  const { id, index } = req.params;
+
+  try {
+    const engrasadora = await Engrasadora.findById(id);
+    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+
+    if (index < 0 || index >= engrasadora.comentarios.length)
+      return res.status(400).send("Índice inválido");
+
+    engrasadora.comentarios.splice(index, 1);
+
+    const result = await engrasadora.save();
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al eliminar comentario");
+  }
+};
+
+module.exports = {
+  getTodas,
+  actualizarSeteo,
+  agregarComentario,
+  eliminarComentario,
+};

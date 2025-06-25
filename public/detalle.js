@@ -1,6 +1,8 @@
 const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
 
+let maquinaSeleccionada = null;
+
 if (!linea) {
   alert("Línea no especificada");
   window.location.href = "/";
@@ -60,6 +62,7 @@ async function cargarDetalle() {
       });
 
       card.addEventListener("click", () => {
+        maquinaSeleccionada = e;
         let historialHtml = `
           <table class="tabla-historial">
             <thead>
@@ -165,7 +168,7 @@ async function cargarDetalle() {
                 <div id="ultimoComentario">
                 ${comentarioHtml}
                 </div>
-                <button onclick="listarComentarios()">Ver todos</button>
+                <button id="btnVerTodosComentarios">Ver todos</button>
               </div>
             </div>
           </div>
@@ -178,6 +181,11 @@ async function cargarDetalle() {
 
         document.getElementById("contenidoModal").innerHTML = contenido;
         document.getElementById("modalDetalle").style.display = "flex";
+        document
+          .getElementById("btnVerTodosComentarios")
+          .addEventListener("click", () => {
+            listarComentarios(e);
+          });
 
         document
           .getElementById("editarTiempo")
@@ -334,3 +342,80 @@ function formatearEstado(estado) {
       return estado;
   }
 }
+
+function listarComentarios(maquina) {
+  const modal = document.getElementById("modalComentarios");
+  const contenedor = document.getElementById("listaComentarios");
+
+  if (!maquina.comentarios || maquina.comentarios.length === 0) {
+    contenedor.innerHTML = "<p>No hay comentarios registrados.</p>";
+  } else {
+    contenedor.innerHTML = maquina.comentarios
+      .map(
+        (c, index) => `
+        <div class="comentario-item">
+          <div>
+            <strong>${c.user || "Anónimo"}</strong> - ${new Date(
+          c.date
+        ).toLocaleString("es-AR")}
+          </div>
+          <div>${c.comentario}</div>
+          <button onclick="eliminarComentario('${
+            maquina._id
+          }', ${index})">Eliminar</button>
+          <hr>
+        </div>
+      `
+      )
+      .join("");
+  }
+
+  modal.style.display = "flex";
+}
+
+function eliminarComentario(idMaquina, indexComentario) {
+  if (!confirm("¿Seguro que desea eliminar este comentario?")) return;
+
+  fetch(`/api/engrasadoras/${idMaquina}/comentarios/${indexComentario}`, {
+    method: "DELETE",
+  })
+    .then((res) => {
+      if (!res.ok) throw new Error("Error al eliminar el comentario");
+      return res.json();
+    })
+    .then((data) => {
+      alert("Comentario eliminado");
+      maquinaSeleccionada.comentarios = data.comentarios;
+      listarComentarios(maquinaSeleccionada);
+      const ultComentario =
+        maquinaSeleccionada.comentarios.length > 0
+          ? `
+  <div>
+    <div class="dataComment">
+      <span>${
+        maquinaSeleccionada.comentarios[
+          maquinaSeleccionada.comentarios.length - 1
+        ].user || "Anónimo"
+      }</span> - 
+      ${new Date(
+        maquinaSeleccionada.comentarios[
+          maquinaSeleccionada.comentarios.length - 1
+        ].date
+      ).toLocaleString("es-AR")}<br>
+    </div>
+    ${
+      maquinaSeleccionada.comentarios[
+        maquinaSeleccionada.comentarios.length - 1
+      ].comentario
+    }    
+  </div>`
+          : "Sin comentarios";
+
+      document.getElementById("ultimoComentario").innerHTML = ultComentario;
+    })
+    .catch((err) => alert(err.message));
+}
+
+document.getElementById("cerrarComentarios").addEventListener("click", () => {
+  document.getElementById("modalComentarios").style.display = "none";
+});
