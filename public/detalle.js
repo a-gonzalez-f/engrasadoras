@@ -296,7 +296,6 @@ async function cargarDetalle() {
               alert("Comentario agregado");
               document.getElementById("newComment").value = "";
 
-              // Actualizar los comentarios en el objeto local
               maquinaSeleccionada.comentarios = data.comentarios;
 
               const ultComentario =
@@ -368,7 +367,6 @@ async function cargarDetalle() {
 
 cargarDetalle();
 
-// Cierres del modal, se agregan una sola vez
 document.getElementById("cerrarModal").addEventListener("click", () => {
   document.getElementById("modalDetalle").style.display = "none";
 });
@@ -490,14 +488,12 @@ function listarHistorialEnModal(historial) {
     .join("");
 }
 
-// Cierre al hacer click fuera del modal
 document.getElementById("modalComentarios").addEventListener("click", (e) => {
   if (e.target.id === "modalComentarios") {
     document.getElementById("modalComentarios").style.display = "none";
   }
 });
 
-// Cierre al hacer click en la cruz
 document.getElementById("cerrarComentarios").addEventListener("click", () => {
   document.getElementById("modalComentarios").style.display = "none";
 });
