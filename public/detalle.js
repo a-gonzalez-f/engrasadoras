@@ -337,6 +337,22 @@ async function cargarDetalle() {
                 alert("Accionamientos reseteados");
                 e.cont_accionam = 0;
                 document.getElementById("accionamientos").innerText = 0;
+
+                const nuevoSnapshot = {
+                  fecha: new Date().toISOString(),
+                  estado: e.estado,
+                  set_tiempodosif: e.set_tiempodosif,
+                  set_ejes: e.set_ejes,
+                  sens_corriente: e.sens_corriente,
+                  sens_flujo: e.sens_flujo,
+                  sens_power: e.sens_power,
+                  cont_accionam: 0,
+                };
+
+                if (!e.historial) e.historial = [];
+                e.historial.push(nuevoSnapshot);
+
+                listarHistorialEnModal(e.historial);
               })
               .catch((err) => alert(err.message));
           });
@@ -447,6 +463,31 @@ function eliminarComentario(idMaquina, indexComentario) {
       document.getElementById("ultimoComentario").innerHTML = ultComentario;
     })
     .catch((err) => alert(err.message));
+}
+
+function listarHistorialEnModal(historial) {
+  const tbody = document.querySelector(".tabla-historial tbody");
+
+  if (!tbody) return;
+
+  const ultimos = historial.slice(-10).reverse();
+
+  tbody.innerHTML = ultimos
+    .map(
+      (h) => `
+      <tr class="historial-item ${h.estado}">
+        <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
+        <td>${h.estado.toUpperCase()}</td>
+        <td>${h.set_tiempodosif}</td>
+        <td>${h.set_ejes}</td>
+        <td>${h.sens_corriente} A</td>
+        <td>${h.sens_flujo ? "Sí" : "No"}</td>
+        <td>${h.sens_power ? "Sí" : "No"}</td>
+        <td>${h.cont_accionam}</td>
+      </tr>
+    `
+    )
+    .join("");
 }
 
 // Cierre al hacer click fuera del modal
