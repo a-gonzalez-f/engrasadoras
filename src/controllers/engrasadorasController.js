@@ -122,9 +122,28 @@ const eliminarComentario = async (req, res) => {
   }
 };
 
+const resetAccionamientos = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const engrasadora = await Engrasadora.findById(id);
+    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+
+    engrasadora.cont_accionam = 0;
+
+    const result = await engrasadora.save();
+
+    res.json(result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al resetear los accionamientos");
+  }
+};
+
 module.exports = {
   getTodas,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
+  resetAccionamientos,
 };

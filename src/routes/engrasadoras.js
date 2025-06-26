@@ -7,11 +7,13 @@ const {
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
+  resetAccionamientos,
 } = require("../controllers/engrasadorasController");
 
 router.get("/", getTodas);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
+router.put("/:id/resetAccionamientos", resetAccionamientos);
 
 module.exports = router;

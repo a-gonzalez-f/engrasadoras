@@ -258,6 +258,27 @@ hr {
   color: var(--color-pstv);
 }
 
+.icono-reset {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+#resetAccionam {
+  cursor: pointer;
+  background-color: var(--color-fondo-hover);
+  border-radius: 5px;
+  padding: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center !important;
+}
+
+#resetAccionam:hover {
+  background-color: rgba(255, 0, 0, 0.2);
+}
+
+#resetAccionam:hover .icono-reset {
+  color: var(--color-error);
+}
+
 thead {
   position: sticky;
   top: 0;

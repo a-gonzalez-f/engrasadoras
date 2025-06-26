@@ -144,6 +144,12 @@ async function cargarDetalle() {
                 <p id="cantEjes">${e.set_ejes}</p>
                 <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
               </div>
+            </div>  
+            <div id="resetAccionam">
+              <p>Reset Accionamientos</p>
+              <div>
+                <span class="material-symbols-outlined icono-reset">restart_alt</span>
+              </div>
             </div>   
           </div>
           <div class="subCont">
@@ -151,7 +157,9 @@ async function cargarDetalle() {
             <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString(
               "es-AR"
             )}</p></div>              
-            <div><p>Accionamientos:</p><p>${e.cont_accionam}</p></div>
+            <div><p>Accionamientos:</p><p id="accionamientos">${
+              e.cont_accionam
+            }</p></div>
             <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
             <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
             <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
@@ -310,6 +318,28 @@ async function cargarDetalle() {
             })
             .catch((err) => alert(err.message));
         });
+
+        document
+          .getElementById("resetAccionam")
+          .addEventListener("click", () => {
+            if (!confirm("¿Seguro que desea resetear los accionamientos?"))
+              return;
+
+            fetch(`/api/engrasadoras/${e._id}/resetAccionamientos`, {
+              method: "PUT",
+            })
+              .then((res) => {
+                if (!res.ok)
+                  throw new Error("Error al resetear los accionamientos");
+                return res.json();
+              })
+              .then((data) => {
+                alert("Accionamientos reseteados");
+                e.cont_accionam = 0;
+                document.getElementById("accionamientos").innerText = 0;
+              })
+              .catch((err) => alert(err.message));
+          });
       });
 
       contenedor.appendChild(card);
