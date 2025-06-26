@@ -288,6 +288,9 @@ async function cargarDetalle() {
               alert("Comentario agregado");
               document.getElementById("newComment").value = "";
 
+              // Actualizar los comentarios en el objeto local
+              maquinaSeleccionada.comentarios = data.comentarios;
+
               const ultComentario =
                 data.comentarios[data.comentarios.length - 1];
 
