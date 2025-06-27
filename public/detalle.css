@@ -263,7 +263,7 @@ hr {
   color: rgba(255, 255, 255, 0.4);
 }
 
-#resetAccionam {
+.reset {
   cursor: pointer;
   background-color: var(--color-fondo-hover);
   border-radius: 5px;
@@ -272,11 +272,11 @@ hr {
   justify-content: center !important;
 }
 
-#resetAccionam:hover {
+.reset:hover {
   background-color: rgba(255, 0, 0, 0.2);
 }
 
-#resetAccionam:hover .icono-reset {
+.reset:hover .icono-reset {
   color: var(--color-error);
 }
 
@@ -290,4 +290,8 @@ thead {
 th,
 td {
   max-height: max-content;
+}
+
+#resetHistorial {
+  width: auto;
 }

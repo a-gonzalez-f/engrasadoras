@@ -149,7 +149,7 @@ async function cargarDetalle() {
                 <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
               </div>
             </div>  
-            <div id="resetAccionam">
+            <div id="resetAccionam" class="reset">
               <p>Reset Accionamientos</p>
               <div>
                 <span class="material-symbols-outlined icono-reset">restart_alt</span>
@@ -187,6 +187,12 @@ async function cargarDetalle() {
           <div class="subCont historial">
             <h6>HISTORIAL</h6>
             ${historialHtml}
+            <div id="resetHistorial" class="reset">
+              <p>Reset Historial</p>
+              <div>
+                <span class="material-symbols-outlined icono-reset">restart_alt</span>
+              </div>
+            </div>
           </div>
         </div>  
       `;
@@ -348,6 +354,26 @@ async function cargarDetalle() {
 
                 document.getElementById("accionamientos").innerText =
                   data.cont_accionam;
+                listarHistorialEnModal(e.historial);
+              })
+              .catch((err) => alert(err.message));
+          });
+        document
+          .getElementById("resetHistorial")
+          .addEventListener("click", () => {
+            if (!confirm("¿Seguro que desea resetear el historial?")) return;
+
+            fetch(`/api/engrasadoras/${e._id}/resetHistorial`, {
+              method: "PUT",
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error("Error al resetear el historial");
+                return res.json();
+              })
+              .then((data) => {
+                alert("Historial reseteado");
+
+                e.historial = data.historial;
                 listarHistorialEnModal(e.historial);
               })
               .catch((err) => alert(err.message));

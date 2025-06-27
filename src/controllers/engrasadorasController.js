@@ -161,10 +161,29 @@ const resetAccionamientos = async (req, res) => {
   }
 };
 
+const resetHistorial = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const engrasadora = await Engrasadora.findById(id);
+    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+
+    engrasadora.historial = [];
+
+    const result = await engrasadora.save();
+
+    res.json({ historial: result.historial });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error al resetear el historial");
+  }
+};
+
 module.exports = {
   getTodas,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
   resetAccionamientos,
+  resetHistorial,
 };
