@@ -36,222 +36,240 @@
     </header>
     <main class="mandatory-scroll-snapping">
       <section class="dashboard">
-        <h3 class="subtitle">ESTADO GLOBAL</h3>
-        <div>
-          <canvas id="chartGlobal"></canvas>
-        </div>
-        <div id="detalle-global">
-          <div>
-            <span class="material-symbols-outlined funcionando"
-              >check_circle</span
-            >
-            <span id="func-global" class="funcionando"></span>
-          </div>
-          <div>
-            <span class="material-symbols-outlined alerta">error</span>
-            <span id="alerta-global" class="alerta"></span>
-          </div>
-          <div>
-            <span class="material-symbols-outlined desconectada">wifi_off</span>
-            <span id="sc-global" class="desconectada"></span>
-          </div>
-          <div>
-            <span class="material-symbols-outlined fs">block</span>
-            <span id="fs-global" class="fs"></span>
-          </div>
-        </div>
-      </section>
-      <section class="dashboard porLinea">
-        <h3 class="subtitle">ESTADO POR LÍNEA</h3>
-        <div class="linea">
-          <h4 class="circle A" onclick="location.href='/detalle?linea=A'">A</h4>
-          <div>
-            <canvas class="donutLinea" id="chartA"></canvas>
-          </div>
-          <div id="detalle-A">
+        <div class="global">
+          <div class="container">
             <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-A" class="funcionando"></span>
+              <canvas id="chartGlobal"></canvas>
             </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-A" class="alerta"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-A" class="desconectada"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-A" class="fs"></span>
-            </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-A"></span>
+            <div id="detalle-global">
+              <div>
+                <span class="material-symbols-outlined funcionando"
+                  >check_circle</span
+                >
+                <span id="func-global" class="funcionando"></span>
+              </div>
+              <div>
+                <span class="material-symbols-outlined alerta">error</span>
+                <span id="alerta-global" class="alerta"></span>
+              </div>
+              <div>
+                <span class="material-symbols-outlined desconectada"
+                  >wifi_off</span
+                >
+                <span id="sc-global" class="desconectada"></span>
+              </div>
+              <div>
+                <span class="material-symbols-outlined fs">block</span>
+                <span id="fs-global" class="fs"></span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="linea">
-          <h4 class="circle B" onclick="location.href='/detalle?linea=B'">B</h4>
-          <div>
-            <canvas class="donutLinea" id="chartB"></canvas>
-          </div>
-          <div id="detalle-B">
-            <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-B" class="funcionando"></span>
+        <div class="porLinea">
+          <div class="containerLineas">
+            <div class="linea">
+              <h4 class="circle A" onclick="location.href='/detalle?linea=A'">
+                A
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartA"></canvas>
+              </div>
+              <div id="detalle-A" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-A" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-A" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-A" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-A" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-B" class="alerta"></span>
+            <div class="linea">
+              <h4 class="circle B" onclick="location.href='/detalle?linea=B'">
+                B
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartB"></canvas>
+              </div>
+              <div id="detalle-B" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-B" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-B" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-B" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-B" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-B" class="desconectada"></span>
+            <div class="linea">
+              <h4 class="circle C" onclick="location.href='/detalle?linea=C'">
+                C
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartC"></canvas>
+              </div>
+              <div id="detalle-C" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-C" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-C" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-C" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-C" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-B" class="fs"></span>
+            <div class="linea">
+              <h4 class="circle D" onclick="location.href='/detalle?linea=D'">
+                D
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartD"></canvas>
+              </div>
+              <div id="detalle-D" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-D" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-D" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-D" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-D" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-B"></span>
+            <div class="linea">
+              <h4 class="circle E" onclick="location.href='/detalle?linea=E'">
+                E
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartE"></canvas>
+              </div>
+              <div id="detalle-E" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-E" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-E" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-E" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-E" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div class="linea">
-          <h4 class="circle C" onclick="location.href='/detalle?linea=C'">C</h4>
-          <div>
-            <canvas class="donutLinea" id="chartC"></canvas>
-          </div>
-          <div id="detalle-C">
-            <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-C" class="funcionando"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-C" class="alerta"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-C" class="desconectada"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-C" class="fs"></span>
-            </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-C"></span>
-            </div>
-          </div>
-        </div>
-        <div class="linea">
-          <h4 class="circle D" onclick="location.href='/detalle?linea=D'">D</h4>
-          <div>
-            <canvas class="donutLinea" id="chartD"></canvas>
-          </div>
-          <div id="detalle-D">
-            <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-D" class="funcionando"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-D" class="alerta"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-D" class="desconectada"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-D" class="fs"></span>
-            </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-D"></span>
-            </div>
-          </div>
-        </div>
-        <div class="linea">
-          <h4 class="circle E" onclick="location.href='/detalle?linea=E'">E</h4>
-          <div>
-            <canvas class="donutLinea" id="chartE"></canvas>
-          </div>
-          <div id="detalle-E">
-            <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-E" class="funcionando"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-E" class="alerta"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-E" class="desconectada"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-E" class="fs"></span>
-            </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-E"></span>
-            </div>
-          </div>
-        </div>
-        <div class="linea">
-          <h4 class="circle H" onclick="location.href='/detalle?linea=H'">H</h4>
-          <div>
-            <canvas class="donutLinea" id="chartH"></canvas>
-          </div>
-          <div id="detalle-H">
-            <div>
-              <span class="material-symbols-outlined funcionando"
-                >check_circle</span
-              >
-              <span id="func-H" class="funcionando"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined alerta">error</span>
-              <span id="alerta-H" class="alerta"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined desconectada"
-                >wifi_off</span
-              >
-              <span id="sc-H" class="desconectada"></span>
-            </div>
-            <div>
-              <span class="material-symbols-outlined fs">block</span>
-              <span id="fs-H" class="fs"></span>
-            </div>
-            <div>
-              <span>TOTAL</span>
-              <span id="total-H"></span>
+            <div class="linea">
+              <h4 class="circle H" onclick="location.href='/detalle?linea=H'">
+                H
+              </h4>
+              <div>
+                <canvas class="donutLinea" id="chartH"></canvas>
+              </div>
+              <div id="detalle-H" class="detalle">
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined funcionando"
+                      >check_circle</span
+                    >
+                    <span id="func-H" class="funcionando"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined alerta">error</span>
+                    <span id="alerta-H" class="alerta"></span>
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <span class="material-symbols-outlined desconectada"
+                      >wifi_off</span
+                    >
+                    <span id="sc-H" class="desconectada"></span>
+                  </div>
+                  <div>
+                    <span class="material-symbols-outlined fs">block</span>
+                    <span id="fs-H" class="fs"></span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

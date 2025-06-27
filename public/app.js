@@ -57,6 +57,7 @@ async function cargarEngrasadoras() {
           data: [funcionando, alerta, sinConexion, fs],
           backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
           borderWidth: 0,
+          hoverBorderWidth: 2,
         },
       ],
     },
@@ -175,6 +176,7 @@ function renderEstadoPorLinea(data) {
               data: [funcionando, alerta, desconectada, fs],
               backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
               borderWidth: 0,
+              hoverBorderWidth: 1,
             },
           ],
         },
@@ -206,7 +208,6 @@ function renderEstadoPorLinea(data) {
     document.getElementById(`fs-${linea}`).innerText = `${fs} (${Math.round(
       (fs / total) * 100
     )}%)`;
-    document.getElementById(`total-${linea}`).innerText = `${total}`;
   });
 }
 
