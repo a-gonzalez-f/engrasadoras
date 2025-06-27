@@ -47,14 +47,15 @@ async function cargarEngrasadoras() {
   const funcionando = data.filter((e) => e.estado === "funcionando").length;
   const alerta = data.filter((e) => e.estado === "alerta").length;
   const sinConexion = data.filter((e) => e.estado === "desconectada").length;
+  const fs = data.filter((e) => e.estado === "fs").length;
 
   new Chart(document.getElementById("chartGlobal"), {
     type: "doughnut",
     data: {
       datasets: [
         {
-          data: [funcionando, alerta, sinConexion],
-          backgroundColor: ["#0dae1a", "#fca311", "#888"],
+          data: [funcionando, alerta, sinConexion, fs],
+          backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
           borderWidth: 0,
         },
       ],
@@ -86,6 +87,9 @@ async function cargarEngrasadoras() {
   ).innerText = `${sinConexion} / ${total} (${Math.round(
     (sinConexion / total) * 100
   )}%)`;
+  document.getElementById(
+    "fs-global"
+  ).innerText = `${fs} / ${total} (${Math.round((fs / total) * 100)}%)`;
 
   renderEstadoPorLinea(data);
 }
@@ -136,7 +140,9 @@ function formatearEstado(estado) {
     case "alerta":
       return `<span class="material-symbols-outlined" style="color:var(--color-alerta)"> error </span>`;
     case "desconectada":
-      return `<span class="material-symbols-outlined" style="color:grey"> wifi_off </span>`;
+      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada"> wifi_off </span>`;
+    case "fs":
+      return `<span class="material-symbols-outlined" style="color:var(--color-error"> block </span>`;
     default:
       return estado;
   }
@@ -156,6 +162,7 @@ function renderEstadoPorLinea(data) {
     const desconectada = dataLinea.filter(
       (e) => e.estado === "desconectada"
     ).length;
+    const fs = dataLinea.filter((e) => e.estado === "fs").length;
 
     // Render gráfico
     const canvas = document.getElementById(`chart${linea}`);
@@ -165,8 +172,8 @@ function renderEstadoPorLinea(data) {
         data: {
           datasets: [
             {
-              data: [funcionando, alerta, desconectada],
-              backgroundColor: ["#0dae1a", "#fca311", "#888"],
+              data: [funcionando, alerta, desconectada, fs],
+              backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
               borderWidth: 0,
             },
           ],
@@ -195,6 +202,9 @@ function renderEstadoPorLinea(data) {
       `sc-${linea}`
     ).innerText = `${desconectada} (${Math.round(
       (desconectada / total) * 100
+    )}%)`;
+    document.getElementById(`fs-${linea}`).innerText = `${fs} (${Math.round(
+      (fs / total) * 100
     )}%)`;
     document.getElementById(`total-${linea}`).innerText = `${total}`;
   });

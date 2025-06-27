@@ -6,6 +6,7 @@
   --color-texto: #fff8e9;
   --color-alerta: #fca311;
   --color-error: #d90429;
+  --color-desconectada: #888;
   --color-pstv: #0dae1a;
   --linea-A: #1b93c2;
   --linea-B: #cf1222;
@@ -32,19 +33,21 @@ body {
 .funcionando > td,
 .funcionando {
   color: var(--color-pstv) !important;
-  /* background-color: var(--color-pstv * 0.5) !important; */
 }
 
 .alerta > td,
 .alerta {
   color: var(--color-alerta) !important;
-  /* background-color: var(--color-alerta) !important; */
 }
 
 .desconectada > td,
 .desconectada {
-  color: #888 !important;
-  /* background-color: grey !important; */
+  color: var(--color-desconectada) !important;
+}
+
+.fs > td,
+.fs {
+  color: var(--color-error) !important;
 }
 
 .circle {
