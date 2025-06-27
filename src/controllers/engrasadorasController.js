@@ -133,6 +133,25 @@ const resetAccionamientos = async (req, res) => {
 
     engrasadora.cont_accionam = 0;
 
+    const snapshot = {
+      nro_evento: engrasadora.historial.length + 1,
+      tipo_evento: "Seteo",
+      fecha: new Date(),
+      estado: engrasadora.estado,
+      set_tiempodosif: engrasadora.set_tiempodosif,
+      set_ejes: engrasadora.set_ejes,
+      sens_corriente: engrasadora.sens_corriente,
+      sens_flujo: engrasadora.sens_flujo,
+      sens_power: engrasadora.sens_power,
+      cont_accionam: engrasadora.cont_accionam,
+      nombre: engrasadora.nombre,
+      modelo: engrasadora.modelo,
+      linea: engrasadora.linea,
+      date: engrasadora.date,
+    };
+
+    engrasadora.historial.push(snapshot);
+
     const result = await engrasadora.save();
 
     res.json(result);

@@ -294,7 +294,7 @@ async function cargarDetalle() {
             body: JSON.stringify({
               comentario: textoComentario,
               user: "usuarioX",
-            }), // Reemplazá user por el usuario real si lo tenés
+            }), // Reemplazar user por el usuario real
           })
             .then((res) => {
               if (!res.ok) throw new Error("Error al agregar comentario");
@@ -342,23 +342,12 @@ async function cargarDetalle() {
               })
               .then((data) => {
                 alert("Accionamientos reseteados");
-                e.cont_accionam = 0;
-                document.getElementById("accionamientos").innerText = 0;
 
-                const nuevoSnapshot = {
-                  fecha: new Date().toISOString(),
-                  estado: e.estado,
-                  set_tiempodosif: e.set_tiempodosif,
-                  set_ejes: e.set_ejes,
-                  sens_corriente: e.sens_corriente,
-                  sens_flujo: e.sens_flujo,
-                  sens_power: e.sens_power,
-                  cont_accionam: 0,
-                };
+                e.cont_accionam = data.cont_accionam;
+                e.historial = data.historial;
 
-                if (!e.historial) e.historial = [];
-                e.historial.push(nuevoSnapshot);
-
+                document.getElementById("accionamientos").innerText =
+                  data.cont_accionam;
                 listarHistorialEnModal(e.historial);
               })
               .catch((err) => alert(err.message));
