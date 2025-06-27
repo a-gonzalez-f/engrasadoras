@@ -67,6 +67,8 @@ async function cargarDetalle() {
           <table class="tabla-historial">
             <thead>
               <tr>
+                <th>N° Evento</th>
+                <th>Tipo</th>
                 <th>Fecha</th>
                 <th>Estado</th>
                 <th>Tiempo Dosif.</th>
@@ -87,6 +89,8 @@ async function cargarDetalle() {
             .map(
               (h) => `
             <tr class="historial-item ${h.estado}">
+              <td>${h.nro_evento}</td>
+              <td>${h.tipo_evento}</td>
               <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
               <td>${h.estado.toUpperCase()}</td>
               <td>${h.set_tiempodosif}</td>
@@ -102,7 +106,7 @@ async function cargarDetalle() {
         } else {
           historialHtml += `
             <tr>
-              <td colspan="8" style="text-align:center">No hay historial registrado</td>
+              <td colspan="10" style="text-align:center">No hay historial registrado</td>
             </tr>
           `;
         }
@@ -227,8 +231,10 @@ async function cargarDetalle() {
                 })
                 .then((data) => {
                   e.set_tiempodosif = data.set_tiempodosif;
+                  e.historial = data.historial;
                   document.getElementById("tiempoDosif").innerText =
                     data.set_tiempodosif;
+                  listarHistorialEnModal(e.historial);
                 })
                 .catch((err) => alert(err.message));
             }
@@ -264,7 +270,9 @@ async function cargarDetalle() {
               })
               .then((data) => {
                 e.set_ejes = data.set_ejes;
+                e.historial = data.historial;
                 document.getElementById("cantEjes").innerText = data.set_ejes;
+                listarHistorialEnModal(e.historial);
               })
               .catch((err) => alert(err.message));
           }
@@ -474,6 +482,8 @@ function listarHistorialEnModal(historial) {
     .map(
       (h) => `
       <tr class="historial-item ${h.estado}">
+        <td>${h.nro_evento || "-"}</td>
+        <td>${h.tipo_evento || "-"}</td>
         <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
         <td>${h.estado.toUpperCase()}</td>
         <td>${h.set_tiempodosif}</td>

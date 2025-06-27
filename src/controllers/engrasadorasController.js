@@ -51,6 +51,8 @@ const actualizarSeteo = async (req, res) => {
     Object.assign(engrasadora, update);
 
     const snapshot = {
+      nro_evento: engrasadora.historial.length + 1,
+      tipo_evento: "Seteo",
       fecha: new Date(),
       estado: engrasadora.estado,
       set_tiempodosif: engrasadora.set_tiempodosif,

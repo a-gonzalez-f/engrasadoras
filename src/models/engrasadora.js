@@ -3,6 +3,8 @@
 const mongoose = require("mongoose");
 
 const historialSchema = new mongoose.Schema({
+  nro_evento: Number,
+  tipo_evento: String,
   fecha: { type: Date, default: Date.now },
   estado: String,
   set_tiempodosif: Number,
