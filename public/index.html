@@ -37,30 +37,38 @@
     <main class="mandatory-scroll-snapping">
       <section class="dashboard">
         <div class="global">
+          <h3>ESTADO GLOBAL</h3>
           <div class="container">
             <div>
               <canvas id="chartGlobal"></canvas>
             </div>
-            <div id="detalle-global">
+            <div id="detalle-global" class="bg">
               <div>
-                <span class="material-symbols-outlined funcionando"
-                  >check_circle</span
-                >
-                <span id="func-global" class="funcionando"></span>
+                <div>
+                  <span class="material-symbols-outlined funcionando"
+                    >check_circle</span
+                  >
+                  <span id="func-global" class="funcionando"></span>
+                </div>
+                <div>
+                  <span class="material-symbols-outlined alerta">error</span>
+                  <span id="alerta-global" class="alerta"></span>
+                </div>
               </div>
               <div>
-                <span class="material-symbols-outlined alerta">error</span>
-                <span id="alerta-global" class="alerta"></span>
+                <div>
+                  <span class="material-symbols-outlined desconectada"
+                    >wifi_off</span
+                  >
+                  <span id="sc-global" class="desconectada"></span>
+                </div>
+                <div>
+                  <span class="material-symbols-outlined fs">block</span>
+                  <span id="fs-global" class="fs"></span>
+                </div>
               </div>
               <div>
-                <span class="material-symbols-outlined desconectada"
-                  >wifi_off</span
-                >
-                <span id="sc-global" class="desconectada"></span>
-              </div>
-              <div>
-                <span class="material-symbols-outlined fs">block</span>
-                <span id="fs-global" class="fs"></span>
+                <div><span>TOTAL</span><span id="total-global"></span></div>
               </div>
             </div>
           </div>
@@ -74,7 +82,7 @@
               <div>
                 <canvas class="donutLinea" id="chartA"></canvas>
               </div>
-              <div id="detalle-A" class="detalle">
+              <div id="detalle-A" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"
@@ -108,7 +116,7 @@
               <div>
                 <canvas class="donutLinea" id="chartB"></canvas>
               </div>
-              <div id="detalle-B" class="detalle">
+              <div id="detalle-B" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"
@@ -142,7 +150,7 @@
               <div>
                 <canvas class="donutLinea" id="chartC"></canvas>
               </div>
-              <div id="detalle-C" class="detalle">
+              <div id="detalle-C" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"
@@ -176,7 +184,7 @@
               <div>
                 <canvas class="donutLinea" id="chartD"></canvas>
               </div>
-              <div id="detalle-D" class="detalle">
+              <div id="detalle-D" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"
@@ -210,7 +218,7 @@
               <div>
                 <canvas class="donutLinea" id="chartE"></canvas>
               </div>
-              <div id="detalle-E" class="detalle">
+              <div id="detalle-E" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"
@@ -244,7 +252,7 @@
               <div>
                 <canvas class="donutLinea" id="chartH"></canvas>
               </div>
-              <div id="detalle-H" class="detalle">
+              <div id="detalle-H" class="detalle bg">
                 <div>
                   <div>
                     <span class="material-symbols-outlined funcionando"

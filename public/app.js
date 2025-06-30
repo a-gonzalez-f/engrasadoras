@@ -77,20 +77,17 @@ async function cargarEngrasadoras() {
   // Actualizar resumen global
   document.getElementById(
     "func-global"
-  ).innerText = `${funcionando} / ${total} (${Math.round(
-    (funcionando / total) * 100
+  ).innerText = `${funcionando} (${Math.round((funcionando / total) * 100)}%)`;
+  document.getElementById("alerta-global").innerText = `${alerta} (${Math.round(
+    (alerta / total) * 100
   )}%)`;
-  document.getElementById(
-    "alerta-global"
-  ).innerText = `${alerta} / ${total} (${Math.round((alerta / total) * 100)}%)`;
   document.getElementById(
     "sc-global"
-  ).innerText = `${sinConexion} / ${total} (${Math.round(
-    (sinConexion / total) * 100
+  ).innerText = `${sinConexion} (${Math.round((sinConexion / total) * 100)}%)`;
+  document.getElementById("fs-global").innerText = `${fs} (${Math.round(
+    (fs / total) * 100
   )}%)`;
-  document.getElementById(
-    "fs-global"
-  ).innerText = `${fs} / ${total} (${Math.round((fs / total) * 100)}%)`;
+  document.getElementById("total-global").innerText = `${total}`;
 
   renderEstadoPorLinea(data);
 }
