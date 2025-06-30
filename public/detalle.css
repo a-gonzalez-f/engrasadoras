@@ -267,9 +267,12 @@ hr {
   cursor: pointer;
   background-color: var(--color-fondo-hover);
   border-radius: 5px;
-  padding: 0.5rem;
+  padding: 5px 10px;
   margin-top: 1rem;
   justify-content: center !important;
+  align-items: center;
+  font-size: 14px;
+  gap: 10px !important;
 }
 
 .reset:hover {
@@ -278,6 +281,10 @@ hr {
 
 .reset:hover .icono-reset {
   color: var(--color-error);
+}
+
+#apagarEquipo {
+  background-color: black;
 }
 
 thead {

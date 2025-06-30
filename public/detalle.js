@@ -162,13 +162,21 @@ async function cargarDetalle() {
               <option value="desconectada">Desconectada</option>
               <option value="fs">Fuera de Servicio</option>
             </select>
-            </div>  
-            <div id="resetAccionam" class="reset">
-              <p>Reset Accionamientos</p>
-              <div>
-                <span class="material-symbols-outlined icono-reset">restart_alt</span>
+            </div>
+            <div>  
+              <div id="resetAccionam" class="reset">
+                <p>Reset Accionamientos</p>
+                <div>
+                  <span class="material-symbols-outlined icono-reset">restart_alt</span>
+                </div>
               </div>
-            </div>   
+              <div id="apagarEquipo" class="reset">
+                <p>Apagar</p>
+                <div>
+                  <span class="material-symbols-outlined icono-reset">mode_off_on</span>
+                </div>
+              </div> 
+            </div> 
           </div>
           <div class="subCont">
             <h6>ULTIMO SENSADO</h6>

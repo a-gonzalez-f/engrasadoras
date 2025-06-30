@@ -187,7 +187,7 @@ button:hover {
 }
 
 .material-symbols-outlined {
-  cursor: default;
+  cursor: pointer;
 }
 
 .dashboard {
