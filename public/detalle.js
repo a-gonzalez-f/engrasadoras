@@ -35,6 +35,7 @@ async function cargarDetalle() {
       detalle.innerHTML = `
         <strong>${e.nombre.toUpperCase()}</strong><br>
         ${e.modelo.toUpperCase()}<br>
+        Estado: ${formatearEstado(e.estado, "texto")}<br>
         Corriente: ${e.sens_corriente} A<br>
         Flujo: ${e.sens_flujo ? "Sí" : "No"}<br>
         Power: ${e.sens_power ? "Sí" : "No"}<br>
@@ -508,6 +509,8 @@ async function cargarDetalle() {
       });
 
       contenedor.appendChild(card);
+
+      actualizarBarraPorcentual(filtradas);
     });
   } catch (err) {
     console.error(err);
@@ -664,3 +667,39 @@ function formatearEstado(estado, modo = "icono") {
 
   return modo === "icono" ? estadoObj.icono : estadoObj.texto;
 }
+
+function actualizarBarraPorcentual(maquinas) {
+  const total = maquinas.length;
+  if (total === 0) {
+    document.getElementById("porc_func").style.width = "0%";
+    document.getElementById("porc_alert").style.width = "0%";
+    document.getElementById("porc_desconectada").style.width = "0%";
+    document.getElementById("porc_fs").style.width = "0%";
+    return;
+  }
+
+  const cant_func = maquinas.filter((m) => m.estado === "funcionando").length;
+  const cant_alert = maquinas.filter((m) => m.estado === "alerta").length;
+  const cant_desco = maquinas.filter((m) => m.estado === "desconectada").length;
+  const cant_fs = maquinas.filter((m) => m.estado === "fs").length;
+
+  const porc_func = (cant_func / total) * 100;
+  const porc_alert = (cant_alert / total) * 100;
+  const porc_desco = (cant_desco / total) * 100;
+  const porc_fs = (cant_fs / total) * 100;
+
+  document.getElementById("porc_func").style.width = `${porc_func}%`;
+  document.getElementById("porc_alert").style.width = `${porc_alert}%`;
+  document.getElementById("porc_desconectada").style.width = `${porc_desco}%`;
+  document.getElementById("porc_fs").style.width = `${porc_fs}%`;
+}
+
+setInterval(() => {
+  fetch("/api/engrasadoras")
+    .then((res) => res.json())
+    .then((data) => {
+      const filtradas = data.filter((e) => e.linea === linea);
+      actualizarBarraPorcentual(filtradas);
+    })
+    .catch((err) => console.error("Error actualizando barra:", err));
+}, 3000); // Cada 3 segundos

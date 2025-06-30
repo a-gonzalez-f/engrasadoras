@@ -1,3 +1,41 @@
+section {
+  height: 100vh;
+}
+
+.contenedor-barra {
+  width: 100vw;
+  height: 15vh;
+  padding: 1rem 5rem;
+  display: flex;
+  align-items: center;
+}
+
+#barraPorcentual {
+  width: 100%;
+  height: 20%;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: row;
+}
+
+.porc {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 1s ease;
+}
+
+#porc_func {
+  background-color: var(--color-pstv);
+}
+#porc_alert {
+  background-color: var(--color-alerta);
+}
+#porc_desconectada {
+  background-color: var(--color-desconectada);
+}
+#porc_fs {
+  background-color: var(--color-error);
+}
+
 #contenedorMaquinas {
   width: 100%;
   display: flex;

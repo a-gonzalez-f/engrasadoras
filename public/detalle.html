@@ -12,7 +12,6 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Engrasadoras Site</title>
   </head>
   <body>
@@ -36,8 +35,15 @@
       </nav>
     </header>
     <main>
-      <section class="dashboard">
-        <!-- <div id="barraPorcentual"></div> -->
+      <section>
+        <div class="contenedor-barra">
+          <div id="barraPorcentual">
+            <div id="porc_func" class="porc"></div>
+            <div id="porc_alert" class="porc"></div>
+            <div id="porc_desconectada" class="porc"></div>
+            <div id="porc_fs" class="porc"></div>
+          </div>
+        </div>
         <div id="contenedorMaquinas" class="contenedor-maquinas"></div>
       </section>
     </main>
