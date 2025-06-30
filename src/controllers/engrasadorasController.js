@@ -147,7 +147,7 @@ const resetAccionamientos = async (req, res) => {
 
     const snapshot = {
       nro_evento: engrasadora.historial.length + 1,
-      tipo_evento: "Seteo",
+      tipo_evento: "Reset Accionamientos",
       fecha: new Date(),
       estado: engrasadora.estado,
       set_tiempodosif: engrasadora.set_tiempodosif,

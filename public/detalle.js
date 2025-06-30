@@ -83,16 +83,6 @@ async function cargarDetalle() {
           `;
 
         if (e.historial && e.historial.length > 0) {
-          const estadosMap = {
-            funcionando: "Funcionando",
-            alerta: "Alerta",
-            desconectada: "Desconectada",
-            fs: "Fuera de Servicio",
-          };
-
-          function formatearEstado(estado) {
-            return estadosMap[estado] || estado.toUpperCase();
-          }
           historialHtml += e.historial
             .slice(-10)
             .reverse()
@@ -102,7 +92,7 @@ async function cargarDetalle() {
               <td>${h.nro_evento}</td>
               <td>${h.tipo_evento}</td>
               <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
-              <td>${formatearEstado(h.estado)}</td>
+              <td>${formatearEstado(h.estado, "texto")}</td>
               <td>${h.set_tiempodosif}</td>
               <td>${h.set_ejes}</td>
               <td>${h.sens_corriente} A</td>
@@ -142,9 +132,11 @@ async function cargarDetalle() {
         <h5>
         ${e.nombre.toUpperCase()} | 
         <span id="modeloMaquina">${e.modelo.toUpperCase()}</span> | 
-        <span id="estadoMaquina" class="${
-          e.estado
-        }">${e.estado.toUpperCase()}</span>
+        <span id="estadoMaquina" class="${e.estado}">${formatearEstado(
+          e.estado,
+          "texto"
+        ).toUpperCase()}</span>
+
         </h5>
 
         <div class="cont">
@@ -400,7 +392,10 @@ async function cargarDetalle() {
 
           if (
             !confirm(
-              `¿Seguro que desea cambiar el estado a "${nuevoEstado.toUpperCase()}"?`
+              `¿Seguro que desea cambiar el estado a "${formatearEstado(
+                nuevoEstado,
+                "texto"
+              )}"?`
             )
           ) {
             selectEstado.value = e.estado;
@@ -421,7 +416,8 @@ async function cargarDetalle() {
               e.historial = data.historial;
 
               document.getElementById("estadoMaquina").innerText =
-                data.estado.toUpperCase();
+                formatearEstado(data.estado, "texto").toUpperCase();
+
               document.getElementById("estadoMaquina").className = data.estado;
 
               listarHistorialEnModal(e.historial);
@@ -503,21 +499,6 @@ document.getElementById("modalDetalle").addEventListener("click", (e) => {
   }
 });
 
-function formatearEstado(estado) {
-  switch (estado) {
-    case "funcionando":
-      return `<span class="material-symbols-outlined" style="color:var(--color-pstv)">check_circle</span>`;
-    case "alerta":
-      return `<span class="material-symbols-outlined" style="color:var(--color-alerta)">error</span>`;
-    case "desconectada":
-      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada)">wifi_off</span>`;
-    case "fs":
-      return `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`;
-    default:
-      return estado;
-  }
-}
-
 function listarComentarios(maquina) {
   const modal = document.getElementById("modalComentarios");
   const contenedor = document.getElementById("listaComentarios");
@@ -598,17 +579,6 @@ function listarHistorialEnModal(historial) {
 
   const ultimos = historial.slice(-10).reverse();
 
-  const estadosMap = {
-    funcionando: "Funcionando",
-    alerta: "Alerta",
-    desconectada: "Desconectada",
-    fs: "Fuera de Servicio",
-  };
-
-  function formatearEstado(estado) {
-    return estadosMap[estado] || estado.toUpperCase();
-  }
-
   tbody.innerHTML = ultimos
     .map(
       (h) => `
@@ -616,7 +586,7 @@ function listarHistorialEnModal(historial) {
         <td>${h.nro_evento || "-"}</td>
         <td>${h.tipo_evento || "-"}</td>
         <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
-        <td>${formatearEstado(h.estado)}</td>
+        <td>${formatearEstado(h.estado, "texto")}</td>
         <td>${h.set_tiempodosif}</td>
         <td>${h.set_ejes}</td>
         <td>${h.sens_corriente} A</td>
@@ -638,3 +608,32 @@ document.getElementById("modalComentarios").addEventListener("click", (e) => {
 document.getElementById("cerrarComentarios").addEventListener("click", () => {
   document.getElementById("modalComentarios").style.display = "none";
 });
+
+function formatearEstado(estado, modo = "icono") {
+  const estadosMap = {
+    funcionando: {
+      texto: "Funcionando",
+      icono: `<span class="material-symbols-outlined" style="color:var(--color-pstv)">check_circle</span>`,
+    },
+    alerta: {
+      texto: "Alerta",
+      icono: `<span class="material-symbols-outlined" style="color:var(--color-alerta)">error</span>`,
+    },
+    desconectada: {
+      texto: "Desconectada",
+      icono: `<span class="material-symbols-outlined" style="color:var(--color-desconectada)">wifi_off</span>`,
+    },
+    fs: {
+      texto: "Fuera de Servicio",
+      icono: `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`,
+    },
+  };
+
+  const estadoObj = estadosMap[estado];
+
+  if (!estadoObj) {
+    return modo === "icono" ? estado : estado.toUpperCase();
+  }
+
+  return modo === "icono" ? estadoObj.icono : estadoObj.texto;
+}
