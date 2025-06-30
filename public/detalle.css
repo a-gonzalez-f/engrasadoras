@@ -287,8 +287,16 @@ hr {
   background-color: black;
 }
 
-#apagarEquipo:hover {
-  background-color: rgba(255, 0, 0, 0.4);
+.apagar:hover {
+  background-color: rgba(255, 0, 0, 0.4) !important;
+}
+
+.encender:hover {
+  background-color: rgba(22, 188, 0, 0.4) !important;
+}
+
+.encender:hover .icono-reset {
+  color: var(--color-pstv) !important;
 }
 
 thead {

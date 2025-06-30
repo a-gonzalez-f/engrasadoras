@@ -173,7 +173,6 @@ async function cargarDetalle() {
                 </div>
               </div>
               <div id="apagarEquipo" class="reset">
-                <p>Apagar</p>
                 <div>
                   <span class="material-symbols-outlined icono-reset">mode_off_on</span>
                 </div>
@@ -222,6 +221,16 @@ async function cargarDetalle() {
       `;
 
         document.getElementById("contenidoModal").innerHTML = contenido;
+
+        const botonApagar = document.getElementById("apagarEquipo");
+        botonApagar.classList.remove("apagar", "encender");
+
+        if (e.estado === "fs") {
+          botonApagar.classList.add("encender");
+        } else {
+          botonApagar.classList.add("apagar");
+        }
+
         document.getElementById("modalDetalle").style.display = "flex";
         document
           .getElementById("btnVerTodosComentarios")
@@ -420,6 +429,15 @@ async function cargarDetalle() {
 
               document.getElementById("estadoMaquina").className = data.estado;
 
+              const btnApagar = document.getElementById("apagarEquipo");
+              btnApagar.classList.remove("apagar", "encender");
+
+              if (e.estado === "fs") {
+                btnApagar.classList.add("encender");
+              } else if (e.estado === "funcionando") {
+                btnApagar.classList.add("apagar");
+              }
+
               listarHistorialEnModal(e.historial);
               cargarDetalle();
             })
@@ -449,9 +467,19 @@ async function cargarDetalle() {
                 e.historial = data.historial;
 
                 document.getElementById("estadoMaquina").innerText =
-                  data.estado.toUpperCase();
+                  formatearEstado(data.estado, "texto").toUpperCase();
+
                 document.getElementById("estadoMaquina").className =
                   data.estado;
+
+                const btnApagar = document.getElementById("apagarEquipo");
+                btnApagar.classList.remove("apagar", "encender");
+
+                if (e.estado === "fs") {
+                  btnApagar.classList.add("encender");
+                } else if (e.estado === "funcionando") {
+                  btnApagar.classList.add("apagar");
+                }
 
                 listarHistorialEnModal(e.historial);
                 cargarDetalle();
