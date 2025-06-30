@@ -14,9 +14,17 @@ const getTodas = async (req, res) => {
 
 const actualizarSeteo = async (req, res) => {
   const { id } = req.params;
-  const { set_tiempodosif, set_ejes } = req.body;
+  const { set_tiempodosif, set_ejes, estado } = req.body;
 
   const update = {};
+  let huboCambioEstado = false;
+
+  if (estado !== undefined) {
+    if (typeof estado !== "string") {
+      return res.status(400).send("Estado inválido");
+    }
+    huboCambioEstado = true;
+  }
 
   if (set_tiempodosif !== undefined) {
     if (
@@ -26,7 +34,7 @@ const actualizarSeteo = async (req, res) => {
     ) {
       return res
         .status(400)
-        .send("El tiempo de dosificación debe ser entre 0.2s y 0.8s");
+        .send("El tiempo de dosificación debe ser entre 0.2s y 2s");
     }
     update.set_tiempodosif = set_tiempodosif;
   }
@@ -38,7 +46,7 @@ const actualizarSeteo = async (req, res) => {
     update.set_ejes = set_ejes;
   }
 
-  if (Object.keys(update).length === 0) {
+  if (Object.keys(update).length === 0 && !huboCambioEstado) {
     return res
       .status(400)
       .send("No se proporcionaron campos válidos para actualizar");
@@ -49,6 +57,10 @@ const actualizarSeteo = async (req, res) => {
     if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
 
     Object.assign(engrasadora, update);
+
+    if (huboCambioEstado && estado !== engrasadora.estado) {
+      engrasadora.estado = estado;
+    }
 
     const snapshot = {
       nro_evento: engrasadora.historial.length + 1,

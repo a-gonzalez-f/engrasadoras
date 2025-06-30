@@ -129,9 +129,14 @@ async function cargarDetalle() {
         }
 
         const contenido = `
-        <h5>${e.nombre.toUpperCase()} | <span>${e.modelo.toUpperCase()}</span> | <span class="${
+        <h5>
+        ${e.nombre.toUpperCase()} | 
+        <span id="modeloMaquina">${e.modelo.toUpperCase()}</span> | 
+        <span id="estadoMaquina" class="${
           e.estado
-        }">${e.estado.toUpperCase()}</span></h5>
+        }">${e.estado.toUpperCase()}</span>
+        </h5>
+
         <div class="cont">
           <div class="subCont">
             <h6>SETEO</h6>
@@ -148,6 +153,15 @@ async function cargarDetalle() {
                 <p id="cantEjes">${e.set_ejes}</p>
                 <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
               </div>
+            </div>
+            <div>
+            <p>Estado:</p>            
+            <select name="estado" id="estado">
+              <option value="funcionando">Funcionando</option>
+              <option value="alerta">Alerta</option>
+              <option value="desconectada">Desconectada</option>
+              <option value="fs">Fuera de Servicio</option>
+            </select>
             </div>  
             <div id="resetAccionam" class="reset">
               <p>Reset Accionamientos</p>
@@ -310,7 +324,6 @@ async function cargarDetalle() {
               return res.json();
             })
             .then((data) => {
-              alert("Comentario agregado");
               document.getElementById("newComment").value = "";
 
               maquinaSeleccionada.comentarios = data.comentarios;
@@ -350,8 +363,6 @@ async function cargarDetalle() {
                 return res.json();
               })
               .then((data) => {
-                alert("Accionamientos reseteados");
-
                 e.cont_accionam = data.cont_accionam;
                 e.historial = data.historial;
 
@@ -361,6 +372,46 @@ async function cargarDetalle() {
               })
               .catch((err) => alert(err.message));
           });
+        const selectEstado = document.getElementById("estado");
+        selectEstado.value = e.estado;
+
+        selectEstado.addEventListener("change", () => {
+          const nuevoEstado = selectEstado.value;
+
+          if (nuevoEstado === e.estado) return;
+
+          if (
+            !confirm(
+              `¿Seguro que desea cambiar el estado a "${nuevoEstado.toUpperCase()}"?`
+            )
+          ) {
+            selectEstado.value = e.estado;
+            return;
+          }
+
+          fetch(`/api/engrasadoras/${e._id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ estado: nuevoEstado }),
+          })
+            .then((res) => {
+              if (!res.ok) throw new Error("Error al actualizar el estado");
+              return res.json();
+            })
+            .then((data) => {
+              e.estado = data.estado;
+              e.historial = data.historial;
+
+              document.getElementById("estadoMaquina").innerText =
+                data.estado.toUpperCase();
+              document.getElementById("estadoMaquina").className = data.estado;
+
+              listarHistorialEnModal(e.historial);
+              cargarDetalle();
+            })
+            .catch((err) => alert(err.message));
+        });
+
         document
           .getElementById("resetHistorial")
           .addEventListener("click", () => {

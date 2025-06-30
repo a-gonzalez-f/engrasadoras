@@ -246,7 +246,7 @@ hr {
 
 .historial {
   width: 100%;
-  height: 300px;
+  height: 330px;
   overflow-y: auto;
 }
 
@@ -294,4 +294,15 @@ td {
 
 #resetHistorial {
   width: auto;
+}
+
+select#estado {
+  background-color: var(--color-fondo-hover);
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 0;
+}
+
+option {
+  background-color: var(--color-fondo);
 }
