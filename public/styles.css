@@ -183,7 +183,11 @@ button:hover {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; /* color al pasar el mouse */
+  background: #555;
+}
+
+.material-symbols-outlined {
+  cursor: default;
 }
 
 .dashboard {
@@ -252,7 +256,7 @@ canvas {
 
 .bg {
   background-color: rgba(0, 0, 0, 0.1);
-  box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   padding: 12px;
   width: 80%;
@@ -298,7 +302,7 @@ canvas {
 }
 
 .donutLinea {
-  width: 150px !important;
+  width: 10vw !important;
   height: auto !important;
 }
 
