@@ -568,7 +568,6 @@ function eliminarComentario(idMaquina, indexComentario) {
       return res.json();
     })
     .then((data) => {
-      alert("Comentario eliminado");
       maquinaSeleccionada.comentarios = data.comentarios;
       listarComentarios(maquinaSeleccionada);
       const ultComentario =
