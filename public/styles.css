@@ -22,6 +22,7 @@
   box-sizing: border-box;
   font-weight: 400;
   color: var(--color-texto);
+  user-select: none;
 }
 
 body {

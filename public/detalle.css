@@ -287,6 +287,10 @@ hr {
   background-color: black;
 }
 
+#apagarEquipo:hover {
+  background-color: rgba(255, 0, 0, 0.4);
+}
+
 thead {
   position: sticky;
   top: 0;
@@ -297,6 +301,7 @@ thead {
 th,
 td {
   max-height: max-content;
+  user-select: text;
 }
 
 #resetHistorial {

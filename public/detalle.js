@@ -83,6 +83,16 @@ async function cargarDetalle() {
           `;
 
         if (e.historial && e.historial.length > 0) {
+          const estadosMap = {
+            funcionando: "Funcionando",
+            alerta: "Alerta",
+            desconectada: "Desconectada",
+            fs: "Fuera de Servicio",
+          };
+
+          function formatearEstado(estado) {
+            return estadosMap[estado] || estado.toUpperCase();
+          }
           historialHtml += e.historial
             .slice(-10)
             .reverse()
@@ -92,7 +102,7 @@ async function cargarDetalle() {
               <td>${h.nro_evento}</td>
               <td>${h.tipo_evento}</td>
               <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
-              <td>${h.estado.toUpperCase()}</td>
+              <td>${formatearEstado(h.estado)}</td>
               <td>${h.set_tiempodosif}</td>
               <td>${h.set_ejes}</td>
               <td>${h.sens_corriente} A</td>
@@ -421,6 +431,39 @@ async function cargarDetalle() {
         });
 
         document
+          .getElementById("apagarEquipo")
+          .addEventListener("click", () => {
+            const nuevoEstado = e.estado === "fs" ? "funcionando" : "fs";
+            const textoConfirm =
+              nuevoEstado === "fs" ? "apagar el equipo" : "encender el equipo";
+
+            if (!confirm(`¿Seguro que desea ${textoConfirm}?`)) return;
+
+            fetch(`/api/engrasadoras/${e._id}/switchOnOff`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ estado: nuevoEstado }),
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error("Error al actualizar el estado");
+                return res.json();
+              })
+              .then((data) => {
+                e.estado = data.estado;
+                e.historial = data.historial;
+
+                document.getElementById("estadoMaquina").innerText =
+                  data.estado.toUpperCase();
+                document.getElementById("estadoMaquina").className =
+                  data.estado;
+
+                listarHistorialEnModal(e.historial);
+                cargarDetalle();
+              })
+              .catch((err) => alert(err.message));
+          });
+
+        document
           .getElementById("resetHistorial")
           .addEventListener("click", () => {
             if (!confirm("¿Seguro que desea resetear el historial?")) return;
@@ -555,6 +598,17 @@ function listarHistorialEnModal(historial) {
 
   const ultimos = historial.slice(-10).reverse();
 
+  const estadosMap = {
+    funcionando: "Funcionando",
+    alerta: "Alerta",
+    desconectada: "Desconectada",
+    fs: "Fuera de Servicio",
+  };
+
+  function formatearEstado(estado) {
+    return estadosMap[estado] || estado.toUpperCase();
+  }
+
   tbody.innerHTML = ultimos
     .map(
       (h) => `
@@ -562,7 +616,7 @@ function listarHistorialEnModal(historial) {
         <td>${h.nro_evento || "-"}</td>
         <td>${h.tipo_evento || "-"}</td>
         <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
-        <td>${h.estado.toUpperCase()}</td>
+        <td>${formatearEstado(h.estado)}</td>
         <td>${h.set_tiempodosif}</td>
         <td>${h.set_ejes}</td>
         <td>${h.sens_corriente} A</td>
