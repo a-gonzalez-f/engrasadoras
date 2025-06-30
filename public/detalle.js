@@ -209,27 +209,30 @@ async function cargarDetalle() {
           .getElementById("editarTiempo")
           .addEventListener("click", () => {
             const nuevoValor = prompt(
-              "Ingrese el nuevo tiempo de dosificación (0.2s - 0.8s):",
+              "Ingrese el nuevo tiempo de dosificación (0.2s - 2s):",
               e.set_tiempodosif
             );
 
             if (nuevoValor !== null) {
-              const numValor = parseFloat(nuevoValor);
+              const valorSanitizado = nuevoValor.replace(",", ".");
+              const numValor = parseFloat(valorSanitizado);
 
               if (isNaN(numValor) || numValor < 0.2) {
                 alert("El tiempo de dosificación debe ser a partir de 0.2");
                 return;
               }
 
-              if (numValor > 0.8) {
-                alert("El tiempo de dosificación debe ser menor a 0.8");
+              if (numValor > 2) {
+                alert("El tiempo de dosificación debe ser menor o igual a 2");
                 return;
               }
+
+              const valorTruncado = Math.trunc(numValor * 10) / 10;
 
               fetch(`/api/engrasadoras/${e._id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ set_tiempodosif: numValor }),
+                body: JSON.stringify({ set_tiempodosif: valorTruncado }),
               })
                 .then((res) => {
                   if (!res.ok) throw new Error("Error al actualizar");
@@ -371,8 +374,6 @@ async function cargarDetalle() {
                 return res.json();
               })
               .then((data) => {
-                alert("Historial reseteado");
-
                 e.historial = data.historial;
                 listarHistorialEnModal(e.historial);
               })
@@ -407,7 +408,9 @@ function formatearEstado(estado) {
     case "alerta":
       return `<span class="material-symbols-outlined" style="color:var(--color-alerta)">error</span>`;
     case "desconectada":
-      return `<span class="material-symbols-outlined" style="color:grey">wifi_off</span>`;
+      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada)">wifi_off</span>`;
+    case "fs":
+      return `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`;
     default:
       return estado;
   }

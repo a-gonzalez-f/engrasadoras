@@ -22,7 +22,7 @@ const actualizarSeteo = async (req, res) => {
     if (
       typeof set_tiempodosif !== "number" ||
       set_tiempodosif < 0.2 ||
-      set_tiempodosif > 0.8
+      set_tiempodosif > 2
     ) {
       return res
         .status(400)
