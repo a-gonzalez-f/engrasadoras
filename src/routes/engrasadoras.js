@@ -10,6 +10,7 @@ const {
   resetAccionamientos,
   resetHistorial,
   switchOnOff,
+  crearEngrasadora,
 } = require("../controllers/engrasadorasController");
 
 router.get("/", getTodas);
@@ -19,5 +20,6 @@ router.delete("/:id/comentarios/:index", eliminarComentario);
 router.put("/:id/resetAccionamientos", resetAccionamientos);
 router.put("/:id/resetHistorial", resetHistorial);
 router.put("/:id/switchOnOff", switchOnOff);
+router.post("/", crearEngrasadora);
 
 module.exports = router;

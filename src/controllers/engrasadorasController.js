@@ -231,6 +231,18 @@ const resetHistorial = async (req, res) => {
   }
 };
 
+const crearEngrasadora = async (req, res) => {
+  try {
+    const data = req.body;
+    const nueva = new Engrasadora(data);
+    const saved = await nueva.save();
+    res.status(201).json(saved);
+  } catch (error) {
+    console.error("Error al crear engrasadora:", error);
+    res.status(500).json({ error: "Error al crear engrasadora" });
+  }
+};
+
 module.exports = {
   getTodas,
   actualizarSeteo,
@@ -239,4 +251,5 @@ module.exports = {
   resetAccionamientos,
   resetHistorial,
   switchOnOff,
+  crearEngrasadora,
 };
