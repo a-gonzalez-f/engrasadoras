@@ -12,38 +12,53 @@ section {
 
 #barraPorcentual {
   width: 100%;
-  height: 20%;
-  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: row;
 }
 
-.porc {
-  border: 1px solid rgba(255, 255, 255, 0.5);
+.barra {
   transition: all 1s ease;
+  min-height: 10px;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
 }
 
-#porc_func {
+.func {
   background-color: var(--color-pstv);
 }
-#porc_alert {
+.alert {
   background-color: var(--color-alerta);
 }
-#porc_desconectada {
+.desc {
   background-color: var(--color-desconectada);
 }
-#porc_fs {
+.fs {
   background-color: var(--color-error);
+}
+
+.value {
+  display: block;
+  width: 100%;
+  text-align: center;
+  margin-bottom: 5px;
+  font-size: 14px;
+  letter-spacing: 1px;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+.value:hover {
+  opacity: 1;
 }
 
 #contenedorMaquinas {
   width: 100%;
+  height: 75vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  margin-top: 1rem;
+  align-content: center;
   padding: 0 2rem;
 }
 
