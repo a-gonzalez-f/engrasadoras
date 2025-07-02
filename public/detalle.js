@@ -711,6 +711,8 @@ function actualizarBarraPorcentual(maquinas) {
   if (cant_fs !== 0) {
     document.getElementById("value_fs").innerText = `${cant_fs} - ${porc_fs}%`;
   }
+
+  document.getElementById("total_value").innerText = ` Total: ${total}`;
 }
 
 setInterval(() => {
