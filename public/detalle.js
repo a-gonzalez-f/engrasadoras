@@ -212,10 +212,16 @@ async function cargarDetalle(data) {
           <div class="subCont historial">
             <h6>HISTORIAL</h6>
             ${historialHtml}
-            <div id="resetHistorial" class="reset">
-              <p>Reset Historial</p>
-              <div>
-                <span class="material-symbols-outlined icono-reset">restart_alt</span>
+            <div class="actionButtons">
+              <div id="resetHistorial" class="reset">
+                <p>Reset Historial</p>
+                <div>
+                  <span class="material-symbols-outlined icono-reset">restart_alt</span>
+                </div>
+              </div>
+              <div id="historialCompleto" class="reset">
+                <p>Historial Completo</p>
+                <span class="material-symbols-outlined">list</span>
               </div>
             </div>
           </div>

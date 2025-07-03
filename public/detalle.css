@@ -318,6 +318,12 @@ hr {
   color: rgba(255, 255, 255, 0.4);
 }
 
+.actionButtons {
+  display: flex;
+  justify-content: flex-end !important;
+  width: 90% !important;
+}
+
 .reset {
   cursor: pointer;
   background-color: var(--color-fondo-hover);
@@ -329,6 +335,11 @@ hr {
   font-size: 14px;
   gap: 10px !important;
   height: min-content;
+  height: 40px;
+}
+
+#historialCompleto:hover {
+  background-color: var(--color-fondo);
 }
 
 .reset:hover {
