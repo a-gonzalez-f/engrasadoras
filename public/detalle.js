@@ -11,12 +11,11 @@ if (!linea) {
 document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
 
-async function cargarDetalle() {
-  try {
-    const res = await fetch("/api/engrasadoras");
-    const data = await res.json();
+async function cargarDetalle(data) {
+  let filtradas = [];
 
-    const filtradas = data.filter((e) => e.linea === linea);
+  try {
+    filtradas = data.filter((e) => e.linea === linea);
 
     const contenedor = document.getElementById("contenedorMaquinas");
     contenedor.innerHTML = "";
@@ -442,7 +441,6 @@ async function cargarDetalle() {
               }
 
               listarHistorialEnModal(e.historial);
-              cargarDetalle();
             })
             .catch((err) => alert(err.message));
         });
@@ -485,7 +483,6 @@ async function cargarDetalle() {
                 }
 
                 listarHistorialEnModal(e.historial);
-                cargarDetalle();
               })
               .catch((err) => alert(err.message));
           });
@@ -511,16 +508,14 @@ async function cargarDetalle() {
       });
 
       contenedor.appendChild(card);
-
-      actualizarBarraPorcentual(filtradas);
     });
   } catch (err) {
     console.error(err);
     alert("Error al cargar los datos");
   }
-}
 
-cargarDetalle();
+  actualizarBarraPorcentual(filtradas);
+}
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
   document.getElementById("modalDetalle").style.display = "none";
@@ -723,7 +718,7 @@ setInterval(() => {
     .then((data) => {
       const filtradas = data.filter((e) => e.linea === linea);
       actualizarBarraPorcentual(filtradas);
-      cargarDetalle();
+      cargarDetalle(data);
 
       if (maquinaSeleccionada) {
         const actualizada = data.find((m) => m._id === maquinaSeleccionada._id);

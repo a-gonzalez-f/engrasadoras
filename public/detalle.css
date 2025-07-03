@@ -1,3 +1,7 @@
+.mainSection {
+  height: 100vh;
+}
+
 .contenedor-barra {
   width: 100vw;
   height: 15vh;
