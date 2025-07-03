@@ -22,9 +22,9 @@ function initWebSocket(server) {
   // Simulación de cambios en campo: actualizar random engrasadora cada X seg
   setInterval(async () => {
     try {
-      const lineaDeseada = "A";
-      const engrasadoras = await Engrasadora.find();
-      // const engrasadoras = await Engrasadora.find({ linea: lineaDeseada });
+      const lineaDeseada = "H";
+      // const engrasadoras = await Engrasadora.find();
+      const engrasadoras = await Engrasadora.find({ linea: lineaDeseada });
 
       if (engrasadoras.length === 0) return;
 

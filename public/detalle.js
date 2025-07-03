@@ -26,6 +26,8 @@ async function cargarDetalle() {
       return;
     }
 
+    document.querySelectorAll(".detalle-hover").forEach((d) => d.remove());
+
     filtradas.forEach((e) => {
       const card = document.createElement("div");
       card.classList.add("card-maquina");
@@ -722,6 +724,42 @@ setInterval(() => {
       const filtradas = data.filter((e) => e.linea === linea);
       actualizarBarraPorcentual(filtradas);
       cargarDetalle();
+
+      if (maquinaSeleccionada) {
+        const actualizada = data.find((m) => m._id === maquinaSeleccionada._id);
+        if (actualizada) {
+          maquinaSeleccionada = actualizada;
+
+          // Actualizar campos del modal
+          document.getElementById("estadoMaquina").innerText = formatearEstado(
+            actualizada.estado,
+            "texto"
+          ).toUpperCase();
+          document.getElementById("estadoMaquina").className =
+            actualizada.estado;
+
+          document.getElementById("accionamientos").innerText =
+            actualizada.cont_accionam;
+
+          document.getElementById("tiempoDosif").innerText =
+            actualizada.set_tiempodosif;
+
+          document.getElementById("cantEjes").innerText = actualizada.set_ejes;
+
+          document.getElementById("estado").value = actualizada.estado;
+
+          listarHistorialEnModal(actualizada.historial);
+
+          const btnApagar = document.getElementById("apagarEquipo");
+          btnApagar.classList.remove("apagar", "encender");
+
+          if (actualizada.estado === "fs") {
+            btnApagar.classList.add("encender");
+          } else if (actualizada.estado === "funcionando") {
+            btnApagar.classList.add("apagar");
+          }
+        }
+      }
     })
-    .catch((err) => console.error("Error actualizando barra:", err));
-}, 2000);
+    .catch((err) => console.error("Error actualizando:", err));
+}, 1000);
