@@ -22,16 +22,16 @@ section {
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
 }
 
-.func {
+.barra.func {
   background-color: var(--color-pstv);
 }
-.alert {
+.barra.alert {
   background-color: var(--color-alerta);
 }
-.desc {
+.barra.desc {
   background-color: var(--color-desconectada);
 }
-.fs {
+.barra.fs {
   background-color: var(--color-error);
 }
 

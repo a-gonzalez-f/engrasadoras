@@ -16,6 +16,9 @@ document.addEventListener("click", function (e) {
 // logica
 let datosEngrasadoras = [];
 
+let chartGlobal = null;
+const chartsPorLinea = {};
+
 async function cargarEngrasadoras() {
   const res = await fetch("/api/engrasadoras");
   const data = await res.json();
@@ -49,30 +52,33 @@ async function cargarEngrasadoras() {
   const sinConexion = data.filter((e) => e.estado === "desconectada").length;
   const fs = data.filter((e) => e.estado === "fs").length;
 
-  new Chart(document.getElementById("chartGlobal"), {
-    type: "doughnut",
-    data: {
-      datasets: [
-        {
-          data: [funcionando, alerta, sinConexion, fs],
-          backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
-          borderWidth: 0,
-          hoverBorderWidth: 2,
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      cutout: "50%",
-      plugins: {
-        title: { display: false },
+  if (!chartGlobal) {
+    chartGlobal = new Chart(document.getElementById("chartGlobal"), {
+      type: "doughnut",
+      data: {
+        datasets: [
+          {
+            data: [funcionando, alerta, sinConexion, fs],
+            backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
+            borderWidth: 0,
+            hoverBorderWidth: 2,
+          },
+        ],
       },
-    },
-    animation: {
-      animateRotate: true,
-      animateScale: true,
-    },
-  });
+      options: {
+        responsive: true,
+        cutout: "50%",
+        plugins: { title: { display: false } },
+      },
+      animation: {
+        animateRotate: true,
+        animateScale: true,
+      },
+    });
+  } else {
+    chartGlobal.data.datasets[0].data = [funcionando, alerta, sinConexion, fs];
+    chartGlobal.update();
+  }
 
   // Actualizar resumen global
   document.getElementById(
@@ -164,8 +170,8 @@ function renderEstadoPorLinea(data) {
 
     // Render gráfico
     const canvas = document.getElementById(`chart${linea}`);
-    if (canvas) {
-      new Chart(canvas, {
+    if (!chartsPorLinea[linea]) {
+      chartsPorLinea[linea] = new Chart(canvas, {
         type: "doughnut",
         data: {
           datasets: [
@@ -180,12 +186,17 @@ function renderEstadoPorLinea(data) {
         options: {
           responsive: true,
           cutout: "50%",
-          plugins: {
-            title: { display: false },
-            legend: { display: false },
-          },
+          plugins: { title: { display: false }, legend: { display: false } },
         },
       });
+    } else {
+      chartsPorLinea[linea].data.datasets[0].data = [
+        funcionando,
+        alerta,
+        desconectada,
+        fs,
+      ];
+      chartsPorLinea[linea].update();
     }
 
     // Render detalle
@@ -209,3 +220,4 @@ function renderEstadoPorLinea(data) {
 }
 
 cargarEngrasadoras();
+setInterval(cargarEngrasadoras, 1000);

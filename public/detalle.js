@@ -721,6 +721,7 @@ setInterval(() => {
     .then((data) => {
       const filtradas = data.filter((e) => e.linea === linea);
       actualizarBarraPorcentual(filtradas);
+      cargarDetalle();
     })
     .catch((err) => console.error("Error actualizando barra:", err));
-}, 3000); // Cada 3 segundos
+}, 2000);
