@@ -329,7 +329,7 @@ hr {
   align-items: center;
   font-size: 14px;
   gap: 10px !important;
-  height: max-content;
+  height: min-content;
 }
 
 .reset:hover {
