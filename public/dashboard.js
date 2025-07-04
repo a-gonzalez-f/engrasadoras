@@ -8,6 +8,7 @@ async function cargarEngrasadoras() {
   const data = await res.json();
 
   datosEngrasadoras = data;
+  // generarAnalytics(data);
 
   filtrarTabla();
 
@@ -211,4 +212,4 @@ document.getElementById("selectLinea").addEventListener("change", filtrarTabla);
 
 renderTabla([]);
 cargarEngrasadoras();
-setInterval(cargarEngrasadoras, 1000);
+setInterval(cargarEngrasadoras, 5000);

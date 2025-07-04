@@ -28,6 +28,10 @@ app.get("/detalle", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/detalle.html"));
 });
 
+app.get("/configuracion", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/config.html"));
+});
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

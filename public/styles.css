@@ -413,3 +413,8 @@ tr:hover {
   width: 100%;
   padding-top: 3vh;
 }
+
+#analytics-global {
+  width: 80% !important;
+  height: auto !important;
+}
