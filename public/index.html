@@ -365,12 +365,33 @@
         </div>
       </section>
       <section class="buscador">
-        <h3>LISTADO GENERAL</h3>
-        <input
-          type="text"
-          id="buscador"
-          placeholder="Buscar por nombre, modelo o línea..."
-        />
+        <h3>Buscador</h3>
+        <div class="filters">
+          <div>
+            <label for="buscador">Nombre</label>
+            <input type="text" id="buscador" placeholder="Buscar por nombre" />
+          </div>
+          <div>
+            <label for="selectModelo">Modelo</label>
+            <select name="modelo" id="selectModelo" class="fselect">
+              <option value="todas">Todas</option>
+              <option value="1">Portec 1</option>
+              <option value="2">Portec 2</option>
+            </select>
+          </div>
+          <div>
+            <label for="selectLinea">Linea</label>
+            <select name="linea" id="selectLinea" class="fselect">
+              <option value="todas">Todas</option>
+              <option value="a">A</option>
+              <option value="b">B</option>
+              <option value="c">C</option>
+              <option value="d">D</option>
+              <option value="e">E</option>
+              <option value="h">H</option>
+            </select>
+          </div>
+        </div>
         <table>
           <thead id="theadbuscador">
             <tr>

@@ -358,10 +358,22 @@ tr:hover {
   background-color: var(--color-fondo-hover);
 }
 
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.filters > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.filters > div > label {
+  margin-bottom: 0.5rem;
+}
+
 .buscador {
   width: 100%;
-  /* scroll-snap-align: unset !important;
-  scroll-snap-align: none !important; */
   height: auto;
   padding: 2rem;
   min-height: 100vh;
@@ -370,15 +382,14 @@ tr:hover {
 .buscador > h3 {
   width: 100%;
   text-align: center;
-  font-size: 30px;
   font-weight: 600;
   letter-spacing: 2px;
-  padding: 2rem;
+  padding: 2rem 1rem 1rem 1rem;
 }
 
 #buscador {
   background-color: var(--color-texto);
-  width: 300px;
+  width: 250px;
   color: black;
   padding: 0.5rem 1rem;
   border-radius: 5px;
@@ -386,4 +397,12 @@ tr:hover {
 
 .buscador > table {
   margin: 1rem 0 5rem 0;
+}
+
+.fselect,
+.fselect > option {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-texto);
+  color: var(--color-fondo);
+  border-radius: 5px;
 }

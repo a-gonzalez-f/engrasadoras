@@ -9,26 +9,6 @@ async function cargarEngrasadoras() {
 
   datosEngrasadoras = data;
 
-  renderTabla([]);
-
-  document.getElementById("buscador").addEventListener("input", (e) => {
-    const texto = e.target.value.toLowerCase();
-
-    if (texto === "") {
-      renderTabla([]);
-      return;
-    }
-
-    const filtrados = datosEngrasadoras.filter(
-      (item) =>
-        item.nombre.toLowerCase().includes(texto) ||
-        item.modelo.toLowerCase().includes(texto) ||
-        item.linea.toLowerCase().includes(texto)
-    );
-
-    renderTabla(filtrados);
-  });
-
   // Calcular gráfico de estado global
   const total = data.length;
   const funcionando = data.filter((e) => e.estado === "funcionando").length;
@@ -203,5 +183,31 @@ function renderEstadoPorLinea(data) {
   });
 }
 
+// Global, fuera de cualquier función
+function filtrarTabla() {
+  const texto = document.getElementById("buscador").value.toLowerCase();
+  const modelo = document.getElementById("selectModelo").value;
+  const linea = document.getElementById("selectLinea").value;
+
+  const filtrados = datosEngrasadoras.filter((item) => {
+    const coincideNombre = item.nombre.toLowerCase() === texto;
+    const coincideModelo =
+      modelo === "todas" || item.modelo.toString() === modelo;
+    const coincideLinea =
+      linea === "todas" || item.linea.toLowerCase() === linea;
+
+    return coincideNombre && coincideModelo && coincideLinea;
+  });
+
+  renderTabla(filtrados);
+}
+
+document.getElementById("buscador").addEventListener("input", filtrarTabla);
+document
+  .getElementById("selectModelo")
+  .addEventListener("change", filtrarTabla);
+document.getElementById("selectLinea").addEventListener("change", filtrarTabla);
+
+renderTabla([]);
 cargarEngrasadoras();
 setInterval(cargarEngrasadoras, 1000);
