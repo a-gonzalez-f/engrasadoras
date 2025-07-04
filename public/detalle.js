@@ -2,6 +2,7 @@ const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
 
 let maquinaSeleccionada = null;
+let mostrarHistorialCompleto = false;
 
 if (!linea) {
   alert("Línea no especificada");
@@ -229,6 +230,20 @@ async function cargarDetalle(data) {
       `;
 
         document.getElementById("contenidoModal").innerHTML = contenido;
+
+        document
+          .getElementById("historialCompleto")
+          .addEventListener("click", () => {
+            mostrarHistorialCompleto = !mostrarHistorialCompleto;
+            listarHistorialEnModal(e.historial, mostrarHistorialCompleto);
+
+            const btn = document
+              .getElementById("historialCompleto")
+              .querySelector("p");
+            btn.innerText = mostrarHistorialCompleto
+              ? "Últimos 10"
+              : "Historial Completo";
+          });
 
         const botonApagar = document.getElementById("apagarEquipo");
         botonApagar.classList.remove("apagar", "encender");
@@ -605,14 +620,16 @@ function eliminarComentario(idMaquina, indexComentario) {
     .catch((err) => alert(err.message));
 }
 
-function listarHistorialEnModal(historial) {
+function listarHistorialEnModal(historial, completo = false) {
   const tbody = document.querySelector(".tabla-historial tbody");
 
   if (!tbody) return;
 
-  const ultimos = historial.slice(-10).reverse();
+  const items = completo
+    ? historial.slice().reverse()
+    : historial.slice(-10).reverse();
 
-  tbody.innerHTML = ultimos
+  tbody.innerHTML = items
     .map(
       (h) => `
       <tr class="historial-item ${h.estado}">
@@ -749,7 +766,10 @@ setInterval(() => {
 
           document.getElementById("estado").value = actualizada.estado;
 
-          listarHistorialEnModal(actualizada.historial);
+          listarHistorialEnModal(
+            actualizada.historial,
+            mostrarHistorialCompleto
+          );
 
           const btnApagar = document.getElementById("apagarEquipo");
           btnApagar.classList.remove("apagar", "encender");
