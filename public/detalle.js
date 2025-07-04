@@ -31,6 +31,7 @@ async function cargarDetalle(data) {
     filtradas.forEach((e) => {
       const card = document.createElement("div");
       card.classList.add("card-maquina");
+      card.dataset.id = e._id;
 
       const detalle = document.createElement("div");
       detalle.classList.add("detalle-hover");
@@ -735,35 +736,51 @@ function actualizarBarraPorcentual(maquinas) {
   document.getElementById("total_value").innerText = ` Total: ${total}`;
 }
 
+let ultimoListado = [];
+
 setInterval(() => {
   fetch("/api/engrasadoras")
     .then((res) => res.json())
     .then((data) => {
       const filtradas = data.filter((e) => e.linea === linea);
+
       actualizarBarraPorcentual(filtradas);
-      cargarDetalle(data);
+
+      // Si cambia la cantidad de máquinas o sus IDs, recargo todo
+      const idsActuales = filtradas.map((m) => m._id).join(",");
+      const idsUltimos = ultimoListado.map((m) => m._id).join(",");
+
+      if (idsActuales !== idsUltimos) {
+        cargarDetalle(data);
+        ultimoListado = filtradas;
+      } else {
+        // Si no cambió la estructura, actualizo solo los estados visuales
+        filtradas.forEach((m) => {
+          const card = document.querySelector(
+            `.card-maquina[data-id="${m._id}"]`
+          );
+          if (card) {
+            card.querySelector(".estado").innerHTML = formatearEstado(m.estado);
+          }
+        });
+      }
 
       if (maquinaSeleccionada) {
         const actualizada = data.find((m) => m._id === maquinaSeleccionada._id);
         if (actualizada) {
           maquinaSeleccionada = actualizada;
 
-          // Actualizar campos del modal
           document.getElementById("estadoMaquina").innerText = formatearEstado(
             actualizada.estado,
             "texto"
           ).toUpperCase();
           document.getElementById("estadoMaquina").className =
             actualizada.estado;
-
           document.getElementById("accionamientos").innerText =
             actualizada.cont_accionam;
-
           document.getElementById("tiempoDosif").innerText =
             actualizada.set_tiempodosif;
-
           document.getElementById("cantEjes").innerText = actualizada.set_ejes;
-
           document.getElementById("estado").value = actualizada.estado;
 
           listarHistorialEnModal(
@@ -773,12 +790,9 @@ setInterval(() => {
 
           const btnApagar = document.getElementById("apagarEquipo");
           btnApagar.classList.remove("apagar", "encender");
-
-          if (actualizada.estado === "fs") {
-            btnApagar.classList.add("encender");
-          } else if (actualizada.estado === "funcionando") {
+          if (actualizada.estado === "fs") btnApagar.classList.add("encender");
+          else if (actualizada.estado === "funcionando")
             btnApagar.classList.add("apagar");
-          }
         }
       }
     })

@@ -100,6 +100,11 @@ header {
   z-index: 1000;
 }
 
+header > h2 {
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
 .menu {
   position: absolute;
   top: 45px;
