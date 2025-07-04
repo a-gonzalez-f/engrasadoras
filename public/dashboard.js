@@ -9,6 +9,8 @@ async function cargarEngrasadoras() {
 
   datosEngrasadoras = data;
 
+  filtrarTabla();
+
   // Calcular gráfico de estado global
   const total = data.length;
   const funcionando = data.filter((e) => e.estado === "funcionando").length;
@@ -183,14 +185,13 @@ function renderEstadoPorLinea(data) {
   });
 }
 
-// Global, fuera de cualquier función
 function filtrarTabla() {
   const texto = document.getElementById("buscador").value.toLowerCase();
   const modelo = document.getElementById("selectModelo").value;
   const linea = document.getElementById("selectLinea").value;
 
   const filtrados = datosEngrasadoras.filter((item) => {
-    const coincideNombre = item.nombre.toLowerCase() === texto;
+    const coincideNombre = texto === "" || item.nombre.toLowerCase() === texto;
     const coincideModelo =
       modelo === "todas" || item.modelo.toString() === modelo;
     const coincideLinea =
