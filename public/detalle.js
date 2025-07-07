@@ -57,8 +57,25 @@ async function cargarDetalle(data) {
       });
 
       card.addEventListener("mousemove", (eMouse) => {
-        detalle.style.top = `${eMouse.clientY + 10}px`;
-        detalle.style.left = `${eMouse.clientX + 10}px`;
+        const detalleWidth = detalle.offsetWidth;
+        const detalleHeight = detalle.offsetHeight;
+
+        const espacioDerecha = window.innerWidth - eMouse.clientX;
+        const espacioAbajo = window.innerHeight - eMouse.clientY;
+
+        let top = eMouse.clientY + 10;
+        let left = eMouse.clientX + 10;
+
+        if (espacioAbajo < detalleHeight + 20) {
+          top = eMouse.clientY - detalleHeight - 10;
+        }
+
+        if (espacioDerecha < detalleWidth + 20) {
+          left = eMouse.clientX - detalleWidth - 10;
+        }
+
+        detalle.style.top = `${Math.max(top, 0)}px`;
+        detalle.style.left = `${Math.max(left, 0)}px`;
       });
 
       card.addEventListener("mouseleave", () => {
