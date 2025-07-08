@@ -1,0 +1,11 @@
+PAGINA
+PS C:\Users\A_Gon\OneDrive\Documentos\VSCODE\engrasadora> npm run dev
+
+simularGateway.js
+PS C:\Users\A_Gon\OneDrive\Documentos\VSCODE\engrasadora\src> node simularGateway.js
+
+wsClient.js
+PS C:\Users\A_Gon\OneDrive\Documentos\VSCODE\engrasadora\src> node wsClient.js
+
+motor.js
+PS C:\Users\A_Gon\OneDrive\Documentos\VSCODE\engrasadora\src> node motor.js
