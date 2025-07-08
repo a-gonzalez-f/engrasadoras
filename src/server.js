@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
 const http = require("http");
-const initWebSocket = require("./wsServer");
+// const initWebSocket = require("./wsServer");
 const engrasadorasRoutes = require("./routes/engrasadoras");
 
 dotenv.config();
@@ -37,14 +37,14 @@ mongoose
   .then(() => {
     console.log("Conectado a MongoDB");
 
-    initWebSocket(server);
+    // initWebSocket(server);
 
-    server.listen(process.env.PORT, () =>
-      console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
-    );
-
-    // server.listen(process.env.PORT, "0.0.0.0", () =>
-    //   console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
+    // server.listen(process.env.PORT, () =>
+    //   console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
     // );
+
+    server.listen(process.env.PORT, "0.0.0.0", () =>
+      console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
+    );
   })
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
