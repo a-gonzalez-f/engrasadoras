@@ -4,9 +4,9 @@ const readline = require("readline");
 
 // Lista de Gateways a los que te querés conectar
 const gateways = [
-  //   { nombre: "Agus", ip: "172.21.31.81", puerto: 80 },
+  { nombre: "Agus", ip: "172.21.31.43", puerto: 80 },
   { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
-  { nombre: "Dani", ip: "172.21.31.147", puerto: 80 },
+  // { nombre: "Dani", ip: "172.21.31.147", puerto: 80 },
 ];
 
 // Objeto para guardar las conexiones activas
