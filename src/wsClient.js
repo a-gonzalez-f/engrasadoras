@@ -1,24 +1,28 @@
-// wsClient.js
 const WebSocket = require("ws");
 const readline = require("readline");
 
-// Lista de Gateways a los que te querés conectar
 const gateways = [
   { nombre: "Agus", ip: "172.21.31.43", puerto: 80 },
   { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
   // { nombre: "Dani", ip: "172.21.31.147", puerto: 80 },
 ];
 
-// Objeto para guardar las conexiones activas
 const conexiones = {};
+const reconectando = {};
 
-gateways.forEach((gateway) => {
-  const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
+// Función que conecta a un Gateway
+function conectarGateway(gateway) {
+  if (reconectando[gateway.nombre]) return; // Evita múltiples reconexiones paralelas
+
+  const url = `ws://${gateway.ip}:${gateway.puerto}/ws`;
+  const ws = new WebSocket(url);
+
+  console.log(`Conectando a ${gateway.nombre}...`);
 
   ws.on("open", () => {
     console.log(`${gateway.nombre} conectado`);
-
     conexiones[gateway.nombre] = ws;
+    reconectando[gateway.nombre] = false;
   });
 
   ws.on("message", (data) => {
@@ -28,14 +32,61 @@ gateways.forEach((gateway) => {
   ws.on("close", () => {
     console.log(`Conexión cerrada con ${gateway.nombre}`);
     delete conexiones[gateway.nombre];
+    intentarReconectar(gateway);
   });
 
   ws.on("error", (err) => {
     console.error(`Error en ${gateway.nombre}:`, err.message);
   });
-});
+}
 
-// Interfaz para enviar mensajes
+function intentarReconectar(gateway, intento = 1) {
+  reconectando[gateway.nombre] = true;
+
+  const delay = Math.min(10000, intento * 5000);
+  console.log(
+    `Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
+  );
+
+  setTimeout(() => {
+    const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
+
+    console.log(
+      `Reintentando conexión a ${gateway.nombre} (intento ${intento})`
+    );
+
+    ws.on("open", () => {
+      console.log(`${gateway.nombre} reconectado`);
+      conexiones[gateway.nombre] = ws;
+      reconectando[gateway.nombre] = false;
+
+      ws.on("message", (data) => {
+        console.log(`Mensaje recibido de ${gateway.nombre}:`, data.toString());
+      });
+
+      ws.on("close", () => {
+        console.log(`Conexión cerrada con ${gateway.nombre}`);
+        delete conexiones[gateway.nombre];
+        intentarReconectar(gateway, 1); // Reinicia intento
+      });
+
+      ws.on("error", (err) => {
+        console.error(`Error en ${gateway.nombre}:`, err.message);
+        // No hay que hacer nada, ya está escuchando el close
+      });
+    });
+
+    ws.on("error", (err) => {
+      console.error(`Error al reconectar a ${gateway.nombre}:`, err.message);
+      intentarReconectar(gateway, intento + 1); // sigue intentando
+    });
+  }, delay);
+}
+
+// Inicializar todas las conexiones
+gateways.forEach((gateway) => conectarGateway(gateway));
+
+// Interfaz de consola
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
