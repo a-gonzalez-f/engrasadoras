@@ -27,6 +27,7 @@ const comentariosschema = new mongoose.Schema({
 });
 
 const EngrasadoraSchema = new mongoose.Schema({
+  id: { type: Number },
   date: { type: Date },
   linea: { type: String },
   nombre: { type: String },
