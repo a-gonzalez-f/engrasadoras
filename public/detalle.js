@@ -92,7 +92,7 @@ async function cargarDetalle(data) {
                 <th>Tipo</th>
                 <th>Fecha</th>
                 <th>Estado</th>
-                <th>Tiempo Dosif.</th>
+                <th>Tiempo Dosif. (s)</th>
                 <th>Cant. Ejes</th>
                 <th>Corriente</th>
                 <th>Flujo</th>
@@ -164,7 +164,7 @@ async function cargarDetalle(data) {
           <div class="subCont">
             <h6>SETEO</h6>
             <div>
-              <p>Tiempo Dosif.:</p>
+              <p>Tiempo Dosif. (s):</p>
               <div>
                 <p id="tiempoDosif">${e.set_tiempodosif}</p>
                 <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
