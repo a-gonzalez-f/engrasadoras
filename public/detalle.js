@@ -877,6 +877,8 @@ setInterval(() => {
               document.getElementById("lora").innerText =
                 actualizada.lora_signal;
 
+              maquinaSeleccionada.historial = actualizada.historial;
+
               listarHistorialEnModal(
                 actualizada.historial,
                 mostrarHistorialCompleto

@@ -18,7 +18,9 @@
 }
 
 .barra {
-  transition: all 1s ease;
+  border-radius: 3px;
+  margin: 0 2px;
+  transition: all 0.7s ease;
   min-height: 10px;
   box-shadow: 0 5px 5px rgba(0, 0, 0, 0.5);
 }
