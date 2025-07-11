@@ -233,6 +233,15 @@ const resetHistorial = async (req, res) => {
 
 const crearEngrasadora = async (req, res) => {
   try {
+    const { id } = req.body;
+
+    const engrasadoraExistente = await Engrasadora.findOne({ id });
+    if (engrasadoraExistente) {
+      return res
+        .status(400)
+        .json({ error: "El ID ya existe en la base de datos" });
+    }
+
     const data = req.body;
     const nueva = new Engrasadora(data);
     const saved = await nueva.save();
@@ -240,6 +249,20 @@ const crearEngrasadora = async (req, res) => {
   } catch (error) {
     console.error("Error al crear engrasadora:", error);
     res.status(500).json({ error: "Error al crear engrasadora" });
+  }
+};
+
+const verificarId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const engrasadora = await Engrasadora.findOne({ id });
+    if (!engrasadora) {
+      return res.status(404).json({ error: "ID no encontrado" });
+    }
+    res.status(200).json({ message: "ID ya existe" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al verificar el ID" });
   }
 };
 
@@ -252,4 +275,5 @@ module.exports = {
   resetHistorial,
   switchOnOff,
   crearEngrasadora,
+  verificarId,
 };

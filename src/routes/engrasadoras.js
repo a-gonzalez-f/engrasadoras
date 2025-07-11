@@ -11,6 +11,7 @@ const {
   resetHistorial,
   switchOnOff,
   crearEngrasadora,
+  verificarId,
 } = require("../controllers/engrasadorasController");
 
 router.get("/", getTodas);
@@ -21,5 +22,6 @@ router.put("/:id/resetAccionamientos", resetAccionamientos);
 router.put("/:id/resetHistorial", resetHistorial);
 router.put("/:id/switchOnOff", switchOnOff);
 router.post("/", crearEngrasadora);
+router.get("/:id", verificarId);
 
 module.exports = router;

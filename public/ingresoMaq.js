@@ -4,6 +4,14 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   const formData = new FormData(form);
+  const id = formData.get("id");
+
+  const idExistente = await verificarIdExistente(id);
+  if (idExistente) {
+    alert("El ID ya está en uso, por favor elige otro.");
+    return;
+  }
+
   const cantidadIngresos = Number(formData.get("cantidadIngresos")) || 1;
   formData.delete("cantidadIngresos");
   const body = {};
@@ -48,3 +56,21 @@ form.addEventListener("submit", async (e) => {
     alert("Error de conexión con el servidor");
   }
 });
+
+async function verificarIdExistente(id) {
+  try {
+    const response = await fetch(`/api/engrasadoras/${id}`);
+    if (response.status === 404) {
+      return false;
+    } else if (response.status === 200) {
+      return true;
+    } else {
+      alert("Error al verificar el ID");
+      return false;
+    }
+  } catch (err) {
+    console.error("Error en la verificación de ID:", err);
+    alert("Error al conectar con el servidor para verificar el ID");
+    return false;
+  }
+}
