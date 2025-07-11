@@ -37,8 +37,8 @@ async function cargarDetalle(data) {
       detalle.classList.add("detalle-hover");
       detalle.innerHTML = `
         <strong>${e.nombre.toUpperCase()}</strong><br>
+        ${e.id ? e.id : "Sin ID"}<br>
         ${e.modelo.toUpperCase()}<br>
-        Estado: ${formatearEstado(e.estado, "texto")}<br>
         Corriente: ${e.sens_corriente} A<br>
         Flujo: ${e.sens_flujo ? "Sí" : "No"}<br>
         Power: ${e.sens_power ? "Sí" : "No"}<br>
@@ -233,7 +233,7 @@ async function cargarDetalle(data) {
             <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
             <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
             <div><p>Señal Lora:</p><p>${
-              e.lora_signal ? "Sí" : "No"
+              e.lora_signal ? e.lora_signal : "-"
             }</p></div>            
           </div>
           <div class="subCont contComments">
