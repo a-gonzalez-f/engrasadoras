@@ -12,6 +12,7 @@ form.addEventListener("submit", async (e) => {
       body[key] = value === "true";
     } else if (
       [
+        "id",
         "set_tiempodosif",
         "set_ejes",
         "sens_corriente",

@@ -37,8 +37,8 @@
     <main>
       <form id="formEngrasadora" class="formulario">
         <label
-          >Fecha:
-          <input type="datetime-local" name="date" required />
+          >ID:
+          <input type="number" name="id" min="0" max="9999999999" required />
         </label>
 
         <label
@@ -71,7 +71,7 @@
             name="set_tiempodosif"
             step="0.1"
             min="0.2"
-            max="0.8"
+            max="2"
             required
           />
         </label>
@@ -91,13 +91,13 @@
         </label>
 
         <label
-          >Corriente:
+          >Corriente (mA):
           <input
             type="number"
             name="sens_corriente"
-            step="0.1"
+            step="10"
             min="0"
-            max="999"
+            max="9999"
             required
           />
         </label>

@@ -25,7 +25,7 @@ const comentariosschema = new mongoose.Schema({
 });
 
 const EngrasadoraSchema = new mongoose.Schema({
-  date: Date,
+  date: { type: Date, default: Date.now },
 
   id: Number,
   linea: String,
@@ -38,8 +38,8 @@ const EngrasadoraSchema = new mongoose.Schema({
   sens_corriente: Number,
   sens_flujo: Boolean,
   sens_power: Boolean,
-  lora_signal: Number,
-  falla: Boolean,
+  lora_signal: { type: Number, default: 0 },
+  falla: { type: Boolean, default: false },
 
   cont_accionam: Number,
 
