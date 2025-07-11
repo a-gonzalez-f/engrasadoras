@@ -172,8 +172,8 @@ async function cargarDetalle(data) {
         <span id="estadoMaquina" class="${e.estado}">${formatearEstado(
           e.estado,
           "texto"
-        ).toUpperCase()}</span>
-
+        ).toUpperCase()}</span> | 
+        <span id="idMaquina">${e.id ? e.id : "Sin ID"}</span>
         </h5>
 
         <div class="cont">
@@ -232,6 +232,9 @@ async function cargarDetalle(data) {
             <div><p>Corriente:</p><p>${e.sens_corriente} mA</p></div>
             <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
             <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
+            <div><p>Señal Lora:</p><p>${
+              e.lora_signal ? "Sí" : "No"
+            }</p></div>            
           </div>
           <div class="subCont contComments">
             <h6>COMENTARIOS</h6>
