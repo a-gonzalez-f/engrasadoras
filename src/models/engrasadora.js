@@ -13,11 +13,9 @@ const historialSchema = new mongoose.Schema({
   sens_flujo: Boolean,
   sens_power: Boolean,
   cont_accionam: Number,
-  nombre: String,
-  modelo: String,
-  linea: String,
-  date: Date,
   user: String,
+  lora_signal: Number,
+  falla: Boolean,
 });
 
 const comentariosschema = new mongoose.Schema({
@@ -27,22 +25,25 @@ const comentariosschema = new mongoose.Schema({
 });
 
 const EngrasadoraSchema = new mongoose.Schema({
-  id: { type: Number },
-  date: { type: Date },
-  linea: { type: String },
-  nombre: { type: String },
-  modelo: { type: String },
+  date: Date,
 
-  set_tiempodosif: { type: Number },
-  set_ejes: { type: Number },
+  id: Number,
+  linea: String,
+  nombre: String,
+  modelo: String,
 
-  sens_corriente: { type: Number },
-  sens_flujo: { type: Boolean },
-  sens_power: { type: Boolean },
+  set_tiempodosif: Number,
+  set_ejes: Number,
 
-  cont_accionam: { type: Number },
+  sens_corriente: Number,
+  sens_flujo: Boolean,
+  sens_power: Boolean,
+  lora_signal: Number,
+  falla: Boolean,
 
-  estado: { type: String },
+  cont_accionam: Number,
+
+  estado: String,
 
   historial: [historialSchema],
   comentarios: [comentariosschema],

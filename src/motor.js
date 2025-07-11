@@ -15,8 +15,8 @@ conectarDB()
   });
 
 const gateways = [
-  { nombre: "Agus", ip: "172.21.31.43", puerto: 80 },
-  { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
+  { nombre: "Agus", ip: "172.21.31.64", puerto: 80 },
+  // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
 ];
 
 const conexiones = {};
@@ -109,6 +109,7 @@ function iniciarMotor() {
           sens_power: on_off,
           cont_accionam: total_accionam,
           estado: falla ? "alerta" : "funcionando",
+          lora_signal: lora_signal,
         },
         { upsert: true, new: true }
       );

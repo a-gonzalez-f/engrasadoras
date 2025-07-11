@@ -92,11 +92,12 @@ async function cargarDetalle(data) {
                 <th>Tipo</th>
                 <th>Fecha</th>
                 <th>Estado</th>
-                <th>Tiempo Dosif. (s)</th>
+                <th>Tiempo Dosif.</th>
                 <th>Cant. Ejes</th>
                 <th>Corriente</th>
                 <th>Flujo</th>
                 <th>Power</th>
+                <th>Señal Lora</th>
                 <th>Accionamientos</th>
               </tr>
             </thead>
@@ -110,16 +111,24 @@ async function cargarDetalle(data) {
             .map(
               (h) => `
             <tr class="historial-item ${h.estado}">
-              <td>${h.nro_evento}</td>
-              <td>${h.tipo_evento}</td>
-              <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
+              <td>${h.nro_evento || "-"}</td>
+              <td>${h.tipo_evento || "-"}</td>
+              <td>${new Date(h.fecha).toLocaleString("es-AR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}</td>
               <td>${formatearEstado(h.estado, "texto")}</td>
-              <td>${h.set_tiempodosif}</td>
+              <td>${h.set_tiempodosif} s</td>
               <td>${h.set_ejes}</td>
-              <td>${h.sens_corriente} A</td>
+              <td>${h.sens_corriente} mA</td>
               <td>${h.sens_flujo ? "Sí" : "No"}</td>
               <td>${h.sens_power ? "Sí" : "No"}</td>
-              <td>${h.cont_accionam}</td>
+              <td>${h.lora_signal || "-"}</td>
+              <td>${h.cont_accionam || "-"}</td>
             </tr>
             `
             )
@@ -127,7 +136,7 @@ async function cargarDetalle(data) {
         } else {
           historialHtml += `
             <tr>
-              <td colspan="10" style="text-align:center">No hay historial registrado</td>
+              <td colspan="11" style="text-align:center">No hay historial registrado</td>
             </tr>
           `;
         }
@@ -142,7 +151,14 @@ async function cargarDetalle(data) {
             <div class="dataComment">
               <span>${ultimo.user || "Anónimo"}</span> - ${new Date(
             ultimo.date
-          ).toLocaleString("es-AR")}<br>
+          ).toLocaleString("es-AR", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
+          })}<br>
             </div>
               ${ultimo.comentario}    
           </div>      
@@ -202,13 +218,18 @@ async function cargarDetalle(data) {
           </div>
           <div class="subCont">
             <h6>ULTIMO SENSADO</h6>
-            <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString(
-              "es-AR"
-            )}</p></div>              
+            <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString("es-AR", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: false,
+            })}</p></div>              
             <div><p>Accionamientos:</p><p id="accionamientos">${
               e.cont_accionam
             }</p></div>
-            <div><p>Corriente:</p><p>${e.sens_corriente} A</p></div>
+            <div><p>Corriente:</p><p>${e.sens_corriente} mA</p></div>
             <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
             <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
           </div>
@@ -396,7 +417,14 @@ async function cargarDetalle(data) {
                 <div class="dataComment">
                   <span>${ultComentario.user || "Anónimo"}</span> - ${new Date(
                 ultComentario.date
-              ).toLocaleString("es-AR")}<br>
+              ).toLocaleString("es-AR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                hour12: false,
+              })}<br>
                 </div>
                 ${ultComentario.comentario}    
               </div>
@@ -580,7 +608,14 @@ function listarComentarios(maquina) {
           <div class="dataComment">
             <strong>${c.user || "Anónimo"}</strong> - ${new Date(
           c.date
-        ).toLocaleString("es-AR")}
+        ).toLocaleString("es-AR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })}
           </div>
           <div>${c.comentario}</div>
           <button onclick="eliminarComentario('${
@@ -623,7 +658,14 @@ function eliminarComentario(idMaquina, indexComentario) {
         maquinaSeleccionada.comentarios[
           maquinaSeleccionada.comentarios.length - 1
         ].date
-      ).toLocaleString("es-AR")}<br>
+      ).toLocaleString("es-AR", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      })}<br>
     </div>
     ${
       maquinaSeleccionada.comentarios[
@@ -653,14 +695,22 @@ function listarHistorialEnModal(historial, completo = false) {
       <tr class="historial-item ${h.estado}">
         <td>${h.nro_evento || "-"}</td>
         <td>${h.tipo_evento || "-"}</td>
-        <td>${new Date(h.fecha).toLocaleString("es-AR")}</td>
+        <td>${new Date(h.fecha).toLocaleString("es-AR", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        })}</td>
         <td>${formatearEstado(h.estado, "texto")}</td>
-        <td>${h.set_tiempodosif}</td>
+        <td>${h.set_tiempodosif} s</td>
         <td>${h.set_ejes}</td>
-        <td>${h.sens_corriente} A</td>
+        <td>${h.sens_corriente} mA</td>
         <td>${h.sens_flujo ? "Sí" : "No"}</td>
         <td>${h.sens_power ? "Sí" : "No"}</td>
-        <td>${h.cont_accionam}</td>
+        <td>${h.lora_signal || "-"}</td>
+        <td>${h.cont_accionam || "-"}</td>
       </tr>
     `
     )
