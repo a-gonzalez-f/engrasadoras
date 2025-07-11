@@ -685,6 +685,15 @@ function listarHistorialEnModal(historial, completo = false) {
 
   if (!tbody) return;
 
+  if (historial.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="11" style="text-align:center">No hay historial registrado</td>
+      </tr>
+    `;
+    return;
+  }
+
   const items = completo
     ? historial.slice().reverse()
     : historial.slice(-10).reverse();
