@@ -266,6 +266,17 @@ const verificarId = async (req, res) => {
   }
 };
 
+const getUnaEngrasadora = async (req, res) => {
+  try {
+    const engrasadora = await Engrasadora.findById(req.params.id);
+    if (!engrasadora) return res.status(404).json({ error: "No encontrada" });
+    res.json(engrasadora);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error al obtener la engrasadora" });
+  }
+};
+
 module.exports = {
   getTodas,
   actualizarSeteo,
@@ -276,4 +287,5 @@ module.exports = {
   switchOnOff,
   crearEngrasadora,
   verificarId,
+  getUnaEngrasadora,
 };

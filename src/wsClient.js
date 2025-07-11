@@ -10,9 +10,8 @@ const gateways = [
 const conexiones = {};
 const reconectando = {};
 
-// Función que conecta a un Gateway
 function conectarGateway(gateway) {
-  if (reconectando[gateway.nombre]) return; // Evita múltiples reconexiones paralelas
+  if (reconectando[gateway.nombre]) return;
 
   const url = `ws://${gateway.ip}:${gateway.puerto}/ws`;
   const ws = new WebSocket(url);
@@ -67,18 +66,17 @@ function intentarReconectar(gateway, intento = 1) {
       ws.on("close", () => {
         console.log(`Conexión cerrada con ${gateway.nombre}`);
         delete conexiones[gateway.nombre];
-        intentarReconectar(gateway, 1); // Reinicia intento
+        intentarReconectar(gateway, 1);
       });
 
       ws.on("error", (err) => {
         console.error(`Error en ${gateway.nombre}:`, err.message);
-        // No hay que hacer nada, ya está escuchando el close
       });
     });
 
     ws.on("error", (err) => {
       console.error(`Error al reconectar a ${gateway.nombre}:`, err.message);
-      intentarReconectar(gateway, intento + 1); // sigue intentando
+      intentarReconectar(gateway, intento + 1);
     });
   }, delay);
 }

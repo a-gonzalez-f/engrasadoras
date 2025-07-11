@@ -97,24 +97,45 @@ function iniciarMotor() {
         falla,
       });
 
-      await Engrasadora.findOneAndUpdate(
-        { id },
-        {
-          date: new Date(),
-          modelo,
-          set_tiempodosif: tiempo_dosif,
-          set_ejes: cant_ejes,
-          sens_corriente: corriente,
-          sens_flujo: flujo,
-          sens_power: on_off,
-          cont_accionam: total_accionam,
-          estado: falla ? "alerta" : "funcionando",
-          lora_signal: lora_signal,
-        },
-        { upsert: true, new: true }
-      );
+      const maquina = await Engrasadora.findOne({ id });
 
-      console.log(`→ Engrasadora ${id} actualizada en MongoDB`);
+      if (!maquina) {
+        console.warn(`Engrasadora con ID ${id} no encontrada`);
+        return;
+      }
+
+      // Actualizar datos actuales
+      maquina.date = new Date();
+      maquina.modelo = modelo;
+      maquina.set_tiempodosif = tiempo_dosif;
+      maquina.set_ejes = cant_ejes;
+      maquina.sens_corriente = corriente;
+      maquina.sens_flujo = flujo;
+      maquina.sens_power = on_off;
+      maquina.cont_accionam = total_accionam;
+      maquina.estado = falla ? "alerta" : "funcionando";
+      maquina.lora_signal = lora_signal;
+
+      // Crear evento de historial
+      maquina.historial.push({
+        nro_evento: maquina.historial.length + 1,
+        tipo_evento: "sensado",
+        fecha: new Date(),
+        estado: maquina.estado,
+        set_tiempodosif: tiempo_dosif,
+        set_ejes: cant_ejes,
+        sens_corriente: corriente,
+        sens_flujo: flujo,
+        sens_power: on_off,
+        cont_accionam: total_accionam,
+        lora_signal: lora_signal.toString(),
+        user: "gateway_" + nombre,
+      });
+
+      // Guardar cambios
+      await maquina.save();
+
+      console.log(`→ Engrasadora ${id} actualizada con evento de sensado`);
     } catch (err) {
       console.error("Error al decodificar o guardar:", err.message);
     }

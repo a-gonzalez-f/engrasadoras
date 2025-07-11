@@ -229,10 +229,16 @@ async function cargarDetalle(data) {
             <div><p>Accionamientos:</p><p id="accionamientos">${
               e.cont_accionam
             }</p></div>
-            <div><p>Corriente:</p><p>${e.sens_corriente} mA</p></div>
-            <div><p>Flujo:</p><p>${e.sens_flujo ? "Sí" : "No"}</p></div>
-            <div><p>Power:</p><p>${e.sens_power ? "Sí" : "No"}</p></div>
-            <div><p>Señal Lora:</p><p>${
+            <div><p>Corriente:</p><p id="corriente">${
+              e.sens_corriente
+            } mA</p></div>
+            <div><p>Flujo:</p><p id="flujo">${
+              e.sens_flujo ? "Sí" : "No"
+            }</p></div>
+            <div><p>Power:</p><p id="power">${
+              e.sens_power ? "Sí" : "No"
+            }</p></div>
+            <div><p>Señal Lora:</p><p id="lora">${
               e.lora_signal ? e.lora_signal : "-"
             }</p></div>            
           </div>
@@ -845,34 +851,46 @@ setInterval(() => {
       }
 
       if (maquinaSeleccionada) {
-        const actualizada = data.find((m) => m._id === maquinaSeleccionada._id);
-        if (actualizada) {
-          maquinaSeleccionada = actualizada;
+        fetch(`/api/engrasadoras/full/${maquinaSeleccionada._id}`)
+          .then((res) => res.json())
+          .then((actualizada) => {
+            if (actualizada) {
+              maquinaSeleccionada = actualizada;
 
-          document.getElementById("estadoMaquina").innerText = formatearEstado(
-            actualizada.estado,
-            "texto"
-          ).toUpperCase();
-          document.getElementById("estadoMaquina").className =
-            actualizada.estado;
-          document.getElementById("accionamientos").innerText =
-            actualizada.cont_accionam;
-          document.getElementById("tiempoDosif").innerText =
-            actualizada.set_tiempodosif;
-          document.getElementById("cantEjes").innerText = actualizada.set_ejes;
-          document.getElementById("estado").value = actualizada.estado;
+              document.getElementById("estadoMaquina").innerText =
+                formatearEstado(actualizada.estado, "texto").toUpperCase();
+              document.getElementById("estadoMaquina").className =
+                actualizada.estado;
+              document.getElementById("accionamientos").innerText =
+                actualizada.cont_accionam;
+              document.getElementById("tiempoDosif").innerText =
+                actualizada.set_tiempodosif;
+              document.getElementById("cantEjes").innerText =
+                actualizada.set_ejes;
+              document.getElementById("estado").value = actualizada.estado;
+              document.getElementById("corriente").innerText =
+                actualizada.sens_corriente + " mA";
+              document.getElementById("flujo").innerText =
+                actualizada.sens_flujo ? "Si" : "No";
+              document.getElementById("power").innerText =
+                actualizada.sens_power ? "Si" : "No";
+              document.getElementById("lora").innerText =
+                actualizada.lora_signal;
 
-          listarHistorialEnModal(
-            actualizada.historial,
-            mostrarHistorialCompleto
-          );
+              listarHistorialEnModal(
+                actualizada.historial,
+                mostrarHistorialCompleto
+              );
 
-          const btnApagar = document.getElementById("apagarEquipo");
-          btnApagar.classList.remove("apagar", "encender");
-          if (actualizada.estado === "fs") btnApagar.classList.add("encender");
-          else if (actualizada.estado === "funcionando")
-            btnApagar.classList.add("apagar");
-        }
+              const btnApagar = document.getElementById("apagarEquipo");
+              btnApagar.classList.remove("apagar", "encender");
+              if (actualizada.estado === "fs")
+                btnApagar.classList.add("encender");
+              else if (actualizada.estado === "funcionando")
+                btnApagar.classList.add("apagar");
+            }
+          })
+          .catch((err) => console.error("Error al actualizar modal:", err));
       }
     })
     .catch((err) => console.error("Error actualizando:", err));
