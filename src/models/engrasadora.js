@@ -9,6 +9,7 @@ const historialSchema = new mongoose.Schema({
   estado: String,
   set_tiempodosif: Number,
   set_ejes: Number,
+  on_off: Boolean,
   sens_corriente: Number,
   sens_flujo: Boolean,
   sens_power: Boolean,
@@ -35,6 +36,7 @@ const EngrasadoraSchema = new mongoose.Schema(
 
     set_tiempodosif: { type: Number, default: 0.2, min: 0.2, max: 2 },
     set_ejes: { type: Number, default: 1, min: 1, max: 128 },
+    on_off: { type: Boolean },
 
     sens_corriente: { type: Number, default: 0 },
     sens_flujo: Boolean,

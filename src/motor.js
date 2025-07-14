@@ -15,7 +15,8 @@ conectarDB()
   });
 
 const gateways = [
-  { nombre: "Agus", ip: "172.21.31.64", puerto: 80 },
+  { nombre: "Agus", ip: "172.27.66.205", puerto: 80 },
+  { nombre: "Dani", ip: "172.21.31.199", puerto: 80 },
   // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
 ];
 
@@ -64,7 +65,7 @@ function iniciarMotor() {
     const msg = data.toString().trim();
     console.log(`Mensaje recibido crudo de ${nombre}:`, msg);
 
-    if (msg.length < 25) {
+    if (msg.length < 26) {
       console.warn("Mensaje demasiado corto o malformado");
       return;
     }
@@ -77,10 +78,11 @@ function iniciarMotor() {
       const tiempo_dosif = parseInt(msg.slice(8, 10)) / 10;
       const total_accionam = parseInt(msg.slice(10, 16));
       const on_off = msg[16] === "1";
-      const corriente = parseFloat(msg.slice(17, 20));
-      const flujo = msg[20] === "1";
-      const lora_signal = parseInt(msg.slice(21, 24));
-      const falla = msg[24] === "1";
+      const power = msg[17] === "1";
+      const corriente = parseFloat(msg.slice(18, 21));
+      const flujo = msg[21] === "1";
+      const lora_signal = parseInt(msg.slice(22, 25));
+      const falla = msg[26] === "1";
 
       console.log("→ Datos decodificados:");
       console.log({
@@ -91,6 +93,7 @@ function iniciarMotor() {
         tiempo_dosif,
         total_accionam,
         on_off,
+        power,
         corriente,
         flujo,
         lora_signal,
@@ -111,7 +114,8 @@ function iniciarMotor() {
       maquina.set_ejes = cant_ejes;
       maquina.sens_corriente = corriente;
       maquina.sens_flujo = flujo;
-      maquina.sens_power = on_off;
+      maquina.on_off = on_off;
+      maquina.sens_power = power;
       maquina.cont_accionam = total_accionam;
       maquina.estado = falla ? "alerta" : "funcionando";
       maquina.lora_signal = lora_signal;
@@ -119,14 +123,15 @@ function iniciarMotor() {
       // Crear evento de historial
       maquina.historial.push({
         nro_evento: maquina.historial.length + 1,
-        tipo_evento: "sensado",
+        tipo_evento: "Sensado",
         fecha: new Date(),
         estado: maquina.estado,
         set_tiempodosif: tiempo_dosif,
         set_ejes: cant_ejes,
         sens_corriente: corriente,
         sens_flujo: flujo,
-        sens_power: on_off,
+        on_off: on_off,
+        sens_power: power,
         cont_accionam: total_accionam,
         lora_signal: lora_signal.toString(),
         user: "gateway_" + nombre,
