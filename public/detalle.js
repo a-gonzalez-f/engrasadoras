@@ -98,6 +98,7 @@ async function cargarDetalle(data) {
                 <th>Flujo</th>
                 <th>Power</th>
                 <th>Señal Lora</th>
+                <th>On/Off</th>
                 <th>Accionamientos</th>
               </tr>
             </thead>
@@ -128,6 +129,7 @@ async function cargarDetalle(data) {
               <td>${h.sens_flujo ? "Sí" : "No"}</td>
               <td>${h.sens_power ? "Sí" : "No"}</td>
               <td>${h.lora_signal || "-"}</td>
+              <td>${h.on_off ? "ON" : "OFF"}</td>
               <td>${h.cont_accionam || "-"}</td>
             </tr>
             `
@@ -756,6 +758,7 @@ function listarHistorialEnModal(historial, completo = false) {
         <td>${h.sens_flujo ? "Sí" : "No"}</td>
         <td>${h.sens_power ? "Sí" : "No"}</td>
         <td>${h.lora_signal || "-"}</td>
+        <td>${h.on_off ? "ON" : "OFF"}</td>
         <td>${h.cont_accionam || "-"}</td>
       </tr>
     `
