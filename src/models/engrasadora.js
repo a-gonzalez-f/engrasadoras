@@ -33,6 +33,7 @@ const EngrasadoraSchema = new mongoose.Schema(
     linea: String,
     nombre: String,
     modelo: String,
+    ubicacion: String,
 
     set_tiempodosif: { type: Number, default: 0.2, min: 0.2, max: 2 },
     set_ejes: { type: Number, default: 1, min: 1, max: 128 },

@@ -36,9 +36,18 @@
     </header>
     <main>
       <form id="formEngrasadora" class="formulario">
+        <h3>Información</h3>
+
         <label
           >ID:
-          <input type="number" name="id" min="0" max="999" required />
+          <input
+            type="number"
+            name="id"
+            min="0"
+            max="999"
+            maxlength="3"
+            required
+          />
         </label>
 
         <label
@@ -61,8 +70,15 @@
 
         <label
           >Modelo:
-          <input type="text" name="modelo" required />
+          <input type="text" name="modelo" maxlength="25" required />
         </label>
+
+        <label
+          >Ubicación:
+          <input type="text" name="ubicacion" maxlength="40" required />
+        </label>
+
+        <h3>Seteo</h3>
 
         <label
           >Tiempo Dosif. (s):
@@ -91,62 +107,14 @@
         </label>
 
         <label
-          >Corriente (mA):
-          <input
-            type="number"
-            name="sens_corriente"
-            step="10"
-            min="0"
-            max="9999"
-            required
-          />
-        </label>
-
-        <label
-          >Flujo:
-          <select name="sens_flujo">
-            <option value="true">Sí</option>
-            <option value="false">No</option>
-          </select>
-        </label>
-
-        <label
-          >Power:
-          <select name="sens_power">
-            <option value="true">Sí</option>
-            <option value="false">No</option>
-          </select>
-        </label>
-
-        <label
-          >Accionamientos:
-          <input
-            type="number"
-            name="cont_accionam"
-            min="0"
-            max="9999"
-            required
-          />
-        </label>
-
-        <label
           >Estado:
           <select name="estado" required>
             <option value="">-</option>
             <option value="funcionando">Funcionando</option>
             <option value="alerta">Alerta</option>
             <option value="desconectada">Desconectada</option>
+            <option value="fs">Fuera de Servicio</option>
           </select>
-        </label>
-        <label>
-          Repetir ingreso:
-          <input
-            type="number"
-            name="cantidadIngresos"
-            id="cantidadIngresos"
-            value="1"
-            min="1"
-          />
         </label>
 
         <div class="btn">
