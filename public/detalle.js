@@ -202,6 +202,13 @@ async function cargarDetalle(data) {
               <option value="fs">Fuera de Servicio</option>
             </select>
             </div>
+            <div>
+            <p>Ubicación:</p>            
+              <div>
+              <p id="ubicacion">${e.ubicacion}</p>
+              <span class="material-symbols-outlined icono-editar" id="editarUbi">edit</span>
+              </div>
+            </div>
             <div>  
               <div id="resetAccionam" class="reset">
                 <p>Reset Accionamientos</p>
@@ -386,6 +393,27 @@ async function cargarDetalle(data) {
                 e.historial = data.historial;
                 document.getElementById("cantEjes").innerText = data.set_ejes;
                 listarHistorialEnModal(e.historial);
+              })
+              .catch((err) => alert(err.message));
+          }
+        });
+
+        document.getElementById("editarUbi").addEventListener("click", () => {
+          const nuevoValor = prompt("Ingrese la nueva ubicación", e.ubicacion);
+
+          if (nuevoValor !== null) {
+            fetch(`/api/engrasadoras/${e._id}`, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ubicacion: nuevoValor }),
+            })
+              .then((res) => {
+                if (!res.ok) throw new Error("Error al actualizar");
+                return res.json();
+              })
+              .then((data) => {
+                e.ubicacion = data.ubicacion;
+                document.getElementById("ubicacion").innerText = data.ubicacion;
               })
               .catch((err) => alert(err.message));
           }

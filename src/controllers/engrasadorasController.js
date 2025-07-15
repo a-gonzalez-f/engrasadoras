@@ -14,10 +14,17 @@ const getTodas = async (req, res) => {
 
 const actualizarSeteo = async (req, res) => {
   const { id } = req.params;
-  const { set_tiempodosif, set_ejes, estado } = req.body;
+  const { set_tiempodosif, set_ejes, estado, ubicacion } = req.body;
 
   const update = {};
   let huboCambioEstado = false;
+
+  if (ubicacion !== undefined) {
+    if (typeof ubicacion !== "string" || ubicacion.trim() === "") {
+      return res.status(400).send("Ubicación inválida");
+    }
+    update.ubicacion = ubicacion.trim();
+  }
 
   if (estado !== undefined) {
     if (typeof estado !== "string") {
@@ -62,24 +69,29 @@ const actualizarSeteo = async (req, res) => {
       engrasadora.estado = estado;
     }
 
-    const snapshot = {
-      nro_evento: engrasadora.historial.length + 1,
-      tipo_evento: "Seteo",
-      fecha: new Date(),
-      estado: engrasadora.estado,
-      set_tiempodosif: engrasadora.set_tiempodosif,
-      set_ejes: engrasadora.set_ejes,
-      sens_corriente: engrasadora.sens_corriente,
-      sens_flujo: engrasadora.sens_flujo,
-      sens_power: engrasadora.sens_power,
-      cont_accionam: engrasadora.cont_accionam,
-      nombre: engrasadora.nombre,
-      modelo: engrasadora.modelo,
-      linea: engrasadora.linea,
-      date: engrasadora.date,
-    };
+    const actualizoUbicacionSolo =
+      Object.keys(update).length === 1 && update.ubicacion !== undefined;
 
-    engrasadora.historial.push(snapshot);
+    if (!actualizoUbicacionSolo) {
+      const snapshot = {
+        nro_evento: engrasadora.historial.length + 1,
+        tipo_evento: "Seteo",
+        fecha: new Date(),
+        estado: engrasadora.estado,
+        set_tiempodosif: engrasadora.set_tiempodosif,
+        set_ejes: engrasadora.set_ejes,
+        sens_corriente: engrasadora.sens_corriente,
+        sens_flujo: engrasadora.sens_flujo,
+        sens_power: engrasadora.sens_power,
+        cont_accionam: engrasadora.cont_accionam,
+        nombre: engrasadora.nombre,
+        modelo: engrasadora.modelo,
+        linea: engrasadora.linea,
+        date: engrasadora.date,
+      };
+
+      engrasadora.historial.push(snapshot);
+    }
 
     const result = await engrasadora.save();
 
