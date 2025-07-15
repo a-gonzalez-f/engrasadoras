@@ -16,7 +16,7 @@ conectarDB()
 
 const gateways = [
   { nombre: "Agus", ip: "172.27.66.205", puerto: 80 },
-  { nombre: "Dani", ip: "172.21.31.199", puerto: 80 },
+  // { nombre: "Dani", ip: "172.21.31.199", puerto: 80 },
   // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
 ];
 
@@ -172,5 +172,33 @@ function iniciarMotor() {
     });
   }
 
+  async function solicitarEstados() {
+    try {
+      const maquinas = await Engrasadora.find({}, "id");
+
+      maquinas.forEach((maquina) => {
+        if (maquina.id === undefined || maquina.id === null) {
+          console.warn(`Engrasadora sin ID:`, maquina);
+          return;
+        }
+
+        const idStr = maquina.id.toString().padStart(3, "0");
+        const mensaje = `0${idStr}`;
+
+        for (const nombre in conexiones) {
+          const ws = conexiones[nombre];
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(mensaje);
+            console.log(`Enviado a ${nombre}: ${mensaje}`);
+          }
+        }
+      });
+    } catch (err) {
+      console.error("Error al solicitar estados:", err.message);
+    }
+  }
+
   gateways.forEach((gateway) => conectarGateway(gateway));
+
+  setInterval(solicitarEstados, 10 * 1000);
 }
