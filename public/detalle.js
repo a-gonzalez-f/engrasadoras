@@ -13,22 +13,18 @@ document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
 
 async function cargarDetalle(data) {
-  let filtradas = [];
-
   try {
-    filtradas = data.filter((e) => e.linea === linea);
-
     const contenedor = document.getElementById("contenedorMaquinas");
     contenedor.innerHTML = "";
 
-    if (filtradas.length === 0) {
+    if (data.length === 0) {
       contenedor.innerHTML = `<p>No hay máquinas registradas para esta línea.</p>`;
       return;
     }
 
     document.querySelectorAll(".detalle-hover").forEach((d) => d.remove());
 
-    filtradas.forEach((e) => {
+    data.forEach((e) => {
       const card = document.createElement("div");
       card.classList.add("card-maquina");
       card.dataset.id = e._id;
@@ -620,7 +616,7 @@ async function cargarDetalle(data) {
     alert("Error al cargar los datos");
   }
 
-  actualizarBarraPorcentual(filtradas);
+  actualizarBarraPorcentual(data);
 }
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
@@ -855,23 +851,21 @@ function actualizarBarraPorcentual(maquinas) {
 let ultimoListado = [];
 
 setInterval(() => {
-  fetch("/api/engrasadoras")
+  fetch(`/api/engrasadoras?linea=${linea}`)
     .then((res) => res.json())
     .then((data) => {
-      const filtradas = data.filter((e) => e.linea === linea);
-
-      actualizarBarraPorcentual(filtradas);
+      actualizarBarraPorcentual(data);
 
       // Si cambia la cantidad de máquinas o sus IDs, recargo todo
-      const idsActuales = filtradas.map((m) => m._id).join(",");
+      const idsActuales = data.map((m) => m._id).join(",");
       const idsUltimos = ultimoListado.map((m) => m._id).join(",");
 
       if (idsActuales !== idsUltimos) {
         cargarDetalle(data);
-        ultimoListado = filtradas;
+        ultimoListado = data;
       } else {
         // Si no cambió la estructura, actualizo solo los estados visuales
-        filtradas.forEach((m) => {
+        data.forEach((m) => {
           const card = document.querySelector(
             `.card-maquina[data-id="${m._id}"]`
           );

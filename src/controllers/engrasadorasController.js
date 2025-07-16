@@ -2,9 +2,15 @@
 
 const Engrasadora = require("../models/engrasadora");
 
-const getTodas = async (req, res) => {
+const getPorLinea = async (req, res) => {
   try {
-    const engrasadoras = await Engrasadora.find();
+    const filtro = {};
+
+    if (req.query.linea) {
+      filtro.linea = req.query.linea;
+    }
+
+    const engrasadoras = await Engrasadora.find(filtro);
     res.json(engrasadoras);
   } catch (error) {
     console.error(error);
@@ -290,7 +296,7 @@ const getUnaEngrasadora = async (req, res) => {
 };
 
 module.exports = {
-  getTodas,
+  getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,

@@ -3,7 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  getTodas,
+  getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
@@ -15,7 +15,7 @@ const {
   getUnaEngrasadora,
 } = require("../controllers/engrasadorasController");
 
-router.get("/", getTodas);
+router.get("/", getPorLinea);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
