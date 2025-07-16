@@ -26,8 +26,13 @@ const actualizarSeteo = async (req, res) => {
   let huboCambioEstado = false;
 
   if (ubicacion !== undefined) {
-    if (typeof ubicacion !== "string" || ubicacion.trim() === "") {
+    if (typeof ubicacion !== "string") {
       return res.status(400).send("Ubicación inválida");
+    }
+    if (ubicacion.trim().length > 50) {
+      return res
+        .status(400)
+        .send("La ubicación debe tener como máximo 50 caracteres");
     }
     update.ubicacion = ubicacion.trim();
   }

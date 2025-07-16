@@ -214,7 +214,7 @@ async function cargarDetalle(data) {
             <div>
             <p>Ubicación:</p>            
               <div>
-              <p id="ubicacion">${e.ubicacion}</p>
+              <p id="ubicacion">${e.ubicacion ? e.ubicacion : "-"}</p>
               <span class="material-symbols-outlined icono-editar" id="editarUbi">edit</span>
               </div>
             </div>
@@ -408,7 +408,10 @@ async function cargarDetalle(data) {
         });
 
         document.getElementById("editarUbi").addEventListener("click", () => {
-          const nuevoValor = prompt("Ingrese la nueva ubicación", e.ubicacion);
+          const nuevoValor = prompt(
+            "Ingrese la nueva ubicación (max. 50 caracteres)",
+            e.ubicacion
+          );
 
           if (nuevoValor !== null) {
             fetch(`/api/engrasadoras/${e._id}`, {
@@ -417,7 +420,7 @@ async function cargarDetalle(data) {
               body: JSON.stringify({ ubicacion: nuevoValor }),
             })
               .then((res) => {
-                if (!res.ok) throw new Error("Error al actualizar");
+                if (!res.ok) throw new Error("Nueva ubicación inválida");
                 return res.json();
               })
               .then((data) => {
