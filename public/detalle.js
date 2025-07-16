@@ -1,3 +1,14 @@
+import {
+  listarComentarios,
+  eliminarComentario,
+  renderUltimoComentario,
+} from "./comentarios.js";
+import { listarHistorialEnModal } from "./historial.js";
+import {
+  formatearEstado,
+  actualizarBarraPorcentual,
+} from "./detalles-tools.js";
+
 const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
 
@@ -442,7 +453,7 @@ async function cargarDetalle(data) {
             .then((data) => {
               document.getElementById("newComment").value = "";
 
-              maquinaSeleccionada.comentarios = data.comentarios;
+              e.comentarios = data.comentarios;
 
               const ultComentario =
                 data.comentarios[data.comentarios.length - 1];
@@ -467,6 +478,8 @@ async function cargarDetalle(data) {
 
               document.getElementById("ultimoComentario").innerHTML =
                 comentarioHtmlActualizado;
+
+              listarComentarios(e, false);
             })
             .catch((err) => alert(err.message));
         });
@@ -629,139 +642,6 @@ document.getElementById("modalDetalle").addEventListener("click", (e) => {
   }
 });
 
-function listarComentarios(maquina) {
-  const modal = document.getElementById("modalComentarios");
-  const contenedor = document.getElementById("listaComentarios");
-
-  if (!maquina.comentarios || maquina.comentarios.length === 0) {
-    contenedor.innerHTML = "<p>No hay comentarios registrados.</p>";
-  } else {
-    contenedor.innerHTML = maquina.comentarios
-      .map(
-        (c, index) => `
-        <div class="comentario-item">
-          <div class="dataComment">
-            <strong>${c.user || "Anónimo"}</strong> - ${new Date(
-          c.date
-        ).toLocaleString("es-AR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}
-          </div>
-          <div>${c.comentario}</div>
-          <button onclick="eliminarComentario('${
-            maquina._id
-          }', ${index})"><span class="material-symbols-outlined deleteBtn">delete</span></button>
-          <hr>
-        </div>
-      `
-      )
-      .join("");
-  }
-
-  modal.style.display = "flex";
-}
-
-function eliminarComentario(idMaquina, indexComentario) {
-  if (!confirm("¿Seguro que desea eliminar este comentario?")) return;
-
-  fetch(`/api/engrasadoras/${idMaquina}/comentarios/${indexComentario}`, {
-    method: "DELETE",
-  })
-    .then((res) => {
-      if (!res.ok) throw new Error("Error al eliminar el comentario");
-      return res.json();
-    })
-    .then((data) => {
-      maquinaSeleccionada.comentarios = data.comentarios;
-      listarComentarios(maquinaSeleccionada);
-      const ultComentario =
-        maquinaSeleccionada.comentarios.length > 0
-          ? `
-  <div>
-    <div class="dataComment">
-      <span>${
-        maquinaSeleccionada.comentarios[
-          maquinaSeleccionada.comentarios.length - 1
-        ].user || "Anónimo"
-      }</span> - 
-      ${new Date(
-        maquinaSeleccionada.comentarios[
-          maquinaSeleccionada.comentarios.length - 1
-        ].date
-      ).toLocaleString("es-AR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-        hour12: false,
-      })}<br>
-    </div>
-    ${
-      maquinaSeleccionada.comentarios[
-        maquinaSeleccionada.comentarios.length - 1
-      ].comentario
-    }    
-  </div>`
-          : "Sin comentarios";
-
-      document.getElementById("ultimoComentario").innerHTML = ultComentario;
-    })
-    .catch((err) => alert(err.message));
-}
-
-function listarHistorialEnModal(historial, completo = false) {
-  const tbody = document.querySelector(".tabla-historial tbody");
-
-  if (!tbody) return;
-
-  if (historial.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="12" style="text-align:center">No hay historial registrado</td>
-      </tr>
-    `;
-    return;
-  }
-
-  const items = completo
-    ? historial.slice().reverse()
-    : historial.slice(-10).reverse();
-
-  tbody.innerHTML = items
-    .map(
-      (h) => `
-      <tr class="historial-item ${h.estado}">
-        <td>${h.nro_evento || "-"}</td>
-        <td>${h.tipo_evento || "-"}</td>
-        <td>${new Date(h.fecha).toLocaleString("es-AR", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: false,
-        })}</td>
-        <td>${formatearEstado(h.estado, "texto")}</td>
-        <td>${h.set_tiempodosif} s</td>
-        <td>${h.set_ejes}</td>
-        <td>${h.sens_corriente} mA</td>
-        <td>${h.sens_flujo ? "Sí" : "No"}</td>
-        <td>${h.sens_power ? "Sí" : "No"}</td>
-        <td>${h.lora_signal || "-"}</td>
-        <td>${h.on_off ? "ON" : "OFF"}</td>
-        <td>${h.cont_accionam || "-"}</td>
-      </tr>
-    `
-    )
-    .join("");
-}
-
 document.getElementById("modalComentarios").addEventListener("click", (e) => {
   if (e.target.id === "modalComentarios") {
     document.getElementById("modalComentarios").style.display = "none";
@@ -771,82 +651,6 @@ document.getElementById("modalComentarios").addEventListener("click", (e) => {
 document.getElementById("cerrarComentarios").addEventListener("click", () => {
   document.getElementById("modalComentarios").style.display = "none";
 });
-
-function formatearEstado(estado, modo = "icono") {
-  const estadosMap = {
-    funcionando: {
-      texto: "Funcionando",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-pstv)">check_circle</span>`,
-    },
-    alerta: {
-      texto: "Alerta",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-alerta)">error</span>`,
-    },
-    desconectada: {
-      texto: "Desconectada",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-desconectada)">wifi_off</span>`,
-    },
-    fs: {
-      texto: "Fuera de Servicio",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`,
-    },
-  };
-
-  const estadoObj = estadosMap[estado];
-
-  if (!estadoObj) {
-    return modo === "icono" ? estado : estado.toUpperCase();
-  }
-
-  return modo === "icono" ? estadoObj.icono : estadoObj.texto;
-}
-
-function actualizarBarraPorcentual(maquinas) {
-  const total = maquinas.length;
-  if (total === 0) {
-    document.getElementById("porc_func").style.width = "0%";
-    document.getElementById("porc_alert").style.width = "0%";
-    document.getElementById("porc_desconectada").style.width = "0%";
-    document.getElementById("porc_fs").style.width = "0%";
-    return;
-  }
-
-  const cant_func = maquinas.filter((m) => m.estado === "funcionando").length;
-  const cant_alert = maquinas.filter((m) => m.estado === "alerta").length;
-  const cant_desc = maquinas.filter((m) => m.estado === "desconectada").length;
-  const cant_fs = maquinas.filter((m) => m.estado === "fs").length;
-
-  const porc_func = Number(((cant_func / total) * 100).toPrecision(3));
-  const porc_alert = Number(((cant_alert / total) * 100).toPrecision(3));
-  const porc_desc = Number(((cant_desc / total) * 100).toPrecision(3));
-  const porc_fs = Number(((cant_fs / total) * 100).toPrecision(3));
-
-  document.getElementById("porc_func").style.width = `${porc_func}%`;
-  document.getElementById("porc_alert").style.width = `${porc_alert}%`;
-  document.getElementById("porc_desconectada").style.width = `${porc_desc}%`;
-  document.getElementById("porc_fs").style.width = `${porc_fs}%`;
-
-  if (cant_func !== 0) {
-    document.getElementById(
-      "value_func"
-    ).innerText = `${cant_func} - ${porc_func}%`;
-  }
-  if (cant_alert !== 0) {
-    document.getElementById(
-      "value_alert"
-    ).innerText = `${cant_alert} - ${porc_alert}%`;
-  }
-  if (cant_desc !== 0) {
-    document.getElementById(
-      "value_desc"
-    ).innerText = `${cant_desc} - ${porc_desc}%`;
-  }
-  if (cant_fs !== 0) {
-    document.getElementById("value_fs").innerText = `${cant_fs} - ${porc_fs}%`;
-  }
-
-  document.getElementById("total_value").innerText = ` Total: ${total}`;
-}
 
 let ultimoListado = [];
 
