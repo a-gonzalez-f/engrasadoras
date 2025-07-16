@@ -65,8 +65,8 @@ function iniciarMotor() {
     const msg = data.toString().trim();
     console.log(`Mensaje recibido crudo de ${nombre}:`, msg);
 
-    if (msg.length < 26) {
-      console.warn("Mensaje demasiado corto o malformado");
+    if (msg.length !== 26) {
+      console.warn("El codigo no es de 26 caracteres");
       return;
     }
 
@@ -81,8 +81,8 @@ function iniciarMotor() {
       const power = msg[17] === "1";
       const corriente = parseFloat(msg.slice(18, 21));
       const flujo = msg[21] === "1";
-      const lora_signal = parseInt(msg.slice(22, 25));
-      const falla = msg[26] === "1";
+      const lora_signal = parseInt(msg.slice(22, 24));
+      const falla = msg[25] === "1";
 
       console.log("→ Datos decodificados:");
       console.log({
@@ -100,6 +100,21 @@ function iniciarMotor() {
         falla,
       });
 
+      const datos = {
+        accion,
+        id,
+        modelo,
+        cant_ejes,
+        tiempo_dosif,
+        total_accionam,
+        on_off,
+        power,
+        corriente,
+        flujo,
+        lora_signal,
+        falla,
+      };
+
       const maquina = await Engrasadora.findOne({ id });
 
       if (!maquina) {
@@ -107,40 +122,25 @@ function iniciarMotor() {
         return;
       }
 
-      // Actualizar datos actuales
-      maquina.date = new Date();
-      maquina.modelo = modelo;
-      maquina.set_tiempodosif = tiempo_dosif;
-      maquina.set_ejes = cant_ejes;
-      maquina.sens_corriente = corriente;
-      maquina.sens_flujo = flujo;
-      maquina.on_off = on_off;
-      maquina.sens_power = power;
-      maquina.cont_accionam = total_accionam;
-      maquina.estado = falla ? "alerta" : "funcionando";
-      maquina.lora_signal = lora_signal;
-
-      // Crear evento de historial
-      maquina.historial.push({
-        nro_evento: maquina.historial.length + 1,
-        tipo_evento: "Sensado",
-        fecha: new Date(),
-        estado: maquina.estado,
-        set_tiempodosif: tiempo_dosif,
-        set_ejes: cant_ejes,
-        sens_corriente: corriente,
-        sens_flujo: flujo,
-        on_off: on_off,
-        sens_power: power,
-        cont_accionam: total_accionam,
-        lora_signal: lora_signal.toString(),
-        user: "gateway_" + nombre,
-      });
-
-      // Guardar cambios
-      await maquina.save();
-
-      console.log(`→ Engrasadora ${id} actualizada con evento de sensado`);
+      switch (accion) {
+        case "0":
+          await procesarSensado(maquina, datos, nombre);
+          break;
+        case "1":
+          await procesarSeteo(maquina, datos, nombre);
+          break;
+        case "2":
+          await procesarResetAccionamientos(maquina, datos, nombre);
+          break;
+        case "3":
+          await procesarSwitchOnOff(maquina, datos, nombre);
+          break;
+        case "4":
+          await procesarForzarEngrase(maquina, datos, nombre);
+          break;
+        default:
+          console.warn(`Acción ${accion} no reconocida`);
+      }
     } catch (err) {
       console.error("Error al decodificar o guardar:", err.message);
     }
@@ -172,31 +172,98 @@ function iniciarMotor() {
     });
   }
 
-  // async function solicitarEstados() {
-  //   try {
-  //     const maquinas = await Engrasadora.find({}, "id");
+  async function procesarSensado(maquina, datos, nombre) {
+    maquina.date = new Date();
+    maquina.modelo = datos.modelo;
+    maquina.set_tiempodosif = datos.tiempo_dosif;
+    maquina.set_ejes = datos.cant_ejes;
+    maquina.sens_corriente = datos.corriente;
+    maquina.sens_flujo = datos.flujo;
+    maquina.on_off = datos.on_off;
+    maquina.sens_power = datos.power;
+    maquina.cont_accionam = datos.total_accionam;
+    maquina.estado = datos.falla ? "alerta" : "funcionando";
+    maquina.lora_signal = datos.lora_signal;
 
-  //     maquinas.forEach((maquina) => {
-  //       if (maquina.id === undefined || maquina.id === null) {
-  //         console.warn(`Engrasadora sin ID:`, maquina);
-  //         return;
-  //       }
+    maquina.historial.push({
+      nro_evento: maquina.historial.length + 1,
+      tipo_evento: "Sensado",
+      fecha: new Date(),
+      estado: maquina.estado,
+      set_tiempodosif: datos.tiempo_dosif,
+      set_ejes: datos.cant_ejes,
+      sens_corriente: datos.corriente,
+      sens_flujo: datos.flujo,
+      on_off: datos.on_off,
+      sens_power: datos.power,
+      cont_accionam: datos.total_accionam,
+      lora_signal: datos.lora_signal.toString(),
+      user: "gateway_" + nombre,
+    });
 
-  //       const idStr = maquina.id.toString().padStart(3, "0");
-  //       const mensaje = `0${idStr}`;
+    await maquina.save();
+    console.log(
+      `→ Engrasadora ${maquina.id} actualizada con evento de sensado`
+    );
+  }
 
-  //       for (const nombre in conexiones) {
-  //         const ws = conexiones[nombre];
-  //         if (ws.readyState === WebSocket.OPEN) {
-  //           ws.send(mensaje);
-  //           console.log(`Enviado a ${nombre}: ${mensaje}`);
-  //         }
-  //       }
-  //     });
-  //   } catch (err) {
-  //     console.error("Error al solicitar estados:", err.message);
-  //   }
-  // }
+  async function procesarSeteo(maquina, datos, nombre) {
+    // maquina.date = new Date();
+    // maquina.set_ejes = datos.cant_ejes;
+    // maquina.set_tiempodosif = datos.tiempo_dosif;
+
+    // maquina.historial.push({
+    //   nro_evento: maquina.historial.length + 1,
+    //   tipo_evento: "Seteo",
+    //   fecha: maquina.date,
+    //   set_tiempodosif: datos.tiempo_dosif,
+    //   set_ejes: datos.cant_ejes,
+    //   user: "gateway_" + nombre,
+    // });
+
+    // await maquina.save();
+    // console.log(`✅ Seteo actualizado para máquina ${maquina.id}`);
+    console.log(`Seteo pendiente de implementación`);
+  }
+
+  // placeholders:
+  async function procesarResetAccionamientos(maquina, datos, nombre) {
+    console.log(`Reset Accionamientos pendiente de implementación`);
+  }
+
+  async function procesarSwitchOnOff(maquina, datos, nombre) {
+    console.log(`Switch On/Off pendiente de implementación`);
+  }
+
+  async function procesarForzarEngrase(maquina, datos, nombre) {
+    console.log(`Forzar Engrase pendiente de implementación`);
+  }
+
+  async function solicitarEstados() {
+    try {
+      const maquinas = await Engrasadora.find({}, "id");
+
+      maquinas.forEach((maquina) => {
+        if (maquina.id === undefined || maquina.id === null) {
+          console.warn(`Engrasadora sin ID:`, maquina);
+          return;
+        }
+
+        const idStr = maquina.id.toString().padStart(3, "0");
+        const mensaje = `0${idStr}`;
+
+        for (const nombre in conexiones) {
+          const ws = conexiones[nombre];
+          if (ws.readyState === WebSocket.OPEN) {
+            ws.send(mensaje);
+            console.log(`Enviado a ${nombre}: ${mensaje}`);
+          }
+        }
+      });
+    } catch (err) {
+      console.error("Error al solicitar estados:", err.message);
+    }
+  }
 
   gateways.forEach((gateway) => conectarGateway(gateway));
 
