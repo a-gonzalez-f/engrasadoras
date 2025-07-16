@@ -134,7 +134,7 @@ async function cargarDetalle(data) {
         } else {
           historialHtml += `
             <tr>
-              <td colspan="11" style="text-align:center">No hay historial registrado</td>
+              <td colspan="12" style="text-align:center">No hay historial registrado</td>
             </tr>
           `;
         }
@@ -723,7 +723,7 @@ function listarHistorialEnModal(historial, completo = false) {
   if (historial.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="11" style="text-align:center">No hay historial registrado</td>
+        <td colspan="12" style="text-align:center">No hay historial registrado</td>
       </tr>
     `;
     return;
