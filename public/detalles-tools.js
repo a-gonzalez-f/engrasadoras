@@ -16,6 +16,10 @@ export function formatearEstado(estado, modo = "icono") {
       texto: "Fuera de Servicio",
       icono: `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`,
     },
+    pm: {
+      texto: "Pausa Manual",
+      icono: `<span class="material-symbols-outlined">pause_circle</span>`,
+    },
   };
 
   const estadoObj = estadosMap[estado];
@@ -34,6 +38,7 @@ export function actualizarBarraPorcentual(maquinas) {
     document.getElementById("porc_alert").style.width = "0%";
     document.getElementById("porc_desconectada").style.width = "0%";
     document.getElementById("porc_fs").style.width = "0%";
+    document.getElementById("porc_pm").style.width = "0%";
     return;
   }
 
@@ -41,16 +46,19 @@ export function actualizarBarraPorcentual(maquinas) {
   const cant_alert = maquinas.filter((m) => m.estado === "alerta").length;
   const cant_desc = maquinas.filter((m) => m.estado === "desconectada").length;
   const cant_fs = maquinas.filter((m) => m.estado === "fs").length;
+  const cant_pm = maquinas.filter((m) => m.estado === "pm").length;
 
-  const porc_func = Number(((cant_func / total) * 100).toPrecision(3));
-  const porc_alert = Number(((cant_alert / total) * 100).toPrecision(3));
-  const porc_desc = Number(((cant_desc / total) * 100).toPrecision(3));
-  const porc_fs = Number(((cant_fs / total) * 100).toPrecision(3));
+  const porc_func = Math.round((cant_func / total) * 100);
+  const porc_alert = Math.round((cant_alert / total) * 100);
+  const porc_desc = Math.round((cant_desc / total) * 100);
+  const porc_fs = Math.round((cant_fs / total) * 100);
+  const porc_pm = Math.round((cant_pm / total) * 100);
 
   document.getElementById("porc_func").style.width = `${porc_func}%`;
   document.getElementById("porc_alert").style.width = `${porc_alert}%`;
   document.getElementById("porc_desconectada").style.width = `${porc_desc}%`;
   document.getElementById("porc_fs").style.width = `${porc_fs}%`;
+  document.getElementById("porc_pm").style.width = `${porc_pm}%`;
 
   if (cant_func !== 0) {
     document.getElementById(
@@ -69,6 +77,10 @@ export function actualizarBarraPorcentual(maquinas) {
   }
   if (cant_fs !== 0) {
     document.getElementById("value_fs").innerText = `${cant_fs} - ${porc_fs}%`;
+  }
+
+  if (cant_pm !== 0) {
+    document.getElementById("value_pm").innerText = `${cant_pm} - ${porc_pm}%`;
   }
 
   document.getElementById("total_value").innerText = ` Total: ${total}`;

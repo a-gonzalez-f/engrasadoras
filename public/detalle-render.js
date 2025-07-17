@@ -124,6 +124,7 @@ export function renderDetalleMaquina(maquina) {
               <option value="alerta">Alerta</option>
               <option value="desconectada">Desconectada</option>
               <option value="fs">Fuera de Servicio</option>
+              <option value="pm">Pausa Manual</option>
             </select>
             </div>
             <div>
@@ -223,7 +224,7 @@ export function renderDetalleMaquina(maquina) {
   const botonApagar = document.getElementById("apagarEquipo");
   botonApagar.classList.remove("apagar", "encender");
 
-  if (e.estado === "fs") {
+  if (e.estado === "pm") {
     botonApagar.classList.add("encender");
   } else {
     botonApagar.classList.add("apagar");
@@ -331,7 +332,7 @@ export function renderDetalleMaquina(maquina) {
         const btnApagar = document.getElementById("apagarEquipo");
         btnApagar.classList.remove("apagar", "encender");
 
-        if (e.estado === "fs") {
+        if (e.estado === "pm") {
           btnApagar.classList.add("encender");
         } else if (e.estado === "funcionando") {
           btnApagar.classList.add("apagar");

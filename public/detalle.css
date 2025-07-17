@@ -37,6 +37,9 @@
 .barra.fs {
   background-color: var(--color-error);
 }
+.barra.pm {
+  background-color: var(--color-texto);
+}
 
 .value {
   display: block;

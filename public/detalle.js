@@ -130,9 +130,9 @@ setInterval(() => {
 
               const btnApagar = document.getElementById("apagarEquipo");
               btnApagar.classList.remove("apagar", "encender");
-              if (actualizada.estado === "fs")
+              if (actualizada.on_off === false)
                 btnApagar.classList.add("encender");
-              else if (actualizada.estado === "funcionando")
+              else if (actualizada.on_off === true)
                 btnApagar.classList.add("apagar");
             }
           })

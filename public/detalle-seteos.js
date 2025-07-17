@@ -113,7 +113,7 @@ function resetearAccionamientos(e) {
 }
 
 function toggleOnOff(e) {
-  const nuevoEstado = e.estado === "fs" ? "funcionando" : "fs";
+  const nuevoEstado = e.estado === "pm" ? "funcionando" : "pm";
   if (
     !confirm(
       `¿Seguro que desea cambiar el estado a "${formatearEstado(
@@ -142,7 +142,7 @@ function toggleOnOff(e) {
 
       const btnApagar = document.getElementById("apagarEquipo");
       btnApagar.classList.remove("apagar", "encender");
-      if (e.estado === "fs") btnApagar.classList.add("encender");
+      if (e.estado === "pm") btnApagar.classList.add("encender");
       else if (e.estado === "funcionando") btnApagar.classList.add("apagar");
 
       listarHistorialEnModal(e.historial);
