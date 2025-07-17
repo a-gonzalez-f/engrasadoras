@@ -60,27 +60,47 @@ export function actualizarBarraPorcentual(maquinas) {
   document.getElementById("porc_fs").style.width = `${porc_fs}%`;
   document.getElementById("porc_pm").style.width = `${porc_pm}%`;
 
+  const value_func = document.getElementById("value_func");
+  const value_alert = document.getElementById("value_alert");
+  const value_desc = document.getElementById("value_desc");
+  const value_fs = document.getElementById("value_fs");
+  const value_pm = document.getElementById("value_pm");
+
   if (cant_func !== 0) {
-    document.getElementById(
-      "value_func"
-    ).innerText = `${cant_func} - ${porc_func}%`;
+    value_func.innerText = `${cant_func} - ${porc_func}%`;
+    value_func.style.display = "block";
   }
   if (cant_alert !== 0) {
-    document.getElementById(
-      "value_alert"
-    ).innerText = `${cant_alert} - ${porc_alert}%`;
+    value_alert.innerText = `${cant_alert} - ${porc_alert}%`;
+    value_alert.style.display = "block";
   }
   if (cant_desc !== 0) {
-    document.getElementById(
-      "value_desc"
-    ).innerText = `${cant_desc} - ${porc_desc}%`;
+    value_desc.innerText = `${cant_desc} - ${porc_desc}%`;
+    value_desc.style.display = "block";
   }
   if (cant_fs !== 0) {
-    document.getElementById("value_fs").innerText = `${cant_fs} - ${porc_fs}%`;
+    value_fs.innerText = `${cant_fs} - ${porc_fs}%`;
+    value_fs.style.display = "block";
+  }
+  if (cant_pm !== 0) {
+    value_pm.innerText = `${cant_pm} - ${porc_pm}%`;
+    value_pm.style.display = "block";
   }
 
-  if (cant_pm !== 0) {
-    document.getElementById("value_pm").innerText = `${cant_pm} - ${porc_pm}%`;
+  if (porc_func === 0) {
+    value_func.style.display = "none";
+  }
+  if (porc_alert === 0) {
+    value_alert.style.display = "none";
+  }
+  if (porc_desc === 0) {
+    value_desc.style.display = "none";
+  }
+  if (porc_fs === 0) {
+    value_fs.style.display = "none";
+  }
+  if (porc_pm === 0) {
+    value_pm.style.display = "none";
   }
 
   document.getElementById("total_value").innerText = ` Total: ${total}`;
