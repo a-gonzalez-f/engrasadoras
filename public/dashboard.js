@@ -18,15 +18,29 @@ async function cargarEngrasadoras() {
   const alerta = data.filter((e) => e.estado === "alerta").length;
   const sinConexion = data.filter((e) => e.estado === "desconectada").length;
   const fs = data.filter((e) => e.estado === "fs").length;
+  const pm = data.filter((e) => e.estado === "pm").length;
 
   if (!chartGlobal) {
     chartGlobal = new Chart(document.getElementById("chartGlobal"), {
       type: "doughnut",
       data: {
+        labels: [
+          "Funcionando",
+          "Alerta",
+          "Desconectada",
+          "Fuera de Servicio",
+          "Pausa Manual",
+        ],
         datasets: [
           {
-            data: [funcionando, alerta, sinConexion, fs],
-            backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
+            data: [funcionando, alerta, sinConexion, fs, pm],
+            backgroundColor: [
+              "#0dae1a",
+              "#fca311",
+              "#888",
+              "#d90429",
+              "#097412",
+            ],
             borderWidth: 0,
             hoverBorderWidth: 2,
           },
@@ -35,7 +49,7 @@ async function cargarEngrasadoras() {
       options: {
         responsive: true,
         cutout: "50%",
-        plugins: { title: { display: false } },
+        plugins: { title: { display: false }, legend: { display: false } },
       },
       animation: {
         animateRotate: true,
@@ -43,7 +57,13 @@ async function cargarEngrasadoras() {
       },
     });
   } else {
-    chartGlobal.data.datasets[0].data = [funcionando, alerta, sinConexion, fs];
+    chartGlobal.data.datasets[0].data = [
+      funcionando,
+      alerta,
+      sinConexion,
+      fs,
+      pm,
+    ];
     chartGlobal.update();
   }
 
@@ -134,6 +154,7 @@ function renderEstadoPorLinea(data) {
       (e) => e.estado === "desconectada"
     ).length;
     const fs = dataLinea.filter((e) => e.estado === "fs").length;
+    const pm = dataLinea.filter((e) => e.estado === "pm").length;
 
     // Render gráfico
     const canvas = document.getElementById(`chart${linea}`);
@@ -141,10 +162,23 @@ function renderEstadoPorLinea(data) {
       chartsPorLinea[linea] = new Chart(canvas, {
         type: "doughnut",
         data: {
+          labels: [
+            "Funcionando",
+            "Alerta",
+            "Desconectada",
+            "Fuera de Servicio",
+            "Pausa Manual",
+          ],
           datasets: [
             {
-              data: [funcionando, alerta, desconectada, fs],
-              backgroundColor: ["#0dae1a", "#fca311", "#888", "#d90429"],
+              data: [funcionando, alerta, desconectada, fs, pm],
+              backgroundColor: [
+                "#0dae1a",
+                "#fca311",
+                "#888",
+                "#d90429",
+                "#097412",
+              ],
               borderWidth: 0,
               hoverBorderWidth: 1,
             },
@@ -162,6 +196,7 @@ function renderEstadoPorLinea(data) {
         alerta,
         desconectada,
         fs,
+        pm,
       ];
       chartsPorLinea[linea].update();
     }
