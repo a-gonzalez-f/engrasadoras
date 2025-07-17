@@ -3,6 +3,7 @@
 import { listarHistorialEnModal } from "./historial.js";
 import { formatearEstado } from "./detalles-tools.js";
 import { listarComentarios } from "./comentarios.js";
+import { inicializarSeteos } from "./detalle-seteos.js";
 
 export function renderDetalleMaquina(maquina) {
   let e = maquina;
@@ -236,110 +237,6 @@ export function renderDetalleMaquina(maquina) {
       listarComentarios(e);
     });
 
-  document.getElementById("editarTiempo").addEventListener("click", () => {
-    const nuevoValor = prompt(
-      "Ingrese el nuevo tiempo de dosificación (0.2s - 2s):",
-      e.set_tiempodosif
-    );
-
-    if (nuevoValor !== null) {
-      const valorSanitizado = nuevoValor.replace(",", ".");
-      const numValor = parseFloat(valorSanitizado);
-
-      if (isNaN(numValor) || numValor < 0.2) {
-        alert("El tiempo de dosificación debe ser a partir de 0.2");
-        return;
-      }
-
-      if (numValor > 2) {
-        alert("El tiempo de dosificación debe ser menor o igual a 2");
-        return;
-      }
-
-      const valorTruncado = Math.trunc(numValor * 10) / 10;
-
-      fetch(`/api/engrasadoras/${e._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ set_tiempodosif: valorTruncado }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error al actualizar");
-          return res.json();
-        })
-        .then((data) => {
-          e.set_tiempodosif = data.set_tiempodosif;
-          e.historial = data.historial;
-          document.getElementById("tiempoDosif").innerText =
-            data.set_tiempodosif;
-          listarHistorialEnModal(e.historial);
-        })
-        .catch((err) => alert(err.message));
-    }
-  });
-
-  document.getElementById("editarEjes").addEventListener("click", () => {
-    const nuevoValor = prompt(
-      "Ingrese la nueva cantidad de ejes (1 - 128):",
-      e.set_ejes
-    );
-
-    if (nuevoValor !== null) {
-      const numValor = parseInt(nuevoValor);
-
-      if (isNaN(numValor) || numValor < 1) {
-        alert("La cantidad de ejes debe ser a partir de 1");
-        return;
-      }
-
-      if (numValor > 128) {
-        alert("La cantidad de ejes debe ser menor a 128");
-        return;
-      }
-
-      fetch(`/api/engrasadoras/${e._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ set_ejes: numValor }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Error al actualizar");
-          return res.json();
-        })
-        .then((data) => {
-          e.set_ejes = data.set_ejes;
-          e.historial = data.historial;
-          document.getElementById("cantEjes").innerText = data.set_ejes;
-          listarHistorialEnModal(e.historial);
-        })
-        .catch((err) => alert(err.message));
-    }
-  });
-
-  document.getElementById("editarUbi").addEventListener("click", () => {
-    const nuevoValor = prompt(
-      "Ingrese la nueva ubicación (max. 50 caracteres)",
-      e.ubicacion
-    );
-
-    if (nuevoValor !== null) {
-      fetch(`/api/engrasadoras/${e._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ubicacion: nuevoValor }),
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Nueva ubicación inválida");
-          return res.json();
-        })
-        .then((data) => {
-          e.ubicacion = data.ubicacion;
-          document.getElementById("ubicacion").innerText = data.ubicacion;
-        })
-        .catch((err) => alert(err.message));
-    }
-  });
-
   document.getElementById("addComment").addEventListener("click", () => {
     const textoComentario = document.getElementById("newComment").value.trim();
 
@@ -393,29 +290,8 @@ export function renderDetalleMaquina(maquina) {
       .catch((err) => alert(err.message));
   });
 
-  document.getElementById("resetAccionam").addEventListener("click", () => {
-    if (!confirm("¿Seguro que desea resetear los accionamientos?")) return;
-
-    fetch(`/api/engrasadoras/${e._id}/resetAccionamientos`, {
-      method: "PUT",
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al resetear los accionamientos");
-        return res.json();
-      })
-      .then((data) => {
-        e.cont_accionam = data.cont_accionam;
-        e.historial = data.historial;
-
-        document.getElementById("accionamientos").innerText =
-          data.cont_accionam;
-        listarHistorialEnModal(e.historial);
-      })
-      .catch((err) => alert(err.message));
-  });
   const selectEstado = document.getElementById("estado");
   selectEstado.value = e.estado;
-
   selectEstado.addEventListener("change", () => {
     const nuevoEstado = selectEstado.value;
 
@@ -467,47 +343,6 @@ export function renderDetalleMaquina(maquina) {
       .catch((err) => alert(err.message));
   });
 
-  document.getElementById("apagarEquipo").addEventListener("click", () => {
-    const nuevoEstado = e.estado === "fs" ? "funcionando" : "fs";
-    const textoConfirm =
-      nuevoEstado === "fs" ? "apagar el equipo" : "encender el equipo";
-
-    if (!confirm(`¿Seguro que desea ${textoConfirm}?`)) return;
-
-    fetch(`/api/engrasadoras/${e._id}/switchOnOff`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ estado: nuevoEstado }),
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Error al actualizar el estado");
-        return res.json();
-      })
-      .then((data) => {
-        e.estado = data.estado;
-        e.historial = data.historial;
-
-        document.getElementById("estadoMaquina").innerText = formatearEstado(
-          data.estado,
-          "texto"
-        ).toUpperCase();
-
-        document.getElementById("estadoMaquina").className = data.estado;
-
-        const btnApagar = document.getElementById("apagarEquipo");
-        btnApagar.classList.remove("apagar", "encender");
-
-        if (e.estado === "fs") {
-          btnApagar.classList.add("encender");
-        } else if (e.estado === "funcionando") {
-          btnApagar.classList.add("apagar");
-        }
-
-        listarHistorialEnModal(e.historial);
-      })
-      .catch((err) => alert(err.message));
-  });
-
   document.getElementById("resetHistorial").addEventListener("click", () => {
     if (!confirm("¿Seguro que desea resetear el historial?")) return;
 
@@ -524,4 +359,6 @@ export function renderDetalleMaquina(maquina) {
       })
       .catch((err) => alert(err.message));
   });
+
+  inicializarSeteos(e);
 }
