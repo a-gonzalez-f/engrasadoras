@@ -100,7 +100,6 @@ export function renderDetalleMaquina(maquina) {
   ).toUpperCase()}</span> | 
         <span id="idMaquina">${e.id ? "ID: " + e.id : "Sin ID"}</span>
         </h5>
-
         <div class="cont">
           <div class="subCont">
             <h6>SETEO</h6>

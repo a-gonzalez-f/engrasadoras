@@ -21,7 +21,7 @@ export function formatearEstado(estado, modo = "icono") {
   const estadoObj = estadosMap[estado];
 
   if (!estadoObj) {
-    return modo === "icono" ? estado : estado.toUpperCase();
+    return modo === "icono" ? estado ?? "-" : (estado ?? "-").toUpperCase();
   }
 
   return modo === "icono" ? estadoObj.icono : estadoObj.texto;

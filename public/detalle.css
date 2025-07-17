@@ -310,10 +310,13 @@ hr {
 .icono-editar {
   cursor: pointer;
   color: rgba(255, 255, 255, 0.4);
+  opacity: 0.2;
+  transition: opacity 0.2s;
 }
 
 .icono-editar:hover {
   color: var(--color-pstv);
+  opacity: 1;
 }
 
 .icono-reset {
