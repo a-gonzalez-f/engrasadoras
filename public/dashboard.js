@@ -39,7 +39,7 @@ async function cargarEngrasadoras() {
               "#fca311",
               "#888",
               "#d90429",
-              "#097412",
+              "#5dbe65",
             ],
             borderWidth: 0,
             hoverBorderWidth: 2,
@@ -83,6 +83,88 @@ async function cargarEngrasadoras() {
   document.getElementById("total-global").innerText = `${total}`;
 
   renderEstadoPorLinea(data);
+}
+
+function renderEstadoPorLinea(data) {
+  const lineas = ["A", "B", "C", "D", "E", "H"];
+
+  lineas.forEach((linea) => {
+    const dataLinea = data.filter((e) => e.linea === linea);
+    const total = dataLinea.length;
+
+    const funcionando = dataLinea.filter(
+      (e) => e.estado === "funcionando"
+    ).length;
+    const alerta = dataLinea.filter((e) => e.estado === "alerta").length;
+    const desconectada = dataLinea.filter(
+      (e) => e.estado === "desconectada"
+    ).length;
+    const fs = dataLinea.filter((e) => e.estado === "fs").length;
+    const pm = dataLinea.filter((e) => e.estado === "pm").length;
+
+    // Render gráfico
+    const canvas = document.getElementById(`chart${linea}`);
+    if (!chartsPorLinea[linea]) {
+      chartsPorLinea[linea] = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+          labels: [
+            "Funcionando",
+            "Alerta",
+            "Desconectada",
+            "Fuera de Servicio",
+            "Pausa Manual",
+          ],
+          datasets: [
+            {
+              data: [funcionando, alerta, desconectada, fs, pm],
+              backgroundColor: [
+                "#0dae1a",
+                "#fca311",
+                "#888",
+                "#d90429",
+                "#5dbe65",
+              ],
+              borderWidth: 0,
+              hoverBorderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          cutout: "50%",
+          plugins: { title: { display: false }, legend: { display: false } },
+        },
+      });
+    } else {
+      chartsPorLinea[linea].data.datasets[0].data = [
+        funcionando,
+        alerta,
+        desconectada,
+        fs,
+        pm,
+      ];
+      chartsPorLinea[linea].update();
+    }
+
+    // Render detalle
+    document.getElementById(
+      `func-${linea}`
+    ).innerText = `${funcionando} (${Math.round(
+      (funcionando / total) * 100
+    )}%)`;
+    document.getElementById(
+      `alerta-${linea}`
+    ).innerText = `${alerta} (${Math.round((alerta / total) * 100)}%)`;
+    document.getElementById(
+      `sc-${linea}`
+    ).innerText = `${desconectada} (${Math.round(
+      (desconectada / total) * 100
+    )}%)`;
+    document.getElementById(`fs-${linea}`).innerText = `${fs} (${Math.round(
+      (fs / total) * 100
+    )}%)`;
+  });
 }
 
 function renderTabla(data) {
@@ -137,88 +219,6 @@ function formatearEstado(estado) {
     default:
       return estado;
   }
-}
-
-function renderEstadoPorLinea(data) {
-  const lineas = ["A", "B", "C", "D", "E", "H"];
-
-  lineas.forEach((linea) => {
-    const dataLinea = data.filter((e) => e.linea === linea);
-    const total = dataLinea.length;
-
-    const funcionando = dataLinea.filter(
-      (e) => e.estado === "funcionando"
-    ).length;
-    const alerta = dataLinea.filter((e) => e.estado === "alerta").length;
-    const desconectada = dataLinea.filter(
-      (e) => e.estado === "desconectada"
-    ).length;
-    const fs = dataLinea.filter((e) => e.estado === "fs").length;
-    const pm = dataLinea.filter((e) => e.estado === "pm").length;
-
-    // Render gráfico
-    const canvas = document.getElementById(`chart${linea}`);
-    if (!chartsPorLinea[linea]) {
-      chartsPorLinea[linea] = new Chart(canvas, {
-        type: "doughnut",
-        data: {
-          labels: [
-            "Funcionando",
-            "Alerta",
-            "Desconectada",
-            "Fuera de Servicio",
-            "Pausa Manual",
-          ],
-          datasets: [
-            {
-              data: [funcionando, alerta, desconectada, fs, pm],
-              backgroundColor: [
-                "#0dae1a",
-                "#fca311",
-                "#888",
-                "#d90429",
-                "#097412",
-              ],
-              borderWidth: 0,
-              hoverBorderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          cutout: "50%",
-          plugins: { title: { display: false }, legend: { display: false } },
-        },
-      });
-    } else {
-      chartsPorLinea[linea].data.datasets[0].data = [
-        funcionando,
-        alerta,
-        desconectada,
-        fs,
-        pm,
-      ];
-      chartsPorLinea[linea].update();
-    }
-
-    // Render detalle
-    document.getElementById(
-      `func-${linea}`
-    ).innerText = `${funcionando} (${Math.round(
-      (funcionando / total) * 100
-    )}%)`;
-    document.getElementById(
-      `alerta-${linea}`
-    ).innerText = `${alerta} (${Math.round((alerta / total) * 100)}%)`;
-    document.getElementById(
-      `sc-${linea}`
-    ).innerText = `${desconectada} (${Math.round(
-      (desconectada / total) * 100
-    )}%)`;
-    document.getElementById(`fs-${linea}`).innerText = `${fs} (${Math.round(
-      (fs / total) * 100
-    )}%)`;
-  });
 }
 
 function filtrarTabla() {

@@ -18,7 +18,7 @@ export function formatearEstado(estado, modo = "icono") {
     },
     pm: {
       texto: "Pausa Manual",
-      icono: `<span class="material-symbols-outlined">pause_circle</span>`,
+      icono: `<span class="material-symbols-outlined" style="color:var(--color-pstv-alt)">pause_circle</span>`,
     },
   };
 
