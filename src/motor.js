@@ -208,22 +208,21 @@ function iniciarMotor() {
   }
 
   async function procesarSeteo(maquina, datos, nombre) {
-    // maquina.date = new Date();
-    // maquina.set_ejes = datos.cant_ejes;
-    // maquina.set_tiempodosif = datos.tiempo_dosif;
+    maquina.date = new Date();
+    maquina.set_tiempodosif = datos.tiempo_dosif;
+    maquina.set_ejes = datos.cant_ejes;
 
-    // maquina.historial.push({
-    //   nro_evento: maquina.historial.length + 1,
-    //   tipo_evento: "Seteo",
-    //   fecha: maquina.date,
-    //   set_tiempodosif: datos.tiempo_dosif,
-    //   set_ejes: datos.cant_ejes,
-    //   user: "gateway_" + nombre,
-    // });
+    maquina.historial.push({
+      nro_evento: maquina.historial.length + 1,
+      tipo_evento: "Seteo",
+      fecha: maquina.date,
+      set_tiempodosif: datos.tiempo_dosif,
+      set_ejes: datos.cant_ejes,
+      user: "gateway_" + nombre,
+    });
 
-    // await maquina.save();
-    // console.log(`✅ Seteo actualizado para máquina ${maquina.id}`);
-    console.log(`Seteo pendiente de implementación`);
+    await maquina.save();
+    console.log(`✅ Seteo actualizado para máquina ${maquina.id}`);
   }
 
   // placeholders:
@@ -270,16 +269,23 @@ function iniciarMotor() {
   // setInterval(solicitarEstados, 10 * 1000);
 }
 
-function enviarSeteoTiempo({ id, tiempo, ejes }) {
-  console.log("👉 Enviando seteo de tiempo al motor:", id, tiempo, ejes);
+function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
+  console.log(
+    "👉 Enviando seteo de tiempo al motor:",
+    id,
+    modelo,
+    tiempo,
+    ejes
+  );
 
   const idStr = id.toString().padStart(3, "0");
+  const modeloStr = modelo.toString();
   const ejesStr = ejes.toString().padStart(3, "0");
   const tiempoStr = Math.trunc(tiempo * 10)
     .toString()
     .padStart(2, "0");
 
-  const mensaje = `1${idStr}${ejesStr}${tiempoStr}0000000000000000`;
+  const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}0000000000000000`;
   // enviar a todos los gateways conectados
   for (const nombre in conexiones) {
     const ws = conexiones[nombre];

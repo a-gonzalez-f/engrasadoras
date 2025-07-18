@@ -35,13 +35,14 @@ function editarTiempo(e) {
 
   const valorTruncado = Math.trunc(numValor * 10) / 10;
 
-  console.log(e.id, valorTruncado, e.set_ejes);
+  console.log(e.id, e.modelo, valorTruncado, e.set_ejes);
 
   fetch(`/api/engrasadoras/setearTiempo`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: e.id,
+      modelo: e.modelo,
       tiempo: valorTruncado,
       ejes: e.set_ejes,
     }),

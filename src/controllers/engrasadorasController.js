@@ -302,15 +302,20 @@ const getUnaEngrasadora = async (req, res) => {
 };
 
 const setearTiempo = async (req, res) => {
-  const { id, tiempo, ejes } = req.body;
+  const { id, modelo, tiempo, ejes } = req.body;
 
-  if (!id || tiempo === undefined || ejes === undefined) {
+  if (
+    !id ||
+    tiempo === undefined ||
+    ejes === undefined ||
+    modelo === undefined
+  ) {
     return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
   }
 
   try {
-    console.log("Enviando al motor:", { id, tiempo, ejes });
-    motor.enviarSeteoTiempo({ id, tiempo, ejes });
+    console.log("Enviando al motor:", { id, modelo, tiempo, ejes });
+    motor.enviarSeteoTiempo({ id, modelo, tiempo, ejes });
     res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
   } catch (err) {
     console.error("Error al enviar seteo de tiempo:", err);
