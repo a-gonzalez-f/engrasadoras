@@ -3,6 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  setearTiempo,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,
@@ -14,6 +15,8 @@ const {
   verificarId,
   getUnaEngrasadora,
 } = require("../controllers/engrasadorasController");
+
+router.post("/setearTiempo", setearTiempo);
 
 router.get("/", getPorLinea);
 router.put("/:id", actualizarSeteo);

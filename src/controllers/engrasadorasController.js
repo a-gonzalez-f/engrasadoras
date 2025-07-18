@@ -1,6 +1,7 @@
 // controllers/engrasadorasController.js
 
 const Engrasadora = require("../models/engrasadora");
+const motor = require("../motor");
 
 const getPorLinea = async (req, res) => {
   try {
@@ -300,7 +301,25 @@ const getUnaEngrasadora = async (req, res) => {
   }
 };
 
+const setearTiempo = async (req, res) => {
+  const { id, tiempo, ejes } = req.body;
+
+  if (!id || tiempo === undefined || ejes === undefined) {
+    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
+  }
+
+  try {
+    console.log("Enviando al motor:", { id, tiempo, ejes });
+    motor.enviarSeteoTiempo({ id, tiempo, ejes });
+    res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
+  } catch (err) {
+    console.error("Error al enviar seteo de tiempo:", err);
+    res.status(500).json({ mensaje: "Error al enviar el seteo al motor" });
+  }
+};
+
 module.exports = {
+  setearTiempo,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,

@@ -35,17 +35,20 @@ function editarTiempo(e) {
 
   const valorTruncado = Math.trunc(numValor * 10) / 10;
 
-  fetch(`/api/engrasadoras/${e._id}`, {
-    method: "PUT",
+  console.log(e.id, valorTruncado, e.set_ejes);
+
+  fetch(`/api/engrasadoras/setearTiempo`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ set_tiempodosif: valorTruncado }),
+    body: JSON.stringify({
+      id: e.id,
+      tiempo: valorTruncado,
+      ejes: e.set_ejes,
+    }),
   })
     .then((res) => res.json())
     .then((data) => {
-      e.set_tiempodosif = data.set_tiempodosif;
-      e.historial = data.historial;
-      document.getElementById("tiempoDosif").innerText = data.set_tiempodosif;
-      listarHistorialEnModal(e.historial);
+      alert(data.mensaje);
     })
     .catch((err) => alert(err.message));
 }

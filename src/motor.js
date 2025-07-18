@@ -269,3 +269,27 @@ function iniciarMotor() {
 
   // setInterval(solicitarEstados, 10 * 1000);
 }
+
+function enviarSeteoTiempo({ id, tiempo, ejes }) {
+  console.log("👉 Enviando seteo de tiempo al motor:", id, tiempo, ejes);
+
+  const idStr = id.toString().padStart(3, "0");
+  const ejesStr = ejes.toString().padStart(3, "0");
+  const tiempoStr = Math.trunc(tiempo * 10)
+    .toString()
+    .padStart(2, "0");
+
+  const mensaje = `1${idStr}${ejesStr}${tiempoStr}0000000000000000`;
+  // enviar a todos los gateways conectados
+  for (const nombre in conexiones) {
+    const ws = conexiones[nombre];
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(mensaje);
+      console.log(`📤 Seteo enviado a ${nombre}: ${mensaje}`);
+    }
+  }
+}
+
+module.exports = {
+  enviarSeteoTiempo,
+};
