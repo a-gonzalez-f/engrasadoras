@@ -12,6 +12,10 @@ form {
   gap: 1rem;
   margin-top: 2rem;
   width: 50vw;
+  padding: 2rem;
+  background-color: var(--color-fondo-hover);
+  border-radius: 2rem;
+  box-shadow: 0 10px 10px black;
 }
 
 form > h3 {
