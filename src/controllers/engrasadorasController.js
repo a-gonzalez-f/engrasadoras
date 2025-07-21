@@ -338,9 +338,9 @@ const setearEjes = async (req, res) => {
   try {
     console.log("Enviando al motor:", { id, modelo, tiempo, ejes });
     motor.enviarSeteoEjes({ id, modelo, tiempo, ejes });
-    res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
+    res.json({ mensaje: `Seteo de ejes enviado a la engrasadora ${id}` });
   } catch (err) {
-    console.error("Error al enviar seteo de tiempo:", err);
+    console.error("Error al enviar seteo de ejes:", err);
     res.status(500).json({ mensaje: "Error al enviar el seteo al motor" });
   }
 };
