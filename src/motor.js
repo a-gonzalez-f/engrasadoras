@@ -227,7 +227,23 @@ function iniciarMotor() {
 
   // placeholders:
   async function procesarResetAccionamientos(maquina, datos, nombre) {
-    console.log(`Reset Accionamientos pendiente de implementación`);
+    maquina.date = new Date();
+    maquina.cont_accionam = 0;
+
+    maquina.historial.push({
+      nro_evento: maquina.historial.length + 1,
+      tipo_evento: "Reset Accionam.",
+      fecha: maquina.date,
+      set_tiempodosif: datos.tiempo_dosif,
+      set_ejes: datos.cant_ejes,
+      cont_accionam: 0,
+      user: "gateway_" + nombre,
+    });
+
+    await maquina.save();
+    console.log(
+      `✅ Reseteo accionamientos actualizado para máquina ${maquina.id}`
+    );
   }
 
   async function procesarSwitchOnOff(maquina, datos, nombre) {
@@ -317,7 +333,24 @@ function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
   }
 }
 
+function enviarResetAccionam({ id }) {
+  console.log("👉 Enviando reset accionamientos:", id);
+
+  const idStr = id.toString().padStart(3, "0");
+
+  const mensaje = `2${idStr}`;
+  // enviar a todos los gateways conectados
+  for (const nombre in conexiones) {
+    const ws = conexiones[nombre];
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(mensaje);
+      console.log(`📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
+    }
+  }
+}
+
 module.exports = {
   enviarSeteoTiempo,
   enviarSeteoEjes,
+  enviarResetAccionam,
 };

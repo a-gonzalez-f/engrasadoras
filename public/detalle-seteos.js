@@ -109,13 +109,18 @@ function editarUbicacion(e) {
 function resetearAccionamientos(e) {
   if (!confirm("¿Seguro que desea resetear los accionamientos?")) return;
 
-  fetch(`/api/engrasadoras/${e._id}/resetAccionamientos`, { method: "PUT" })
+  console.log(e.id);
+
+  fetch(`/api/engrasadoras/resetAccionam`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      id: e.id,
+    }),
+  })
     .then((res) => res.json())
     .then((data) => {
-      e.cont_accionam = data.cont_accionam;
-      e.historial = data.historial;
-      document.getElementById("accionamientos").innerText = data.cont_accionam;
-      listarHistorialEnModal(e.historial);
+      alert(data.mensaje);
     })
     .catch((err) => alert(err.message));
 }

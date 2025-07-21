@@ -160,43 +160,6 @@ const eliminarComentario = async (req, res) => {
   }
 };
 
-const resetAccionamientos = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const engrasadora = await Engrasadora.findById(id);
-    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
-
-    engrasadora.cont_accionam = 0;
-
-    const snapshot = {
-      nro_evento: engrasadora.historial.length + 1,
-      tipo_evento: "Reset Accionamientos",
-      fecha: new Date(),
-      estado: engrasadora.estado,
-      set_tiempodosif: engrasadora.set_tiempodosif,
-      set_ejes: engrasadora.set_ejes,
-      sens_corriente: engrasadora.sens_corriente,
-      sens_flujo: engrasadora.sens_flujo,
-      sens_power: engrasadora.sens_power,
-      cont_accionam: engrasadora.cont_accionam,
-      nombre: engrasadora.nombre,
-      modelo: engrasadora.modelo,
-      linea: engrasadora.linea,
-      date: engrasadora.date,
-    };
-
-    engrasadora.historial.push(snapshot);
-
-    const result = await engrasadora.save();
-
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error al resetear los accionamientos");
-  }
-};
-
 const switchOnOff = async (req, res) => {
   const { id } = req.params;
   const { estado } = req.body;
@@ -345,14 +308,35 @@ const setearEjes = async (req, res) => {
   }
 };
 
+const resetAccionamientos = async (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
+  }
+
+  try {
+    console.log("Enviando al motor:", { id });
+    motor.enviarResetAccionam({ id });
+    res.json({
+      mensaje: `Reset de accionamientos enviado a la engrasadora ${id}`,
+    });
+  } catch (err) {
+    console.error("Error al enviar reset accionam:", err);
+    res
+      .status(500)
+      .json({ mensaje: "Error al enviar el reset accionam al motor" });
+  }
+};
+
 module.exports = {
   setearTiempo,
   setearEjes,
+  resetAccionamientos,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
-  resetAccionamientos,
   resetHistorial,
   switchOnOff,
   crearEngrasadora,

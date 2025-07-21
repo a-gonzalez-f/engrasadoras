@@ -5,11 +5,11 @@ const router = express.Router();
 const {
   setearTiempo,
   setearEjes,
+  resetAccionamientos,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
-  resetAccionamientos,
   resetHistorial,
   switchOnOff,
   crearEngrasadora,
@@ -19,12 +19,12 @@ const {
 
 router.post("/setearTiempo", setearTiempo);
 router.post("/setearEjes", setearEjes);
+router.post("/resetAccionam", resetAccionamientos);
 
 router.get("/", getPorLinea);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
-router.put("/:id/resetAccionamientos", resetAccionamientos);
 router.put("/:id/resetHistorial", resetHistorial);
 router.put("/:id/switchOnOff", switchOnOff);
 router.post("/", crearEngrasadora);
