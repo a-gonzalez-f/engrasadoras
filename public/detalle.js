@@ -113,7 +113,9 @@ setInterval(() => {
                 actualizada.set_ejes;
               document.getElementById("estado").value = actualizada.estado;
               document.getElementById("corriente").innerText =
-                actualizada.sens_corriente + " mA";
+                actualizada.sens_corriente
+                  ? actualizada.sens_corriente + " mA"
+                  : "-";
               document.getElementById("flujo").innerText =
                 actualizada.sens_flujo ? "Si" : "No";
               document.getElementById("power").innerText =

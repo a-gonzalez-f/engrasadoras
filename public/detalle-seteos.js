@@ -67,17 +67,21 @@ function editarEjes(e) {
     return;
   }
 
-  fetch(`/api/engrasadoras/${e._id}`, {
-    method: "PUT",
+  console.log(e.id, e.modelo, e.set_tiempodosif, numValor);
+
+  fetch(`/api/engrasadoras/setearEjes`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ set_ejes: numValor }),
+    body: JSON.stringify({
+      id: e.id,
+      modelo: e.modelo,
+      tiempo: e.set_tiempodosif,
+      ejes: numValor,
+    }),
   })
     .then((res) => res.json())
     .then((data) => {
-      e.set_ejes = data.set_ejes;
-      e.historial = data.historial;
-      document.getElementById("cantEjes").innerText = data.set_ejes;
-      listarHistorialEnModal(e.historial);
+      alert(data.mensaje);
     })
     .catch((err) => alert(err.message));
 }

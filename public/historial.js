@@ -33,9 +33,9 @@ export function listarHistorialEnModal(historial, completo = false) {
           hour12: false,
         })}</td>
         <td>${formatearEstado(h.estado, "texto")}</td>
-        <td>${h.set_tiempodosif} s</td>
-        <td>${h.set_ejes}</td>
-        <td>${h.sens_corriente} mA</td>
+        <td>${h.set_tiempodosif ? h.set_tiempodosif + " s" : "-"}</td>
+        <td>${h.set_ejes ? h.set_ejes : "-"}</td>
+        <td>${h.sens_corriente ? h.sens_corriente + "mA" : "-"}</td>
         <td>${h.sens_flujo ? "Sí" : "No"}</td>
         <td>${h.sens_power ? "Sí" : "No"}</td>
         <td>${h.lora_signal || "-"}</td>

@@ -323,8 +323,31 @@ const setearTiempo = async (req, res) => {
   }
 };
 
+const setearEjes = async (req, res) => {
+  const { id, modelo, tiempo, ejes } = req.body;
+
+  if (
+    !id ||
+    tiempo === undefined ||
+    ejes === undefined ||
+    modelo === undefined
+  ) {
+    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
+  }
+
+  try {
+    console.log("Enviando al motor:", { id, modelo, tiempo, ejes });
+    motor.enviarSeteoEjes({ id, modelo, tiempo, ejes });
+    res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
+  } catch (err) {
+    console.error("Error al enviar seteo de tiempo:", err);
+    res.status(500).json({ mensaje: "Error al enviar el seteo al motor" });
+  }
+};
+
 module.exports = {
   setearTiempo,
+  setearEjes,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,

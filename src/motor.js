@@ -285,7 +285,28 @@ function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
     .toString()
     .padStart(2, "0");
 
-  const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}0000000000000000`;
+  const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}`;
+  // enviar a todos los gateways conectados
+  for (const nombre in conexiones) {
+    const ws = conexiones[nombre];
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(mensaje);
+      console.log(`📤 Seteo enviado a ${nombre}: ${mensaje}`);
+    }
+  }
+}
+
+function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
+  console.log("👉 Enviando seteo de ejes al motor:", id, modelo, tiempo, ejes);
+
+  const idStr = id.toString().padStart(3, "0");
+  const modeloStr = modelo.toString();
+  const ejesStr = ejes.toString().padStart(3, "0");
+  const tiempoStr = Math.trunc(tiempo * 10)
+    .toString()
+    .padStart(2, "0");
+
+  const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}`;
   // enviar a todos los gateways conectados
   for (const nombre in conexiones) {
     const ws = conexiones[nombre];
@@ -298,4 +319,5 @@ function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
 
 module.exports = {
   enviarSeteoTiempo,
+  enviarSeteoEjes,
 };
