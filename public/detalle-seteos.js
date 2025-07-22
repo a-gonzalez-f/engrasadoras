@@ -126,39 +126,26 @@ function resetearAccionamientos(e) {
 }
 
 function toggleOnOff(e) {
-  const nuevoEstado = e.estado === "pm" ? "funcionando" : "pm";
-  if (
-    !confirm(
-      `¿Seguro que desea cambiar el estado a "${formatearEstado(
-        nuevoEstado,
-        "texto"
-      )}"?`
-    )
-  )
+  const nuevoSeteo = e.on_off === false;
+  const nuevoEstadoStr = nuevoSeteo ? "ON" : "OFF";
+  const nuevoSeteoDig = nuevoSeteo ? "1" : "0";
+
+  if (!confirm(`¿Seguro que desea cambiar el estado a "${nuevoEstadoStr}"?`))
     return;
 
-  fetch(`/api/engrasadoras/${e._id}/switchOnOff`, {
-    method: "PUT",
+  console.log(e.id, nuevoSeteoDig);
+
+  fetch(`/api/engrasadoras/switchOnOff`, {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ estado: nuevoEstado }),
+    body: JSON.stringify({
+      id: e.id,
+      on_off: nuevoSeteoDig,
+    }),
   })
     .then((res) => res.json())
     .then((data) => {
-      e.estado = data.estado;
-      e.historial = data.historial;
-
-      document.getElementById("estadoMaquina").innerText = formatearEstado(
-        data.estado,
-        "texto"
-      ).toUpperCase();
-      document.getElementById("estadoMaquina").className = data.estado;
-
-      const btnApagar = document.getElementById("apagarEquipo");
-      btnApagar.classList.remove("apagar", "encender");
-      if (e.estado === "pm") btnApagar.classList.add("encender");
-      else if (e.estado === "funcionando") btnApagar.classList.add("apagar");
-
-      listarHistorialEnModal(e.historial);
+      alert(data.mensaje);
     })
     .catch((err) => alert(err.message));
 }

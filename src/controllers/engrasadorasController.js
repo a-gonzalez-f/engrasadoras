@@ -160,46 +160,6 @@ const eliminarComentario = async (req, res) => {
   }
 };
 
-const switchOnOff = async (req, res) => {
-  const { id } = req.params;
-  const { estado } = req.body;
-
-  if (typeof estado !== "string")
-    return res.status(400).send("Estado inválido");
-
-  try {
-    const engrasadora = await Engrasadora.findById(id);
-    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
-
-    engrasadora.estado = estado;
-
-    const snapshot = {
-      nro_evento: engrasadora.historial.length + 1,
-      tipo_evento: "Switch ON/OFF",
-      fecha: new Date(),
-      estado: engrasadora.estado,
-      set_tiempodosif: engrasadora.set_tiempodosif,
-      set_ejes: engrasadora.set_ejes,
-      sens_corriente: engrasadora.sens_corriente,
-      sens_flujo: engrasadora.sens_flujo,
-      sens_power: engrasadora.sens_power,
-      cont_accionam: engrasadora.cont_accionam,
-      nombre: engrasadora.nombre,
-      modelo: engrasadora.modelo,
-      linea: engrasadora.linea,
-      date: engrasadora.date,
-    };
-
-    engrasadora.historial.push(snapshot);
-    const result = await engrasadora.save();
-
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Error al cambiar el estado");
-  }
-};
-
 const resetHistorial = async (req, res) => {
   const { id } = req.params;
 
@@ -329,16 +289,36 @@ const resetAccionamientos = async (req, res) => {
   }
 };
 
+const switchOnOff = async (req, res) => {
+  const { id, on_off } = req.body;
+  const on_offStr = on_off ? "ON" : "OFF";
+
+  if (!id) {
+    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
+  }
+
+  try {
+    console.log("Enviando al motor:", { id, on_off });
+    motor.enviarOnOff({ id, on_off });
+    res.json({
+      mensaje: `Switch ${on_offStr} enviado a la engrasadora ${id}`,
+    });
+  } catch (err) {
+    console.error("Error al enviar switch on-off:", err);
+    res.status(500).json({ mensaje: "Error al enviar switch on-off al motor" });
+  }
+};
+
 module.exports = {
   setearTiempo,
   setearEjes,
   resetAccionamientos,
+  switchOnOff,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
   resetHistorial,
-  switchOnOff,
   crearEngrasadora,
   verificarId,
   getUnaEngrasadora,

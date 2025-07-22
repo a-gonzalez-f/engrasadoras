@@ -131,11 +131,17 @@ setInterval(() => {
               );
 
               const btnApagar = document.getElementById("apagarEquipo");
+              const switchButton = document.querySelector(
+                "#apagarEquipo > div > span"
+              );
               btnApagar.classList.remove("apagar", "encender");
-              if (actualizada.on_off === false)
+              if (actualizada.on_off === false) {
                 btnApagar.classList.add("encender");
-              else if (actualizada.on_off === true)
+                switchButton.innerHTML = "play_arrow";
+              } else if (actualizada.on_off === true) {
                 btnApagar.classList.add("apagar");
+                switchButton.innerHTML = "pause";
+              }
             }
           })
           .catch((err) => console.error("Error al actualizar modal:", err));

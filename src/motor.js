@@ -16,7 +16,7 @@ conectarDB()
 
 const gateways = [
   { nombre: "Agus", ip: "172.27.66.205", puerto: 80 },
-  // { nombre: "Dani", ip: "172.21.31.182", puerto: 80 },
+  { nombre: "Dani", ip: "172.21.31.182", puerto: 80 },
   // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
 ];
 
@@ -225,7 +225,6 @@ function iniciarMotor() {
     console.log(`✅ Seteo actualizado para máquina ${maquina.id}`);
   }
 
-  // placeholders:
   async function procesarResetAccionamientos(maquina, datos, nombre) {
     maquina.date = new Date();
     maquina.cont_accionam = 0;
@@ -247,7 +246,36 @@ function iniciarMotor() {
   }
 
   async function procesarSwitchOnOff(maquina, datos, nombre) {
-    console.log(`Switch On/Off pendiente de implementación`);
+    maquina.date = new Date();
+    on_offDig = datos.on_off ? "1" : "0";
+    maquina.on_off = on_offDig;
+    maquina.estado = datos.on_off ? "funcionando" : "pm";
+    maquina.set_tiempodosif = datos.tiempo_dosif;
+    maquina.set_ejes = datos.cant_ejes;
+    maquina.sens_corriente = datos.corriente;
+    maquina.sens_flujo = datos.flujo;
+    maquina.sens_power = datos.power;
+    maquina.cont_accionam = datos.total_accionam;
+    maquina.lora_signal = datos.lora_signal;
+
+    maquina.historial.push({
+      nro_evento: maquina.historial.length + 1,
+      tipo_evento: "Switch ON/OFF",
+      fecha: new Date(),
+      estado: maquina.estado,
+      set_tiempodosif: datos.tiempo_dosif,
+      set_ejes: datos.cant_ejes,
+      sens_corriente: datos.corriente,
+      sens_flujo: datos.flujo,
+      on_off: datos.on_off,
+      sens_power: datos.power,
+      cont_accionam: datos.total_accionam,
+      lora_signal: datos.lora_signal.toString(),
+      user: "gateway_" + nombre,
+    });
+
+    await maquina.save();
+    console.log(`✅ Switch on_off actualizado para máquina ${maquina.id}`);
   }
 
   async function procesarForzarEngrase(maquina, datos, nombre) {
@@ -349,8 +377,26 @@ function enviarResetAccionam({ id }) {
   }
 }
 
+function enviarOnOff({ id, on_off }) {
+  console.log("👉 Enviando on-off:", id);
+
+  const idStr = id.toString().padStart(3, "0");
+  const on_offStr = on_off ? "1" : "0";
+
+  const mensaje = `3${idStr}${on_offStr}`;
+  // enviar a todos los gateways conectados
+  for (const nombre in conexiones) {
+    const ws = conexiones[nombre];
+    if (ws.readyState === WebSocket.OPEN) {
+      ws.send(mensaje);
+      console.log(`📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
+    }
+  }
+}
+
 module.exports = {
   enviarSeteoTiempo,
   enviarSeteoEjes,
   enviarResetAccionam,
+  enviarOnOff,
 };

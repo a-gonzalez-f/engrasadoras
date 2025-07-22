@@ -6,12 +6,12 @@ const {
   setearTiempo,
   setearEjes,
   resetAccionamientos,
+  switchOnOff,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
   resetHistorial,
-  switchOnOff,
   crearEngrasadora,
   verificarId,
   getUnaEngrasadora,
@@ -20,13 +20,13 @@ const {
 router.post("/setearTiempo", setearTiempo);
 router.post("/setearEjes", setearEjes);
 router.post("/resetAccionam", resetAccionamientos);
+router.post("/switchOnOff", switchOnOff);
 
 router.get("/", getPorLinea);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
 router.put("/:id/resetHistorial", resetHistorial);
-router.put("/:id/switchOnOff", switchOnOff);
 router.post("/", crearEngrasadora);
 router.get("/:id", verificarId);
 router.get("/full/:id", getUnaEngrasadora);

@@ -143,7 +143,7 @@ export function renderDetalleMaquina(maquina) {
               </div>
               <div id="apagarEquipo" class="reset">
                 <div>
-                  <span class="material-symbols-outlined icono-reset">mode_off_on</span>
+                  <span class="material-symbols-outlined icono-reset">pause</span>
                 </div>
               </div> 
             </div> 
@@ -222,12 +222,15 @@ export function renderDetalleMaquina(maquina) {
   });
 
   const botonApagar = document.getElementById("apagarEquipo");
+  const switchButton = document.querySelector("#apagarEquipo > div > span");
   botonApagar.classList.remove("apagar", "encender");
 
   if (e.estado === "pm") {
     botonApagar.classList.add("encender");
+    switchButton.innerHTML = "play_arrow";
   } else {
     botonApagar.classList.add("apagar");
+    switchButton.innerHTML = "pause";
   }
 
   document.getElementById("modalDetalle").style.display = "flex";
