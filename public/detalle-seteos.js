@@ -148,6 +148,8 @@ function toggleOnOff(e) {
   })
     .then((res) => res.json())
     .then((data) => {
+      // Switch AUTOMATICO EN FRONT (NO ESPERA RESPUESTA DEL MOTOR)
+      e.on_off = nuevoSeteo;
       alert(data.mensaje);
     })
     .catch((err) => alert(err.message));
