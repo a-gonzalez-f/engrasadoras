@@ -126,21 +126,24 @@ function resetearAccionamientos(e) {
 }
 
 function toggleOnOff(e) {
-  const nuevoSeteo = e.on_off === false;
+  const nuevoSeteo = e.on_off ? false : true;
   const nuevoEstadoStr = nuevoSeteo ? "ON" : "OFF";
-  const nuevoSeteoDig = nuevoSeteo ? "1" : "0";
 
-  if (!confirm(`¿Seguro que desea cambiar el estado a "${nuevoEstadoStr}"?`))
+  if (
+    !confirm(
+      `¿Seguro que desea cambiar el estado a ${nuevoEstadoStr} (${nuevoSeteo})?`
+    )
+  )
     return;
 
-  console.log(e.id, nuevoSeteoDig);
+  console.log(e.id, nuevoSeteo);
 
   fetch(`/api/engrasadoras/switchOnOff`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       id: e.id,
-      on_off: nuevoSeteoDig,
+      on_off: nuevoSeteo,
     }),
   })
     .then((res) => res.json())

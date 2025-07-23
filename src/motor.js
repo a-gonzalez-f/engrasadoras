@@ -16,7 +16,7 @@ conectarDB()
 
 const gateways = [
   { nombre: "Agus", ip: "172.27.66.205", puerto: 80 },
-  { nombre: "Dani", ip: "172.21.31.182", puerto: 80 },
+  // { nombre: "Dani", ip: "172.27.66.240", puerto: 80 },
   // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
 ];
 
