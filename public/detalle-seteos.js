@@ -125,32 +125,60 @@ function resetearAccionamientos(e) {
     .catch((err) => alert(err.message));
 }
 
-function toggleOnOff(e) {
-  const nuevoSeteo = e.on_off ? false : true;
-  const nuevoEstadoStr = nuevoSeteo ? "ON" : "OFF";
+function toBool(v) {
+  // por si en la DB viene como "1"/"0", 1/0, true/false
+  return v === true || v === 1 || v === "1";
+}
 
-  if (
-    !confirm(
-      `¿Seguro que desea cambiar el estado a ${nuevoEstadoStr} (${nuevoSeteo})?`
+async function toggleOnOff(e) {
+  try {
+    // Traigo on_off mas reciente de la DB
+    const res = await fetch(`/api/engrasadoras/full/${e._id}`);
+    if (!res.ok) throw new Error("No se pudo obtener el estado actual");
+    const maquina = await res.json();
+
+    const actualDB = toBool(maquina.on_off);
+    const solicitado = !actualDB; // toggleo respecto a lo REAL, no a e.on_off
+
+    // Si el solicitado es igual al actual, no enviar
+    if (solicitado === actualDB) {
+      alert(
+        `La máquina ya está ${
+          actualDB ? "ON" : "OFF"
+        }. No se enviará ningún código.`
+      );
+      e.on_off = actualDB;
+      return;
+    }
+
+    const nuevoEstadoStr = solicitado ? "ON" : "OFF";
+    if (
+      !confirm(
+        `¿Seguro que desea cambiar el estado a ${nuevoEstadoStr} (${solicitado})?`
+      )
     )
-  )
-    return;
+      return;
 
-  console.log(e.id, nuevoSeteo);
+    console.log(e.id, "actual DB:", actualDB, "nuevo:", solicitado);
 
-  fetch(`/api/engrasadoras/switchOnOff`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id: e.id,
-      on_off: nuevoSeteo,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      // Switch AUTOMATICO EN FRONT (NO ESPERA RESPUESTA DEL MOTOR)
-      e.on_off = nuevoSeteo;
-      alert(data.mensaje);
-    })
-    .catch((err) => alert(err.message));
+    // Envio el cambio
+    const resp = await fetch(`/api/engrasadoras/switchOnOff`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: maquina.id,
+        on_off: solicitado,
+      }),
+    });
+
+    const data = await resp.json();
+    if (!resp.ok) throw new Error(data.mensaje || "Error en el switchOnOff");
+
+    alert(data.mensaje);
+
+    //Actualizo el objeto en memoria para que el próximo click no reenvíe lo mismo
+    e.on_off = solicitado;
+  } catch (err) {
+    alert("Error al intentar cambiar estado: " + err.message);
+  }
 }
