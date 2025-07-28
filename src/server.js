@@ -5,8 +5,8 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
 const http = require("http");
-// const initWebSocket = require("./wsServer");
 const engrasadorasRoutes = require("./routes/engrasadoras");
+const gatewaysRoutes = require("./routes/gateways");
 
 dotenv.config();
 console.log("MONGO_URI:", process.env.MONGO_URI);
@@ -19,6 +19,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/api/engrasadoras", engrasadorasRoutes);
+app.use("/api/gateways", gatewaysRoutes);
 
 app.get("/ingreso", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/ingresoMaq.html"));
@@ -28,8 +29,8 @@ app.get("/detalle", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/detalle.html"));
 });
 
-app.get("/configuracion", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/config.html"));
+app.get("/sistema", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/sistema.html"));
 });
 
 mongoose

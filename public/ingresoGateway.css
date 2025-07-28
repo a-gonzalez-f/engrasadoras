@@ -1,0 +1,49 @@
+form {
+  margin-top: 0;
+  padding: 2rem 15%;
+}
+
+section:hover {
+  box-shadow: none;
+}
+
+#inputsEngrasadoras {
+  grid-column: span 2;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.flex {
+  display: flex;
+}
+
+.btnAdd {
+  background-color: rgba(128, 128, 128, 0.3);
+}
+.btnAdd:hover {
+  background-color: rgba(128, 128, 128, 0.5);
+}
+
+.add {
+  font-size: 16px !important;
+}
+
+.add:hover {
+  color: var(--color-pstv);
+}
+
+.remove:hover {
+  color: var(--color-error);
+}
+
+.actionButtons {
+  margin-left: 5px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.actionButtons > button > span {
+  font-size: 15px;
+}
