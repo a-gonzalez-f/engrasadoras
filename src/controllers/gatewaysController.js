@@ -1,3 +1,5 @@
+// controllers/gatewaysController.js
+
 const Gateway = require("../models/gateway");
 
 exports.listarGateways = async (req, res) => {

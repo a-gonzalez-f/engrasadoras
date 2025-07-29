@@ -1,5 +1,7 @@
 // sistema-form.js
 
+import { enviarFormularioGateway } from "./form-handler.js";
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("formGateway");
 
@@ -109,6 +111,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   asignarEventosInputsID();
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // Recolectar datos
+    const data = {
+      ip: document.getElementById("ip").value.trim(),
+      nombre: document.getElementById("nombre").value.trim(),
+      id: document.getElementById("idGateway").value.trim(),
+      linea: document.getElementById("linea").value.trim(),
+      ubicacion: document.getElementById("ubi").value.trim(),
+      engrasadoras: Array.from(document.querySelectorAll(".id")).map((input) =>
+        input.value.trim()
+      ),
+    };
+
+    try {
+      const res = await enviarFormularioGateway(data);
+      alert("Formulario enviado con éxito");
+      console.log(res);
+    } catch (err) {
+      alert("Error al enviar: " + err.message);
+    }
+  });
 });
 
 function asignarEventosInputsID() {
