@@ -16,6 +16,7 @@ form {
   background-color: var(--color-fondo-hover);
   border-radius: 2rem;
   box-shadow: 0 10px 10px black;
+  padding: 2rem 7rem;
 }
 
 form > h3 {

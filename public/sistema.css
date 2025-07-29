@@ -1,0 +1,54 @@
+#btnIngreso {
+  position: fixed;
+  bottom: 1rem;
+  right: -140px;
+  padding: 0.75rem 0 0.75rem 0.5rem;
+  background-color: var(--color-fondo-hover);
+  border-radius: 10px 0 0 10px;
+  box-shadow: 0 2px 5px black;
+  display: flex;
+  width: 170px;
+  transition: right 0.5s;
+}
+
+#btnIngreso:hover {
+  background-color: var(--color-secundario);
+  right: 0;
+}
+
+.chevron {
+  padding: 0;
+  width: 30px;
+}
+
+#modalIngreso {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+#sectionIngreso {
+  position: relative;
+}
+
+.closeModal {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: #444;
+  transition: color 0.2s ease;
+}
+
+.closeModal:hover {
+  color: #fff;
+}
