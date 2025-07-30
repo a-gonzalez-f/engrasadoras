@@ -17,6 +17,8 @@ console.log("PORT:", process.env.PORT);
 const app = express();
 const server = http.createServer(app);
 
+require("./wsClient");
+
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));
 
@@ -40,8 +42,6 @@ mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
     console.log("Conectado a MongoDB");
-
-    // initWebSocket(server);
 
     server.listen(process.env.PORT, () =>
       console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
