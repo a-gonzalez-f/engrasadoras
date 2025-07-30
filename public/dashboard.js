@@ -68,9 +68,9 @@ async function cargarEngrasadoras() {
   }
 
   // Actualizar resumen global
-  document.getElementById(
-    "func-global"
-  ).innerText = `${funcionando} (${Math.round((funcionando / total) * 100)}%)`;
+  document.getElementById("func-global").innerText = `${
+    funcionando + pm
+  } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
   document.getElementById("alerta-global").innerText = `${alerta} (${Math.round(
     (alerta / total) * 100
   )}%)`;
@@ -148,11 +148,9 @@ function renderEstadoPorLinea(data) {
     }
 
     // Render detalle
-    document.getElementById(
-      `func-${linea}`
-    ).innerText = `${funcionando} (${Math.round(
-      (funcionando / total) * 100
-    )}%)`;
+    document.getElementById(`func-${linea}`).innerText = `${
+      funcionando + pm
+    } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
     document.getElementById(
       `alerta-${linea}`
     ).innerText = `${alerta} (${Math.round((alerta / total) * 100)}%)`;
