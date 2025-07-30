@@ -93,7 +93,6 @@
                 name="ubicacion"
                 maxlength="40"
                 placeholder="Ej: Estación"
-                required
               />
             </label>
 
@@ -157,7 +156,7 @@
       <section id="sectionGateways">
         <div id="buscadorGateways">
           <label
-            >Buscar por IP:
+            >Por IP:
             <input
               id="porIp"
               type="text"
@@ -166,8 +165,9 @@
               required
             /> </label
           ><label
-            >Buscar por Línea
+            >Por Línea
             <select name="porLinea" id="porLinea">
+              <option value="todas">Todas</option>
               <option value="A">A</option>
               <option value="B">B</option>
               <option value="C">C</option>
