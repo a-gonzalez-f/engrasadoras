@@ -1,3 +1,5 @@
+// sistema-tools.js
+
 const btnIngreso = document.getElementById("btnIngreso");
 const sectionIngreso = document.getElementById("sectionIngreso");
 

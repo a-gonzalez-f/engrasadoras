@@ -1,5 +1,9 @@
+// wsClient.js
+
 const WebSocket = require("ws");
 const readline = require("readline");
+
+global.wsClientConectado = false;
 
 const gateways = [
   { nombre: "Agus", ip: "172.27.66.205", puerto: 80 },
@@ -10,32 +14,41 @@ const gateways = [
 const conexiones = {};
 const reconectando = {};
 
+function actualizarEstadoWsClient() {
+  global.wsClientConectado = Object.keys(conexiones).length > 0;
+}
+
 function conectarGateway(gateway) {
   if (reconectando[gateway.nombre]) return;
 
   const url = `ws://${gateway.ip}:${gateway.puerto}/ws`;
   const ws = new WebSocket(url);
 
-  console.log(`Conectando a ${gateway.nombre}...`);
+  console.log(`wsClient: Conectando a ${gateway.nombre}...`);
 
   ws.on("open", () => {
-    console.log(`${gateway.nombre} conectado`);
+    console.log(`wsClient: ${gateway.nombre} conectado`);
     conexiones[gateway.nombre] = ws;
     reconectando[gateway.nombre] = false;
+    actualizarEstadoWsClient();
   });
 
   ws.on("message", (data) => {
-    console.log(`Mensaje recibido de ${gateway.nombre}:`, data.toString());
+    console.log(
+      `wsClient: Mensaje recibido de ${gateway.nombre}:`,
+      data.toString()
+    );
   });
 
   ws.on("close", () => {
-    console.log(`Conexión cerrada con ${gateway.nombre}`);
+    console.log(`wsClient: Conexión cerrada con ${gateway.nombre}`);
     delete conexiones[gateway.nombre];
     intentarReconectar(gateway);
+    actualizarEstadoWsClient();
   });
 
   ws.on("error", (err) => {
-    console.error(`Error en ${gateway.nombre}:`, err.message);
+    console.error(`wsClient: Error en ${gateway.nombre}:`, err.message);
   });
 }
 
@@ -44,38 +57,44 @@ function intentarReconectar(gateway, intento = 1) {
 
   const delay = Math.min(10000, intento * 5000);
   console.log(
-    `Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
+    `wsClient: Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
   );
 
   setTimeout(() => {
     const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
 
     console.log(
-      `Reintentando conexión a ${gateway.nombre} (intento ${intento})`
+      `wsClient: Reintentando conexión a ${gateway.nombre} (intento ${intento})`
     );
 
     ws.on("open", () => {
-      console.log(`${gateway.nombre} reconectado`);
+      console.log(`wsClient: ${gateway.nombre} reconectado`);
       conexiones[gateway.nombre] = ws;
       reconectando[gateway.nombre] = false;
 
       ws.on("message", (data) => {
-        console.log(`Mensaje recibido de ${gateway.nombre}:`, data.toString());
+        console.log(
+          `wsClient: Mensaje recibido de ${gateway.nombre}:`,
+          data.toString()
+        );
       });
 
       ws.on("close", () => {
-        console.log(`Conexión cerrada con ${gateway.nombre}`);
+        console.log(`wsClient: Conexión cerrada con ${gateway.nombre}`);
         delete conexiones[gateway.nombre];
         intentarReconectar(gateway, 1);
       });
 
       ws.on("error", (err) => {
-        console.error(`Error en ${gateway.nombre}:`, err.message);
+        console.error(`wsClient: Error en ${gateway.nombre}:`, err.message);
       });
     });
 
     ws.on("error", (err) => {
-      console.error(`Error al reconectar a ${gateway.nombre}:`, err.message);
+      console.error(
+        `wsClient: Error al reconectar a ${gateway.nombre}:`,
+        err.message
+      );
       intentarReconectar(gateway, intento + 1);
     });
   }, delay);
@@ -90,13 +109,13 @@ const rl = readline.createInterface({
   output: process.stdout,
 });
 
-console.log("Cuando quieras enviar un mensaje, usá el formato:");
-console.log("[nombre del gateway]: [mensaje]");
+console.log("wsClient: Cuando quieras enviar un mensaje, usá el formato:");
+console.log("wsClient: [nombre del gateway]: [mensaje]");
 
 rl.on("line", (input) => {
   const partes = input.split(":");
   if (partes.length < 2) {
-    console.log("Formato incorrecto. Usá: Gateway 1: mensaje");
+    console.log("wsClient: Formato incorrecto. Usá: Gateway 1: mensaje");
     return;
   }
 
@@ -105,10 +124,10 @@ rl.on("line", (input) => {
 
   const ws = conexiones[nombre];
   if (!ws || ws.readyState !== WebSocket.OPEN) {
-    console.log(`No hay conexión activa con ${nombre}`);
+    console.log(`wsClient: No hay conexión activa con ${nombre}`);
     return;
   }
 
   ws.send(mensaje);
-  console.log(`Mensaje enviado a ${nombre}: ${mensaje}`);
+  console.log(`wsClient: Mensaje enviado a ${nombre}: ${mensaje}`);
 });

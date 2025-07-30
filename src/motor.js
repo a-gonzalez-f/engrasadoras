@@ -5,13 +5,19 @@ const WebSocket = require("ws");
 const conectarDB = require("./db");
 const Engrasadora = require("./models/engrasadora");
 
+global.motorActivo = false;
+
+function actualizarEstadoMotor() {
+  global.motorActivo = Object.keys(conexiones).length > 0;
+}
+
 conectarDB()
   .then(() => {
-    console.log("🟢 Motor.js conectado a MongoDB");
+    console.log("Motor: 🟢 Motor.js conectado a MongoDB");
     iniciarMotor();
   })
   .catch((err) => {
-    console.error("🔴 Error al conectar motor.js a MongoDB:", err);
+    console.error("Motor: 🔴 Error al conectar motor.js a MongoDB:", err);
   });
 
 const gateways = [
@@ -24,28 +30,32 @@ const conexiones = {};
 const reconectando = {};
 
 function iniciarMotor() {
+  actualizarEstadoMotor();
+
   function intentarReconectar(gateway, intento = 1) {
     reconectando[gateway.nombre] = true;
 
     const delay = Math.min(10000, intento * 2000);
     console.log(
-      `Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
+      `Motor: Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
     );
 
     setTimeout(() => {
       const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
       console.log(
-        `Reintentando conexión a ${gateway.nombre} (intento ${intento})`
+        `Motor: Reintentando conexión a ${gateway.nombre} (intento ${intento})`
       );
 
       ws.on("open", () => {
-        console.log(`${gateway.nombre} reconectado`);
+        actualizarEstadoMotor();
+        console.log(`Motor: ${gateway.nombre} reconectado`);
         conexiones[gateway.nombre] = ws;
         reconectando[gateway.nombre] = false;
 
         ws.on("message", (data) => manejarMensaje(gateway.nombre, data));
         ws.on("close", () => {
-          console.log(`Conexión cerrada con ${gateway.nombre}`);
+          actualizarEstadoMotor();
+          console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
           delete conexiones[gateway.nombre];
           intentarReconectar(gateway, 1);
         });
@@ -63,7 +73,7 @@ function iniciarMotor() {
 
   async function manejarMensaje(nombre, data) {
     const msg = data.toString().trim();
-    console.log(`Mensaje recibido crudo de ${nombre}:`, msg);
+    console.log(`Motor: Mensaje recibido crudo de ${nombre}:`, msg);
 
     if (msg.length !== 26) {
       console.warn("El codigo no es de 26 caracteres");
@@ -84,7 +94,7 @@ function iniciarMotor() {
       const lora_signal = parseInt(msg.slice(22, 24));
       const falla = msg[25] === "1";
 
-      console.log("→ Datos decodificados:");
+      console.log("Motor: → Datos decodificados:");
       console.log({
         accion,
         id,
@@ -150,14 +160,19 @@ function iniciarMotor() {
     const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
 
     ws.on("open", () => {
-      console.log(`🟢 Conectado a ${gateway.nombre}`);
+      console.log(`Motor: 🟢 Conectado a ${gateway.nombre}`);
       conexiones[gateway.nombre] = ws;
+
+      actualizarEstadoMotor();
 
       ws.on("message", (data) => manejarMensaje(gateway.nombre, data));
 
       ws.on("close", () => {
-        console.log(`Conexión cerrada con ${gateway.nombre}`);
+        console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
         delete conexiones[gateway.nombre];
+
+        actualizarEstadoMotor();
+
         intentarReconectar(gateway, 1);
       });
 
@@ -203,7 +218,7 @@ function iniciarMotor() {
 
     await maquina.save();
     console.log(
-      `→ Engrasadora ${maquina.id} actualizada con evento de sensado`
+      `Motor: → Engrasadora ${maquina.id} actualizada con evento de sensado`
     );
   }
 
@@ -222,7 +237,7 @@ function iniciarMotor() {
     });
 
     await maquina.save();
-    console.log(`✅ Seteo actualizado para máquina ${maquina.id}`);
+    console.log(`Motor: ✅ Seteo actualizado para máquina ${maquina.id}`);
   }
 
   async function procesarResetAccionamientos(maquina, datos, nombre) {
@@ -241,7 +256,7 @@ function iniciarMotor() {
 
     await maquina.save();
     console.log(
-      `✅ Reseteo accionamientos actualizado para máquina ${maquina.id}`
+      `Motor: ✅ Reseteo accionamientos actualizado para máquina ${maquina.id}`
     );
   }
 
@@ -275,11 +290,13 @@ function iniciarMotor() {
     });
 
     await maquina.save();
-    console.log(`✅ Switch on_off actualizado para máquina ${maquina.id}`);
+    console.log(
+      `Motor: ✅ Switch on_off actualizado para máquina ${maquina.id}`
+    );
   }
 
   async function procesarForzarEngrase(maquina, datos, nombre) {
-    console.log(`Forzar Engrase pendiente de implementación`);
+    console.log(`Motor: Forzar Engrase pendiente de implementación`);
   }
 
   async function solicitarEstados() {
@@ -299,7 +316,7 @@ function iniciarMotor() {
           const ws = conexiones[nombre];
           if (ws.readyState === WebSocket.OPEN) {
             ws.send(mensaje);
-            console.log(`Enviado a ${nombre}: ${mensaje}`);
+            console.log(`Motor: Enviado a ${nombre}: ${mensaje}`);
           }
         }
       });
@@ -315,7 +332,7 @@ function iniciarMotor() {
 
 function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
   console.log(
-    "👉 Enviando seteo de tiempo al motor:",
+    "Motor: 👉 Enviando seteo de tiempo al motor:",
     id,
     modelo,
     tiempo,
@@ -335,13 +352,19 @@ function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
     const ws = conexiones[nombre];
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(mensaje);
-      console.log(`📤 Seteo enviado a ${nombre}: ${mensaje}`);
+      console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
     }
   }
 }
 
 function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
-  console.log("👉 Enviando seteo de ejes al motor:", id, modelo, tiempo, ejes);
+  console.log(
+    "Motor: 👉 Enviando seteo de ejes al motor:",
+    id,
+    modelo,
+    tiempo,
+    ejes
+  );
 
   const idStr = id.toString().padStart(3, "0");
   const modeloStr = modelo.toString();
@@ -356,13 +379,13 @@ function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
     const ws = conexiones[nombre];
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(mensaje);
-      console.log(`📤 Seteo enviado a ${nombre}: ${mensaje}`);
+      console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
     }
   }
 }
 
 function enviarResetAccionam({ id }) {
-  console.log("👉 Enviando reset accionamientos:", id);
+  console.log("Motor: 👉 Enviando reset accionamientos:", id);
 
   const idStr = id.toString().padStart(3, "0");
 
@@ -372,13 +395,13 @@ function enviarResetAccionam({ id }) {
     const ws = conexiones[nombre];
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(mensaje);
-      console.log(`📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
+      console.log(`Motor: 📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
     }
   }
 }
 
 function enviarOnOff({ id, on_off }) {
-  console.log("👉 Enviando on-off:", id);
+  console.log("Motor: 👉 Enviando on-off:", id);
 
   const idStr = id.toString().padStart(3, "0");
   const on_offStr = on_off ? "1" : "0";
@@ -389,7 +412,7 @@ function enviarOnOff({ id, on_off }) {
     const ws = conexiones[nombre];
     if (ws.readyState === WebSocket.OPEN) {
       ws.send(mensaje);
-      console.log(`📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
+      console.log(`Motor: 📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
     }
   }
 }

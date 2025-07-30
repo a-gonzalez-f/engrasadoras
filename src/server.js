@@ -5,8 +5,10 @@ const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const path = require("path");
 const http = require("http");
+
 const engrasadorasRoutes = require("./routes/engrasadoras");
 const gatewaysRoutes = require("./routes/gateways");
+const sistemaRoutes = require("./routes/sistema");
 
 dotenv.config();
 console.log("MONGO_URI:", process.env.MONGO_URI);
@@ -20,6 +22,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/api/engrasadoras", engrasadorasRoutes);
 app.use("/api/gateways", gatewaysRoutes);
+app.use("/api/sistema", sistemaRoutes);
 
 app.get("/ingreso", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/ingresoMaq.html"));
