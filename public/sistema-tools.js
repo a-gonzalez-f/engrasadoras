@@ -24,3 +24,15 @@ document.addEventListener("keydown", (e) => {
     modalIngreso.style.display = "none";
   }
 });
+
+const btnStatus = document.getElementById("closeStatus");
+const estadosSistema = document.getElementById("estadosSistema");
+
+let abierto = true;
+
+btnStatus.addEventListener("click", () => {
+  abierto = !abierto;
+
+  estadosSistema.style.left = abierto ? "0" : "-15vw";
+  btnStatus.style.transform = abierto ? "rotate(0deg)" : "rotate(180deg)";
+});

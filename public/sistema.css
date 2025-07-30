@@ -52,3 +52,50 @@
 .closeModal:hover {
   color: #fff;
 }
+
+#estadosSistema {
+  position: fixed;
+  width: 15vw;
+  height: 95vh;
+  padding: 1rem;
+  background-color: black;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+}
+
+#estadosSistema > h3 {
+  margin-bottom: 2rem;
+  text-align: center;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.statusDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.statusCircle {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: red;
+}
+
+#closeStatus {
+  position: absolute;
+  top: 1rem;
+  right: -2rem;
+  cursor: pointer;
+  font-size: 1.8rem;
+  color: #444;
+  transition: all 0.2s ease;
+}
+
+#closeStatus:hover {
+  color: white;
+}
