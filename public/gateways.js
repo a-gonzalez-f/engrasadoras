@@ -1,5 +1,7 @@
 // gateway.js
 
+import { abrirModalGateway } from "./gateway-modal.js";
+
 const container = document.getElementById("containerGateways");
 
 let todosLosGateways = [];
@@ -57,6 +59,8 @@ function renderizarGateways(gateways) {
   gateways.forEach((gw) => {
     const gwDiv = document.createElement("div");
     gwDiv.classList.add("gatewayCard");
+
+    gwDiv.addEventListener("click", () => abrirModalGateway(gw));
 
     gwDiv.innerHTML = `
       <h4>${gw.nombre} (ID: ${gw.id || "Sin ID"})</h4>
