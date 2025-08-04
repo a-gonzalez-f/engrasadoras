@@ -86,8 +86,13 @@ label.row {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
   gap: 10px;
+  padding: 0 10%;
+}
+
+input.id {
+  width: 10rem;
 }
 
 .titleBorder {
