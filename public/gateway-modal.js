@@ -86,3 +86,38 @@ form.addEventListener("submit", async (e) => {
     alert("Error al guardar los cambios");
   }
 });
+
+// Funcionalidad de añadir engrasadora para conectar
+document.getElementById("addEngrasadora").addEventListener("click", () => {
+  const index = containerEngrasadoras.children.length;
+
+  const block = document.createElement("div");
+  block.className = "engrasadoraBlock";
+
+  block.innerHTML = `
+    <label>Engrasadora ${index + 1}: </label>
+    <div class="flex">
+      <input class="id" type="text" name="idEngrasadora" required />
+      <div class="actionButtons flex">
+        <button type="button" class="btnRemove">
+          <span class="material-symbols-outlined remove">remove</span>
+        </button>
+      </div>
+    </div>
+  `;
+
+  block.querySelector(".btnRemove").addEventListener("click", () => {
+    block.remove();
+    actualizarNumeracionEngrasadoras();
+  });
+
+  containerEngrasadoras.appendChild(block);
+});
+
+function actualizarNumeracionEngrasadoras() {
+  const blocks = containerEngrasadoras.querySelectorAll(".engrasadoraBlock");
+  blocks.forEach((block, i) => {
+    const label = block.querySelector("label");
+    label.textContent = `Engrasadora ${i + 1}:`;
+  });
+}
