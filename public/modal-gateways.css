@@ -31,6 +31,7 @@ h3 {
   justify-items: start;
   align-items: center;
   justify-content: center;
+  gap: 5px;
 }
 
 .close {
@@ -86,11 +87,11 @@ label.row {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-evenly;
-  gap: 5px;
+  gap: 10px;
 }
 
 .titleBorder {
-  padding-top: 1rem;
-  margin-top: 1rem;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
   border-top: 1px solid #ffffff5c;
 }

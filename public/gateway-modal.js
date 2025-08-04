@@ -57,7 +57,6 @@ function renderizarEngrasadoras(lista) {
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  // Obtener engrasadoras del DOM
   const engrasadoras = Array.from(
     containerEngrasadoras.querySelectorAll("input.id")
   )
