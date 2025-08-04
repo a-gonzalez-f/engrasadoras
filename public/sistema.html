@@ -195,7 +195,7 @@
         </span>
         <form id="formEditGateway">
           <h3>Detalles Gateway</h3>
-          <div class="row padding">
+          <div class="row padding gap">
             <p>IP:</p>
             <div class="row gap">
               <p id="gw-ip"></p>
@@ -204,7 +204,7 @@
               >
             </div>
           </div>
-          <div class="row padding">
+          <div class="row padding gap">
             <p>Nombre:</p>
             <div class="row gap">
               <p id="gw-nombre"></p>
@@ -213,7 +213,7 @@
               >
             </div>
           </div>
-          <div class="row padding">
+          <div class="row padding gap">
             <p>ID:</p>
             <div class="row gap">
               <p id="gw-id"></p>
@@ -236,7 +236,7 @@
               </select>
             </label>
           </div>
-          <div class="row padding">
+          <div class="row padding gap">
             <p>Ubicación:</p>
             <div class="row gap">
               <p id="gw-ubicacion"></p>
@@ -245,7 +245,7 @@
               >
             </div>
           </div>
-          <h3>
+          <h3 class="titleBorder">
             Engrasadoras conectadas
             <button class="btnAdd">
               <span class="material-symbols-outlined add"> add </span>
@@ -253,19 +253,6 @@
           </h3>
           <div id="sectionEngrasadoras">
             <div id="conectadasContainer"></div>
-            <div class="engrasadoraBlock">
-              <label>Engrasadora (ID): </label>
-              <div class="flex">
-                <input class="id" type="text" name="idEngrasadora" required />
-                <div class="actionButtons flex">
-                  <button>
-                    <span class="material-symbols-outlined remove">
-                      remove
-                    </span>
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
           <div class="btn">
             <button type="submit">Guardar Gateway</button>

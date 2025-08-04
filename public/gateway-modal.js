@@ -6,19 +6,16 @@ const containerEngrasadoras = document.getElementById("conectadasContainer");
 
 let currentGatewayId = null;
 
-// Mostrar modal con datos
 export function abrirModalGateway(gw) {
   currentGatewayId = gw._id;
   modal.classList.remove("hidden");
 
-  // Mostrar campos
   document.getElementById("gw-ip").textContent = gw.ip;
   document.getElementById("gw-id").textContent = gw.id;
   document.getElementById("gw-nombre").textContent = gw.nombre || "";
   document.getElementById("gw-linea").value = gw.linea || "";
   document.getElementById("gw-ubicacion").textContent = gw.ubicacion || "";
 
-  // Renderizar engrasadoras
   renderizarEngrasadoras(gw.engrasadoras || []);
 }
 
@@ -48,7 +45,6 @@ function renderizarEngrasadoras(lista) {
       </div>
     `;
 
-    // botón para eliminar el input
     block.querySelector(".btnRemove").addEventListener("click", () => {
       block.remove();
     });

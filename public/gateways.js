@@ -69,9 +69,14 @@ function renderizarGateways(gateways) {
         <p>${gw.ubicacion || ""}</p>
         <div class="miniCircle ${gw.linea}">${gw.linea}</div>
       </div>
-      <p><strong>Engrasadoras:</strong> ${
-        gw.engrasadoras ? gw.engrasadoras.join(", ") : "No asignadas"
+      <p><strong>Engrasadoras:</strong><br> ${
+        gw.engrasadoras
+          ? gw.engrasadoras.length > 3
+            ? gw.engrasadoras.slice(0, 3).join(", ") + ", ..."
+            : gw.engrasadoras.join(", ")
+          : "No asignadas"
       }</p>
+
     `;
 
     container.appendChild(gwDiv);

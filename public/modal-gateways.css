@@ -1,3 +1,7 @@
+h3 {
+  width: 100%;
+}
+
 .modal {
   position: fixed;
   z-index: 10;
@@ -24,6 +28,9 @@
 
 #formEditGateway {
   padding: 1rem 10%;
+  justify-items: start;
+  align-items: center;
+  justify-content: center;
 }
 
 .close {
@@ -71,8 +78,19 @@ label.row {
 
 #sectionEngrasadoras {
   width: 100%;
+  grid-column: 1 / -1;
 }
 
 #conectadasContainer {
   display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  gap: 5px;
+}
+
+.titleBorder {
+  padding-top: 1rem;
+  margin-top: 1rem;
+  border-top: 1px solid #ffffff5c;
 }
