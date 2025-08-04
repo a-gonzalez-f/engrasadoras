@@ -46,7 +46,9 @@ function renderizarEngrasadoras(lista) {
     `;
 
     block.querySelector(".btnRemove").addEventListener("click", () => {
-      block.remove();
+      if (confirm("¿Seguro quiere desconectar esta Engrasadora?")) {
+        block.remove();
+      }
     });
 
     containerEngrasadoras.appendChild(block);
@@ -107,11 +109,14 @@ document.getElementById("addEngrasadora").addEventListener("click", () => {
   `;
 
   block.querySelector(".btnRemove").addEventListener("click", () => {
-    block.remove();
+    if (confirm("¿Seguro quiere desconectar esta Engrasadora?")) {
+      block.remove();
+    }
     actualizarNumeracionEngrasadoras();
   });
 
   containerEngrasadoras.appendChild(block);
+  formatIdInput();
 });
 
 function actualizarNumeracionEngrasadoras() {
@@ -120,4 +125,23 @@ function actualizarNumeracionEngrasadoras() {
     const label = block.querySelector("label");
     label.textContent = `Engrasadora ${i + 1}:`;
   });
+}
+
+// Validación y formateo automático del input ID Engrasadora
+function formatIdInput() {
+  const idInputs = document.querySelectorAll(".id");
+
+  if (idInputs.length > 0) {
+    idInputs.forEach((input) => {
+      input.addEventListener("input", (e) => {
+        let valor = e.target.value;
+        // Permitir solo dígitos
+        valor = valor.replace(/[^\d]/g, "");
+        // Limitar a 3 caracteres
+        valor = valor.slice(0, 3);
+
+        e.target.value = valor;
+      });
+    });
+  }
 }
