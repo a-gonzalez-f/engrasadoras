@@ -17,7 +17,7 @@ console.log("PORT:", process.env.PORT);
 const app = express();
 const server = http.createServer(app);
 
-require("./wsClient");
+// require("./wsClient");
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "../public")));

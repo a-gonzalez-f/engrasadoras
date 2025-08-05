@@ -3,20 +3,17 @@
 const nodeCircle = document.getElementById("nodeStatus");
 const mongoCircle = document.getElementById("mongoStatus");
 const motorCircle = document.getElementById("motorStatus");
-const wsclientCircle = document.getElementById("wsclientStatus");
 
 let lastStatus = {
   node: false,
   mongo: false,
   motor: false,
-  wsclient: false,
 };
 
 let lastUpdate = {
   node: 0,
   mongo: 0,
   motor: 0,
-  wsclient: 0,
 };
 
 function setCircleStatus(circle, online) {
@@ -32,7 +29,7 @@ async function checkStatus() {
 
     const now = Date.now();
 
-    for (const key of ["node", "mongo", "motor", "wsclient"]) {
+    for (const key of ["node", "mongo", "motor"]) {
       if (data[key] !== undefined) {
         lastStatus[key] = data[key];
         lastUpdate[key] = now;
@@ -59,10 +56,6 @@ function updateCircles() {
   setCircleStatus(
     motorCircle,
     lastStatus.motor && now - lastUpdate.motor < TIMEOUT
-  );
-  setCircleStatus(
-    wsclientCircle,
-    lastStatus.wsclient && now - lastUpdate.wsclient < TIMEOUT
   );
 }
 

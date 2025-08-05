@@ -121,10 +121,10 @@ export function renderDetalleMaquina(maquina) {
             <p>Estado:</p>            
             <select name="estado" id="estado">
               <option value="funcionando">Funcionando</option>
+              <option value="fs">Fuera de Servicio</option>
               <option value="alerta" disabled>Alerta</option>
               <option value="desconectada" disabled>Desconectada</option>
-              <option value="fs">Fuera de Servicio</option>
-              <option value="pm">Pausa Manual</option>
+              <option value="pm" disabled>Pausa Manual</option>
             </select>
             </div>
             <div>

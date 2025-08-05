@@ -5,6 +5,8 @@ const WebSocket = require("ws");
 const conectarDB = require("./db");
 const Engrasadora = require("./models/engrasadora");
 
+const readline = require("readline");
+
 global.motorActivo = false;
 
 function actualizarEstadoMotor() {
@@ -22,8 +24,8 @@ conectarDB()
 
 const gateways = [
   { nombre: "Agus", ip: "172.21.31.96", puerto: 80 },
-  // { nombre: "Dani", ip: "172.27.66.240", puerto: 80 },
-  // { nombre: "Pablo", ip: "172.27.66.205", puerto: 80 },
+  // { nombre: "Dani", ip: "192.168.2.232", puerto: 80 },
+  // { nombre: "Pablo", ip: "172.27.66.202", puerto: 80 },
 ];
 
 const conexiones = {};
@@ -58,9 +60,6 @@ function iniciarMotor() {
           console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
           delete conexiones[gateway.nombre];
           intentarReconectar(gateway, 1);
-        });
-        ws.on("error", (err) => {
-          console.error(`Error en ${gateway.nombre}:`, err.message);
         });
       });
 
@@ -175,10 +174,6 @@ function iniciarMotor() {
 
         intentarReconectar(gateway, 1);
       });
-
-      ws.on("error", (err) => {
-        console.error(`Error en ${gateway.nombre}:`, err.message);
-      });
     });
 
     ws.on("error", (err) => {
@@ -262,7 +257,7 @@ function iniciarMotor() {
 
   async function procesarSwitchOnOff(maquina, datos, nombre) {
     maquina.date = new Date();
-    on_offDig = datos.on_off ? "1" : "0";
+    const on_offDig = datos.on_off ? "1" : "0";
     maquina.on_off = on_offDig;
     maquina.estado = datos.on_off ? "funcionando" : "pm";
     maquina.set_tiempodosif = datos.tiempo_dosif;
@@ -416,6 +411,35 @@ function enviarOnOff({ id, on_off }) {
     }
   }
 }
+
+// Interfaz de consola
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+console.log("Motor: Cuando quieras enviar un mensaje, usá el formato:");
+console.log("Motor: [nombre del gateway]: [mensaje]");
+
+rl.on("line", (input) => {
+  const partes = input.split(":");
+  if (partes.length < 2) {
+    console.log("Motor: Formato incorrecto. Usá: Gateway 1: mensaje");
+    return;
+  }
+
+  const nombre = partes[0].trim();
+  const mensaje = partes.slice(1).join(":").trim();
+
+  const ws = conexiones[nombre];
+  if (!ws || ws.readyState !== WebSocket.OPEN) {
+    console.log(`Motor: No hay conexión activa con ${nombre}`);
+    return;
+  }
+
+  ws.send(mensaje);
+  console.log(`Motor: Mensaje enviado a ${nombre}: ${mensaje}`);
+});
 
 module.exports = {
   enviarSeteoTiempo,
