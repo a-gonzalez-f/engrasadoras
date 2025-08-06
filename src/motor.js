@@ -4,6 +4,7 @@ require("dotenv").config({ path: "../.env" });
 const WebSocket = require("ws");
 const conectarDB = require("./db");
 const Engrasadora = require("./models/engrasadora");
+const Gateway = require("./models/gateway");
 
 const readline = require("readline");
 
@@ -22,11 +23,11 @@ conectarDB()
     console.error("Motor: 🔴 Error al conectar motor.js a MongoDB:", err);
   });
 
-const gateways = [
-  { nombre: "Agus", ip: "172.21.31.96", puerto: 80 },
-  // { nombre: "Dani", ip: "192.168.2.232", puerto: 80 },
-  // { nombre: "Pablo", ip: "172.27.66.202", puerto: 80 },
-];
+// const gateways = [
+//   { nombre: "Agus", ip: "172.21.31.96", puerto: 80 },
+//   // { nombre: "Dani", ip: "192.168.2.232", puerto: 80 },
+//   // { nombre: "Pablo", ip: "172.27.66.202", puerto: 80 },
+// ];
 
 const conexiones = {};
 const reconectando = {};
@@ -320,12 +321,47 @@ function iniciarMotor() {
     }
   }
 
-  gateways.forEach((gateway) => conectarGateway(gateway));
+  async function iniciarGatewaysDesdeDB() {
+    const gateways = await Gateway.find({});
+
+    for (const gateway of gateways) {
+      gateway.puerto = gateway.puerto || 80;
+      conectarGateway(gateway);
+    }
+  }
+
+  iniciarGatewaysDesdeDB();
 
   // setInterval(solicitarEstados, 10 * 1000);
 }
 
-function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
+async function enviarMensajePorID({ idEngrasadora, mensaje }) {
+  try {
+    const gateway = await Gateway.findOne({ engrasadoras: idEngrasadora });
+
+    if (!gateway) {
+      console.warn(
+        `❌ No se encontró un gateway con la engrasadora ID ${idEngrasadora}`
+      );
+      return;
+    }
+
+    const nombre = gateway.nombre || gateway.ip;
+    const ws = conexiones[nombre];
+
+    if (!ws || ws.readyState !== WebSocket.OPEN) {
+      console.warn(`❌ Gateway ${nombre} no está conectado`);
+      return;
+    }
+
+    ws.send(mensaje);
+    console.log(`📤 Mensaje enviado a ${nombre}: ${mensaje}`);
+  } catch (err) {
+    console.error("Error al enviar mensaje:", err.message);
+  }
+}
+
+async function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
   console.log(
     "Motor: 👉 Enviando seteo de tiempo al motor:",
     id,
@@ -342,17 +378,20 @@ function enviarSeteoTiempo({ id, modelo, tiempo, ejes }) {
     .padStart(2, "0");
 
   const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}`;
+
+  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+
   // enviar a todos los gateways conectados
-  for (const nombre in conexiones) {
-    const ws = conexiones[nombre];
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(mensaje);
-      console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
-    }
-  }
+  // for (const nombre in conexiones) {
+  //   const ws = conexiones[nombre];
+  //   if (ws.readyState === WebSocket.OPEN) {
+  //     ws.send(mensaje);
+  //     console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
+  //   }
+  // }
 }
 
-function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
+async function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
   console.log(
     "Motor: 👉 Enviando seteo de ejes al motor:",
     id,
@@ -369,47 +408,56 @@ function enviarSeteoEjes({ id, modelo, tiempo, ejes }) {
     .padStart(2, "0");
 
   const mensaje = `1${idStr}${modeloStr}${ejesStr}${tiempoStr}`;
+
+  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+
   // enviar a todos los gateways conectados
-  for (const nombre in conexiones) {
-    const ws = conexiones[nombre];
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(mensaje);
-      console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
-    }
-  }
+  // for (const nombre in conexiones) {
+  //   const ws = conexiones[nombre];
+  //   if (ws.readyState === WebSocket.OPEN) {
+  //     ws.send(mensaje);
+  //     console.log(`Motor: 📤 Seteo enviado a ${nombre}: ${mensaje}`);
+  //   }
+  // }
 }
 
-function enviarResetAccionam({ id }) {
+async function enviarResetAccionam({ id }) {
   console.log("Motor: 👉 Enviando reset accionamientos:", id);
 
   const idStr = id.toString().padStart(3, "0");
 
   const mensaje = `2${idStr}`;
+
+  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+
   // enviar a todos los gateways conectados
-  for (const nombre in conexiones) {
-    const ws = conexiones[nombre];
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(mensaje);
-      console.log(`Motor: 📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
-    }
-  }
+  // for (const nombre in conexiones) {
+  //   const ws = conexiones[nombre];
+  //   if (ws.readyState === WebSocket.OPEN) {
+  //     ws.send(mensaje);
+  //     console.log(`Motor: 📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
+  //   }
+  // }
 }
 
-function enviarOnOff({ id, on_off }) {
+async function enviarOnOff({ id, on_off }) {
   console.log("Motor: 👉 Enviando on-off:", id);
 
   const idStr = id.toString().padStart(3, "0");
   const on_offStr = on_off ? "1" : "0";
 
   const mensaje = `3${idStr}${on_offStr}`;
+
+  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+
   // enviar a todos los gateways conectados
-  for (const nombre in conexiones) {
-    const ws = conexiones[nombre];
-    if (ws.readyState === WebSocket.OPEN) {
-      ws.send(mensaje);
-      console.log(`Motor: 📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
-    }
-  }
+  // for (const nombre in conexiones) {
+  //   const ws = conexiones[nombre];
+  //   if (ws.readyState === WebSocket.OPEN) {
+  //     ws.send(mensaje);
+  //     console.log(`Motor: 📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
+  //   }
+  // }
 }
 
 // Interfaz de consola

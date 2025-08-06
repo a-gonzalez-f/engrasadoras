@@ -15,7 +15,7 @@ const GatewaySchema = new mongoose.Schema(
     comunicacion_campo: { type: Boolean, default: false },
     ultimaConexion: { type: Date, default: null },
 
-    engrasadoras: [],
+    engrasadoras: [{ type: Number }],
   },
   { timestamps: true }
 );
