@@ -53,13 +53,14 @@
                 type="text"
                 name="ip"
                 placeholder="Ej: 123.123.123.123"
+                autocomplete="off"
                 required
               />
             </label>
 
             <label
               >Nombre:
-              <input id="nombre" type="text" name="nombre" />
+              <input id="nombre" type="text" name="nombre" autocomplete="off" />
             </label>
 
             <label
@@ -69,6 +70,7 @@
                 type="text"
                 name="idGateway"
                 placeholder="Ej: 123"
+                autocomplete="off"
                 required
               />
             </label>
@@ -94,6 +96,7 @@
                 name="ubicacion"
                 maxlength="40"
                 placeholder="Ej: Estación"
+                autocomplete="off"
               />
             </label>
 
@@ -108,7 +111,13 @@
               <div class="engrasadoraBlock">
                 <label>Engrasadora (ID): </label>
                 <div class="flex">
-                  <input class="id" type="text" name="idEngrasadora" required />
+                  <input
+                    class="id"
+                    type="text"
+                    name="idEngrasadora"
+                    autocomplete="off"
+                    required
+                  />
                   <div class="actionButtons flex">
                     <button style="display: none">
                       <span class="material-symbols-outlined remove">
@@ -159,6 +168,7 @@
               type="text"
               name="porIp"
               placeholder="Ej.: 123.123.123.123"
+              autocomplete="off"
               required
             /> </label
           ><label
@@ -188,6 +198,9 @@
       <div class="modal-content">
         <span id="cerrarModal" class="material-symbols-outlined close">
           close
+        </span>
+        <span id="deleteGW" class="material-symbols-outlined delete">
+          delete
         </span>
         <form id="formEditGateway">
           <h3>Detalles Gateway</h3>

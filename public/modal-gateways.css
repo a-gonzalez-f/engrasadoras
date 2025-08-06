@@ -40,6 +40,17 @@ h3 {
   cursor: pointer;
 }
 
+.delete {
+  float: left;
+  cursor: pointer;
+  font-size: 20px !important;
+  color: rgba(128, 128, 128, 0.5);
+}
+
+.delete:hover {
+  color: var(--color-error);
+}
+
 form > label > input,
 form > label > select,
 #inputsEngrasadoras > div > div > input {

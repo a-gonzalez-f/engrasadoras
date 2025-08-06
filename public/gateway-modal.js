@@ -201,3 +201,27 @@ activarEdicion("edit-ip", "gw-ip");
 activarEdicion("edit-nombre", "gw-nombre");
 activarEdicion("edit-id", "gw-id");
 activarEdicion("edit-ubi", "gw-ubicacion");
+
+const deleteBtn = document.getElementById("deleteGW");
+
+deleteBtn.addEventListener("click", async () => {
+  if (!currentGatewayId) return;
+
+  const confirmar = confirm("¿Seguro desea eliminar este Gateway?");
+
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch(`/api/gateways/${currentGatewayId}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Error al eliminar gateway");
+
+    modal.classList.add("hidden");
+    location.reload();
+  } catch (err) {
+    console.error("Error eliminando gateway:", err);
+    alert("No se pudo eliminar el Gateway.");
+  }
+});
