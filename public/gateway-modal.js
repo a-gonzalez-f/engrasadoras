@@ -65,10 +65,19 @@ form.addEventListener("submit", async (e) => {
     .map((input) => input.value.trim())
     .filter((val) => val !== "");
 
+  const ipEl = document.getElementById("gw-ip");
+  const idEl = document.getElementById("gw-id");
+
   const payload = {
-    nombre: document.getElementById("gw-nombre").textContent,
+    ip: ipEl.textContent || ipEl.value,
+    id: parseInt(idEl.textContent || idEl.value),
+    nombre:
+      document.getElementById("gw-nombre").textContent ||
+      document.getElementById("gw-nombre").value,
     linea: document.getElementById("gw-linea").value,
-    ubicacion: document.getElementById("gw-ubicacion").textContent,
+    ubicacion:
+      document.getElementById("gw-ubicacion").textContent ||
+      document.getElementById("gw-ubicacion").value,
     engrasadoras,
   };
 
@@ -145,3 +154,50 @@ function formatIdInput() {
     });
   }
 }
+
+function activarEdicion(spanId, fieldId) {
+  const editBtn = document.getElementById(spanId);
+  const fieldEl = document.getElementById(fieldId);
+
+  if (!editBtn || !fieldEl) return;
+
+  const handleEdit = () => {
+    const original = fieldEl.textContent.trim();
+    const input = document.createElement("input");
+
+    input.type = "text";
+    input.value = original;
+    input.className = "editableInput";
+
+    fieldEl.replaceWith(input);
+    input.focus();
+
+    const guardar = () => {
+      const nuevoValor = input.value.trim();
+      const nuevoP = document.createElement("p");
+      nuevoP.id = fieldId;
+      nuevoP.textContent = nuevoValor;
+
+      input.replaceWith(nuevoP);
+
+      // Reactivar edición
+      activarEdicion(spanId, fieldId);
+    };
+
+    input.addEventListener("blur", guardar, { once: true });
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        guardar();
+      }
+    });
+  };
+
+  editBtn.addEventListener("click", handleEdit);
+}
+
+// Activar edición en campos
+activarEdicion("edit-ip", "gw-ip");
+activarEdicion("edit-nombre", "gw-nombre");
+activarEdicion("edit-id", "gw-id");
+activarEdicion("edit-ubi", "gw-ubicacion");
