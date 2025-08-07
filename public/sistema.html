@@ -17,7 +17,7 @@
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
     />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <title>Engrasadoras Site</title>
+    <title>Sistema - Engrasadoras Site</title>
   </head>
   <body>
     <header>
@@ -135,11 +135,51 @@
           </form>
         </section>
       </div>
-      <button id="btnIngreso">
+      <div id="modalTime">
+        <section id="sectionTime">
+          <span
+            id="closeModalTime"
+            class="material-symbols-outlined closeModal"
+          >
+            close
+          </span>
+          <h3>SETEO DE FRECUENCIA</h3>
+          <div id="contentSectionTime">
+            <p>Solicitud de los datos de sensado</p>
+            <p>Tiempo de frecuencia:</p>
+            <div>
+              <input
+                id="time"
+                type="number"
+                autocomplete="none"
+                min="1"
+                max="600"
+                required
+              />
+              <span>segundos</span>
+            </div>
+            <div class="btn">
+              <button id="submitTime" type="submit" class="submit">
+                Actualizar Tiempo
+              </button>
+            </div>
+            <div id="ultimoUser">
+              <p>Último cambio realizado por</p>
+              <span id="user"></span>
+              <span id="lastUpdate"></span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <button id="btnIngreso" class="sideBtn">
         <span class="material-symbols-outlined chevron">
           chevron_backward
         </span>
         Ingresar Gateway
+      </button>
+      <button id="btnTime" class="sideBtn">
+        Setear Tiempo
+        <span class="material-symbols-outlined chevron"> chevron_forward </span>
       </button>
       <section id="estadosSistema" style="left: 0">
         <span class="material-symbols-outlined" id="closeStatus">
@@ -193,6 +233,7 @@
     <script src="./sistema-tools.js"></script>
     <script src="./sistema.js"></script>
     <script type="module" src="./gateways.js"></script>
+    <script src="./timeSet.js"></script>
     <!-- Modal Gateway -->
     <div id="gatewayModal" class="modal hidden">
       <div class="modal-content">
