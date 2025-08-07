@@ -41,9 +41,9 @@ btnStatus.addEventListener("click", () => {
   btnStatus.style.transform = abierto ? "rotate(0deg)" : "rotate(180deg)";
 });
 
-// Cerrar después de 3 segundos
+// Cerrar después de x segundos
 setTimeout(() => {
   abierto = false;
   estadosSistema.style.left = "-15vw";
   btnStatus.style.transform = "rotate(180deg)";
-}, 1000);
+}, 500);

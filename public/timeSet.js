@@ -57,7 +57,7 @@ submitBtn.addEventListener("click", async () => {
   const tiempo = parseInt(document.getElementById("time").value);
 
   if (isNaN(tiempo) || tiempo < 1 || tiempo > 600) {
-    alert("Ingresá un tiempo válido entre 1 y 600 segundos.");
+    alert("Ingresá un tiempo válido entre 1 y 600 segundos");
     return;
   }
 
@@ -71,14 +71,14 @@ submitBtn.addEventListener("click", async () => {
     });
 
     if (res.ok) {
-      alert("Tiempo actualizado correctamente.");
+      alert("Tiempo actualizado correctamente");
       modal.style.display = "none";
       modalTimeAbierto = false;
     } else {
-      alert("Error al actualizar el tiempo.");
+      alert("Error al actualizar el tiempo");
     }
   } catch (err) {
     console.error(err);
-    alert("Error de conexión con el servidor.");
+    alert("Error de conexión con el servidor");
   }
 });
