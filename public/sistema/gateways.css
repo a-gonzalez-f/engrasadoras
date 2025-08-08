@@ -52,4 +52,6 @@ select {
   display: flex;
   justify-content: center;
   border-radius: 50%;
+  color: var(--color-fondo);
+  font-weight: 500;
 }

@@ -26,16 +26,20 @@ app.use("/api/engrasadoras", engrasadorasRoutes);
 app.use("/api/gateways", gatewaysRoutes);
 app.use("/api/sistema", sistemaRoutes);
 
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/dashboard/index.html"));
+});
+
 app.get("/ingreso", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/ingresoMaq.html"));
+  res.sendFile(path.join(__dirname, "../public/ingresoMaq/ingresoMaq.html"));
 });
 
 app.get("/detalle", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/detalle.html"));
+  res.sendFile(path.join(__dirname, "../public/engrasadoras/detalle.html"));
 });
 
 app.get("/sistema", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/sistema.html"));
+  res.sendFile(path.join(__dirname, "../public/sistema/sistema.html"));
 });
 
 mongoose
