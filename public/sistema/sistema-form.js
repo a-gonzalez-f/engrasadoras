@@ -129,8 +129,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       const res = await enviarFormularioGateway(data);
-      alert("Formulario enviado con éxito");
+      alert("Gateway ingresado correctamente");
+      modalIngreso.style.display = "none";
       console.log(res);
+      window.location.reload(); // provisorio, que no se necesite refrescar
     } catch (err) {
       alert("Error al enviar: " + err.message);
     }
