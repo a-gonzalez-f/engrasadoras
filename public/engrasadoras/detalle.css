@@ -327,9 +327,13 @@ hr {
 }
 
 .actionButtons {
+  position: absolute;
+  bottom: 0;
   display: flex;
   justify-content: flex-end !important;
-  width: 90% !important;
+  width: 100% !important;
+  box-shadow: 0 -10px 20px var(--color-primario);
+  padding-right: 1rem;
 }
 
 .reset {

@@ -91,7 +91,7 @@ function iniciarMotor() {
       const power = msg[17] === "1";
       const corriente = parseFloat(msg.slice(18, 21));
       const flujo = msg[21] === "1";
-      const lora_signal = parseInt(msg.slice(22, 24));
+      const lora_signal = parseInt(msg.slice(22, 25));
       const falla = msg[25] === "1";
 
       console.log("Motor: → Datos decodificados:");

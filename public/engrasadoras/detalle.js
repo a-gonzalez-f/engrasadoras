@@ -16,7 +16,6 @@ const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
 
 let maquinaSeleccionada = null;
-let mostrarHistorialCompleto = false;
 
 if (!linea) {
   alert("Línea no especificada");
@@ -125,10 +124,7 @@ setInterval(() => {
 
               maquinaSeleccionada.historial = actualizada.historial;
 
-              listarHistorialEnModal(
-                actualizada.historial,
-                mostrarHistorialCompleto
-              );
+              listarHistorialEnModal(actualizada.historial);
 
               const btnApagar = document.getElementById("apagarEquipo");
               const switchButton = document.querySelector(

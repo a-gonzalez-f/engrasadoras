@@ -1,6 +1,6 @@
 import { formatearEstado } from "./detalles-tools.js";
 
-export function listarHistorialEnModal(historial, completo = false) {
+export function listarHistorialEnModal(historial) {
   const tbody = document.querySelector(".tabla-historial tbody");
 
   if (!tbody) return;
@@ -14,11 +14,32 @@ export function listarHistorialEnModal(historial, completo = false) {
     return;
   }
 
-  const items = completo
-    ? historial.slice().reverse()
-    : historial.slice(-10).reverse();
+  const itemsOriginal = historial.slice(-10).reverse();
 
-  tbody.innerHTML = items
+  let lastContSensado = null;
+  const itemsFiltrados = [];
+
+  for (const h of itemsOriginal) {
+    if (h.tipo_evento === "Sensado") {
+      if (h.cont_accionam !== lastContSensado) {
+        itemsFiltrados.push(h);
+        lastContSensado = h.cont_accionam;
+      }
+    } else {
+      itemsFiltrados.push(h);
+    }
+  }
+
+  if (itemsFiltrados.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12" style="text-align:center">No hay historial válido para mostrar</td>
+      </tr>
+    `;
+    return;
+  }
+
+  tbody.innerHTML = itemsFiltrados
     .map(
       (h) => `
       <tr class="historial-item ${h.estado}">

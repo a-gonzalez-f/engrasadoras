@@ -8,64 +8,25 @@ import { inicializarSeteos } from "./detalle-seteos.js";
 export function renderDetalleMaquina(maquina) {
   let e = maquina;
   let historialHtml = `
-          <table class="tabla-historial">
-            <thead>
-              <tr>
-                <th>N° Evento</th>
-                <th>Tipo</th>
-                <th>Fecha</th>
-                <th>Estado</th>
-                <th>Tiempo Dosif.</th>
-                <th>Cant. Ejes</th>
-                <th>Corriente</th>
-                <th>Flujo</th>
-                <th>Power</th>
-                <th>Señal Lora</th>
-                <th>On/Off</th>
-                <th>Accionamientos</th>
-              </tr>
-            </thead>
-            <tbody>
-          `;
-
-  if (e.historial && e.historial.length > 0) {
-    historialHtml += e.historial
-      .slice(-10)
-      .reverse()
-      .map(
-        (h) => `
-            <tr class="historial-item ${h.estado}">
-              <td>${h.nro_evento || "-"}</td>
-              <td>${h.tipo_evento || "-"}</td>
-              <td>${new Date(h.fecha).toLocaleString("es-AR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false,
-              })}</td>
-              <td>${formatearEstado(h.estado, "texto")}</td>
-              <td>${h.set_tiempodosif} s</td>
-              <td>${h.set_ejes}</td>
-              <td>${h.sens_corriente} mA</td>
-              <td>${h.sens_flujo ? "Sí" : "No"}</td>
-              <td>${h.sens_power ? "Sí" : "No"}</td>
-              <td>${h.lora_signal || "-"}</td>
-              <td>${h.on_off ? "ON" : "OFF"}</td>
-              <td>${h.cont_accionam || "-"}</td>
-            </tr>
-            `
-      )
-      .join("");
-  } else {
-    historialHtml += `
-            <tr>
-              <td colspan="12" style="text-align:center">No hay historial registrado</td>
-            </tr>
-          `;
-  }
-  historialHtml += `</tbody></table>`;
+    <table class="tabla-historial">
+      <thead>
+        <tr>
+          <th>N° Evento</th>
+          <th>Tipo</th>
+          <th>Fecha</th>
+          <th>Estado</th>
+          <th>Tiempo Dosif.</th>
+          <th>Cant. Ejes</th>
+          <th>Corriente</th>
+          <th>Flujo</th>
+          <th>Power</th>
+          <th>Señal Lora</th>
+          <th>On/Off</th>
+          <th>Accionamientos</th>
+        </tr>
+      </thead>
+      <tbody>
+    `;
 
   let comentarioHtml = "Sin comentarios";
 
@@ -211,16 +172,6 @@ export function renderDetalleMaquina(maquina) {
 
   document.getElementById("contenidoModal").innerHTML = contenido;
 
-  document.getElementById("historialCompleto").addEventListener("click", () => {
-    mostrarHistorialCompleto = !mostrarHistorialCompleto;
-    listarHistorialEnModal(e.historial, mostrarHistorialCompleto);
-
-    const btn = document.getElementById("historialCompleto").querySelector("p");
-    btn.innerText = mostrarHistorialCompleto
-      ? "Últimos 10"
-      : "Historial Completo";
-  });
-
   const botonApagar = document.getElementById("apagarEquipo");
   const switchButton = document.querySelector("#apagarEquipo > div > span");
   botonApagar.classList.remove("apagar", "encender");
@@ -347,7 +298,12 @@ export function renderDetalleMaquina(maquina) {
   });
 
   document.getElementById("resetHistorial").addEventListener("click", () => {
-    if (!confirm("¿Seguro que desea resetear el historial?")) return;
+    if (
+      !confirm(
+        "¿Está seguro de que desea resetear el historial?\nEsto eliminará todo el historial y no se podrá deshacer."
+      )
+    )
+      return;
 
     fetch(`/api/engrasadoras/${e._id}/resetHistorial`, {
       method: "PUT",
