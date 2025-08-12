@@ -8,6 +8,7 @@
     <link rel="icon" href="/img/emv/favicon-emova.png" sizes="32x32" />
     <link rel="stylesheet" href="/styles.css" />
     <link rel="stylesheet" href="/engrasadoras/detalle.css" />
+    <link rel="stylesheet" href="/engrasadoras/historial-completo.css" />
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
@@ -80,6 +81,45 @@
         <div id="listaComentarios"></div>
       </div>
     </div>
+    <!-- Modal Historial Completo -->
+    <div id="modalHistorialCompleto" class="modal">
+      <div class="modal-contenido">
+        <span
+          id="cerrarHistorialCompleto"
+          class="material-symbols-outlined cerrar-modal"
+          >close</span
+        >
+        <div class="modal-header">
+          <h3>Historial Completo</h3>
+        </div>
+        <div class="modal-body">
+          <table class="tabla-historial">
+            <thead>
+              <tr>
+                <th>N° Evento</th>
+                <th>Tipo</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Tiempo Dosif.</th>
+                <th>Cant. Ejes</th>
+                <th>Corriente</th>
+                <th>Flujo</th>
+                <th>Power</th>
+                <th>Señal Lora</th>
+                <th>On/Off</th>
+                <th>Accionamientos</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colspan="12" style="text-align: center">Cargando...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
     <div class="total"><span id="total_value"></span></div>
     <script src="/app.js"></script>
     <script type="module" src="/engrasadoras/detalle.js"></script>

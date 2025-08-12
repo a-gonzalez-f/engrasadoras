@@ -4,6 +4,7 @@ import { listarHistorialEnModal } from "./historial.js";
 import { formatearEstado } from "./detalles-tools.js";
 import { listarComentarios } from "./comentarios.js";
 import { inicializarSeteos } from "./detalle-seteos.js";
+import { abrirHistorialCompleto } from "./historial-completo.js";
 
 export function renderDetalleMaquina(maquina) {
   let e = maquina;
@@ -317,6 +318,10 @@ export function renderDetalleMaquina(maquina) {
         listarHistorialEnModal(e.historial);
       })
       .catch((err) => alert(err.message));
+  });
+
+  document.getElementById("historialCompleto").addEventListener("click", () => {
+    abrirHistorialCompleto(e);
   });
 
   inicializarSeteos(e);
