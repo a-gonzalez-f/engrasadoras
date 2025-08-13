@@ -89,6 +89,7 @@ setInterval(() => {
           );
           if (card) {
             card.querySelector(".estado").innerHTML = formatearEstado(m.estado);
+            // +'<span class="material-symbols-outlined">signal_cellular_0_bar</span>';
           }
         });
       }

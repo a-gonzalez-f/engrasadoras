@@ -332,7 +332,6 @@ hr {
   display: flex;
   justify-content: flex-end !important;
   width: 100% !important;
-  box-shadow: 0 -10px 20px var(--color-primario);
   padding-right: 1rem;
 }
 

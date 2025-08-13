@@ -224,46 +224,40 @@ const getUnaEngrasadora = async (req, res) => {
   }
 };
 
-const setearTiempo = async (req, res) => {
-  const { id, modelo, tiempo, ejes } = req.body;
-
-  if (
-    !id ||
-    tiempo === undefined ||
-    ejes === undefined ||
-    modelo === undefined
-  ) {
-    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
-  }
-
+const engrasadoraActualizada = async (req, res) => {
   try {
-    console.log("Enviando al motor:", { id, modelo, tiempo, ejes });
-    motor.enviarSeteoTiempo({ id, modelo, tiempo, ejes });
-    res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
+    const { id } = req.params;
+
+    const engrasadora = await Engrasadora.findOne({ id });
+
+    if (!engrasadora) {
+      return res.status(404).json({ error: "Engrasadora no encontrada" });
+    }
+
+    res.json({
+      id: engrasadora._id,
+      set_tiempodosif: engrasadora.set_tiempodosif,
+      set_ejes: engrasadora.set_ejes,
+    });
   } catch (err) {
-    console.error("Error al enviar seteo de tiempo:", err);
-    res.status(500).json({ mensaje: "Error al enviar el seteo al motor" });
+    console.error("Error obteniendo engrasadora:", err);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const setearEjes = async (req, res) => {
-  const { id, modelo, tiempo, ejes } = req.body;
+const setear = async (req, res) => {
+  const { id, tiempo, ejes } = req.body;
 
-  if (
-    !id ||
-    tiempo === undefined ||
-    ejes === undefined ||
-    modelo === undefined
-  ) {
+  if (!id || tiempo === undefined || ejes === undefined) {
     return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
   }
 
   try {
-    console.log("Enviando al motor:", { id, modelo, tiempo, ejes });
-    motor.enviarSeteoEjes({ id, modelo, tiempo, ejes });
-    res.json({ mensaje: `Seteo de ejes enviado a la engrasadora ${id}` });
+    console.log("Enviando al motor:", { id, tiempo, ejes });
+    motor.enviarSeteo({ id, tiempo, ejes });
+    res.json({ mensaje: `Seteo de tiempo enviado a la engrasadora ${id}` });
   } catch (err) {
-    console.error("Error al enviar seteo de ejes:", err);
+    console.error("Error al enviar seteo de tiempo:", err);
     res.status(500).json({ mensaje: "Error al enviar el seteo al motor" });
   }
 };
@@ -310,8 +304,7 @@ const switchOnOff = async (req, res) => {
 };
 
 module.exports = {
-  setearTiempo,
-  setearEjes,
+  setear,
   resetAccionamientos,
   switchOnOff,
   getPorLinea,
@@ -322,4 +315,5 @@ module.exports = {
   crearEngrasadora,
   verificarId,
   getUnaEngrasadora,
+  engrasadoraActualizada,
 };

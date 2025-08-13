@@ -3,8 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  setearTiempo,
-  setearEjes,
+  setear,
   resetAccionamientos,
   switchOnOff,
   getPorLinea,
@@ -15,10 +14,10 @@ const {
   crearEngrasadora,
   verificarId,
   getUnaEngrasadora,
+  engrasadoraActualizada,
 } = require("../controllers/engrasadorasController");
 
-router.post("/setearTiempo", setearTiempo);
-router.post("/setearEjes", setearEjes);
+router.post("/setear", setear);
 router.post("/resetAccionam", resetAccionamientos);
 router.post("/switchOnOff", switchOnOff);
 
@@ -30,5 +29,6 @@ router.put("/:id/resetHistorial", resetHistorial);
 router.post("/", crearEngrasadora);
 router.get("/:id", verificarId);
 router.get("/full/:id", getUnaEngrasadora);
+router.get("/actualizada/:id", engrasadoraActualizada);
 
 module.exports = router;

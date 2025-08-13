@@ -1,3 +1,5 @@
+// detalle-seteos.js
+
 import { listarHistorialEnModal } from "./historial.js";
 import { formatearEstado } from "./detalles-tools.js";
 
@@ -19,71 +21,79 @@ export function inicializarSeteos(e) {
     .addEventListener("click", () => toggleOnOff(e));
 }
 
-function editarTiempo(e) {
-  const nuevoValor = prompt(
-    "Ingrese el nuevo tiempo de dosificación (0.2s - 2s):",
-    e.set_tiempodosif
-  );
-  if (nuevoValor === null) return;
-
-  const valorSanitizado = nuevoValor.replace(",", ".");
-  const numValor = parseFloat(valorSanitizado);
-  if (isNaN(numValor) || numValor < 0.2 || numValor > 2) {
-    alert("El tiempo debe estar entre 0.2s y 2s.");
-    return;
-  }
-
-  const valorTruncado = Math.trunc(numValor * 10) / 10;
-
-  console.log(e.id, e.modelo, valorTruncado, e.set_ejes);
-
-  fetch(`/api/engrasadoras/setearTiempo`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id: e.id,
-      modelo: e.modelo,
-      tiempo: valorTruncado,
-      ejes: e.set_ejes,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.mensaje);
-    })
-    .catch((err) => alert(err.message));
+async function obtenerValoresActuales(id) {
+  const res = await fetch(`/api/engrasadoras/actualizada/${id}`);
+  if (!res.ok) throw new Error("No se pudo obtener la engrasadora");
+  return res.json();
 }
 
-function editarEjes(e) {
-  const nuevoValor = prompt(
-    "Ingrese la nueva cantidad de ejes (1 - 128):",
-    e.set_ejes
-  );
-  if (nuevoValor === null) return;
+async function editarTiempo(e) {
+  try {
+    const { set_ejes } = await obtenerValoresActuales(e.id);
 
-  const numValor = parseInt(nuevoValor);
-  if (isNaN(numValor) || numValor < 1 || numValor > 128) {
-    alert("Cantidad de ejes debe estar entre 1 y 128.");
-    return;
+    const nuevoValor = prompt(
+      "Ingrese el nuevo tiempo de dosificación (0.2s - 2s):",
+      e.set_tiempodosif
+    );
+    if (nuevoValor === null) return;
+
+    const valorSanitizado = nuevoValor.replace(",", ".");
+    const numValor = parseFloat(valorSanitizado);
+    if (isNaN(numValor) || numValor < 0.2 || numValor > 2) {
+      alert("El tiempo debe estar entre 0.2s y 2s.");
+      return;
+    }
+
+    const valorTruncado = Math.trunc(numValor * 10) / 10;
+
+    const res = await fetch(`/api/engrasadoras/setear`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: e.id,
+        tiempo: valorTruncado,
+        ejes: set_ejes,
+      }),
+    });
+
+    const data = await res.json();
+    alert(data.mensaje);
+  } catch (err) {
+    alert(err.message);
   }
+}
 
-  console.log(e.id, e.modelo, e.set_tiempodosif, numValor);
+async function editarEjes(e) {
+  try {
+    const { set_tiempodosif } = await obtenerValoresActuales(e.id);
 
-  fetch(`/api/engrasadoras/setearEjes`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id: e.id,
-      modelo: e.modelo,
-      tiempo: e.set_tiempodosif,
-      ejes: numValor,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.mensaje);
-    })
-    .catch((err) => alert(err.message));
+    const nuevoValor = prompt(
+      "Ingrese la nueva cantidad de ejes (1 - 128):",
+      e.set_ejes
+    );
+    if (nuevoValor === null) return;
+
+    const numValor = parseInt(nuevoValor);
+    if (isNaN(numValor) || numValor < 1 || numValor > 128) {
+      alert("Cantidad de ejes debe estar entre 1 y 128.");
+      return;
+    }
+
+    const res = await fetch(`/api/engrasadoras/setear`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: e.id,
+        tiempo: set_tiempodosif,
+        ejes: numValor,
+      }),
+    });
+
+    const data = await res.json();
+    alert(data.mensaje);
+  } catch (err) {
+    alert(err.message);
+  }
 }
 
 function editarUbicacion(e) {
