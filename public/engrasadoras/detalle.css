@@ -177,7 +177,6 @@ h6 {
 .subCont {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
   width: 25%;
   align-items: center;
   height: min-content;
