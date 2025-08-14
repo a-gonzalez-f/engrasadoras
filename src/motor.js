@@ -8,6 +8,23 @@ const Gateway = require("./models/gateway");
 
 const readline = require("readline");
 
+let tiempoSolicitud = 60;
+
+async function obtenerTiempo() {
+  try {
+    const response = await fetch("http://localhost:3000/api/sistema/get-time");
+    if (!response.ok) {
+      throw new Error("Error al obtener el tiempo");
+    }
+
+    const data = await response.json();
+    tiempoSolicitud = data.tiempo;
+    console.log("Tiempo solicitud:", tiempoSolicitud);
+  } catch (error) {
+    console.error("Hubo un error:", error.message);
+  }
+}
+
 global.motorActivo = false;
 
 function actualizarEstadoMotor() {
@@ -23,16 +40,10 @@ conectarDB()
     console.error("Motor: 🔴 Error al conectar motor.js a MongoDB:", err);
   });
 
-// const gateways = [
-//   { nombre: "Agus", ip: "172.21.31.96", puerto: 80 },
-//   // { nombre: "Dani", ip: "192.168.2.232", puerto: 80 },
-//   // { nombre: "Pablo", ip: "172.27.66.202", puerto: 80 },
-// ];
-
 const conexiones = {};
 const reconectando = {};
 
-function iniciarMotor() {
+async function iniciarMotor() {
   actualizarEstadoMotor();
 
   function intentarReconectar(gateway, intento = 1) {
@@ -299,23 +310,17 @@ function iniciarMotor() {
     try {
       const maquinas = await Engrasadora.find({}, "id");
 
-      maquinas.forEach((maquina) => {
-        if (maquina.id === undefined || maquina.id === null) {
-          console.warn(`Engrasadora sin ID:`, maquina);
-          return;
+      for (const maquina of maquinas) {
+        if (maquina.id == null) {
+          // console.warn(`Engrasadora sin ID:`, maquina);
+          continue;
         }
 
         const idStr = maquina.id.toString().padStart(3, "0");
         const mensaje = `0${idStr}`;
 
-        for (const nombre in conexiones) {
-          const ws = conexiones[nombre];
-          if (ws.readyState === WebSocket.OPEN) {
-            ws.send(mensaje);
-            console.log(`Motor: Enviado a ${nombre}: ${mensaje}`);
-          }
-        }
-      });
+        await enviarMensajePorID({ idEngrasadora: maquina.id, mensaje });
+      }
     } catch (err) {
       console.error("Error al solicitar estados:", err.message);
     }
@@ -332,7 +337,9 @@ function iniciarMotor() {
 
   iniciarGatewaysDesdeDB();
 
-  // setInterval(solicitarEstados, 10 * 1000);
+  await obtenerTiempo();
+
+  setInterval(solicitarEstados, tiempoSolicitud * 1000);
 }
 
 async function enviarMensajePorID({ idEngrasadora, mensaje }) {
@@ -340,9 +347,9 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
     const gateway = await Gateway.findOne({ engrasadoras: idEngrasadora });
 
     if (!gateway) {
-      console.warn(
-        `❌ No se encontró un gateway con la engrasadora ID ${idEngrasadora}`
-      );
+      // console.warn(
+      //   `❌ No se encontró un gateway con la engrasadora ID ${idEngrasadora}`
+      // );
       return;
     }
 
