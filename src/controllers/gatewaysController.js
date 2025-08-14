@@ -59,3 +59,22 @@ exports.borrarGateway = async (req, res) => {
     res.status(400).json({ mensaje: "Error eliminando gateway" });
   }
 };
+
+exports.actualizarEstadoGW = async (req, res) => {
+  try {
+    const gateway = await Gateway.findOneAndUpdate(
+      { nombre: req.params.nombre },
+      req.body,
+      { new: true }
+    );
+
+    if (!gateway) {
+      return res.status(404).json({ error: "Gateway no encontrado" });
+    }
+
+    res.json(gateway);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al actualizar gateway" });
+  }
+};

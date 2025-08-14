@@ -63,6 +63,9 @@ async function iniciarMotor() {
       ws.on("open", () => {
         actualizarEstadoMotor();
         console.log(`Motor: ${gateway.nombre} reconectado`);
+        estado = true;
+        actualizarComunicacion(gateway.nombre, estado);
+
         conexiones[gateway.nombre] = ws;
         reconectando[gateway.nombre] = false;
 
@@ -70,6 +73,10 @@ async function iniciarMotor() {
         ws.on("close", () => {
           actualizarEstadoMotor();
           console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
+
+          estado = false;
+          actualizarComunicacion(gateway.nombre, estado);
+
           delete conexiones[gateway.nombre];
           intentarReconectar(gateway, 1);
         });
@@ -172,6 +179,10 @@ async function iniciarMotor() {
 
     ws.on("open", () => {
       console.log(`Motor: 🟢 Conectado a ${gateway.nombre}`);
+
+      estado = true;
+      actualizarComunicacion(gateway.nombre, estado);
+
       conexiones[gateway.nombre] = ws;
 
       actualizarEstadoMotor();
@@ -180,6 +191,10 @@ async function iniciarMotor() {
 
       ws.on("close", () => {
         console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
+
+        estado = false;
+        actualizarComunicacion(gateway.nombre, estado);
+
         delete conexiones[gateway.nombre];
 
         actualizarEstadoMotor();
@@ -419,6 +434,23 @@ async function enviarOnOff({ id, on_off }) {
   //     console.log(`Motor: 📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
   //   }
   // }
+}
+
+async function actualizarComunicacion(gateway, estado) {
+  try {
+    const res = await fetch(
+      `http://localhost:3000/api/gateways/nombre/${gateway}`,
+      {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comunicacion_back: estado }),
+      }
+    );
+
+    if (!res.ok) throw new Error("Error al actualizar gateway");
+  } catch (err) {
+    console.error("Error guardando gateway:", err);
+  }
 }
 
 // Interfaz de consola
