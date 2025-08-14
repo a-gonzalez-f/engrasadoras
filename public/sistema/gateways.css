@@ -26,6 +26,7 @@ select {
 }
 
 .gatewayCard {
+  position: relative;
   background-color: rgba(0, 0, 0, 0.1);
   width: 200px;
   display: flex;
@@ -54,4 +55,30 @@ select {
   border-radius: 50%;
   color: var(--color-fondo);
   font-weight: 500;
+}
+
+.estadoGW {
+  position: absolute;
+}
+
+.off {
+  border: 2px solid var(--color-error);
+  transition: all 0.5s;
+  animation: off 1s infinite;
+}
+
+@keyframes off {
+  0% {
+    box-shadow: 0;
+  }
+  50% {
+    box-shadow: 0 0 10px #d90427ad;
+  }
+  100% {
+    box-shadow: 0;
+  }
+}
+
+.on {
+  border: 2px solid var(--color-pstv);
 }

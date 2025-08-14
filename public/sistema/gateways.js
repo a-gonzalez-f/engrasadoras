@@ -59,6 +59,12 @@ function renderizarGateways(gateways) {
   gateways.forEach((gw) => {
     const gwDiv = document.createElement("div");
     gwDiv.classList.add("gatewayCard");
+    gwDiv.classList.add("off");
+
+    if (gw.comunicacion_back === true) {
+      gwDiv.classList.remove("off");
+      gwDiv.classList.add("on");
+    }
 
     gwDiv.addEventListener("click", () => abrirModalGateway(gw));
 
@@ -76,7 +82,7 @@ function renderizarGateways(gateways) {
             : gw.engrasadoras.join(", ")
           : "No asignadas"
       }</p>
-
+      </div>
     `;
 
     container.appendChild(gwDiv);
