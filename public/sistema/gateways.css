@@ -63,7 +63,6 @@ select {
 
 .off {
   border: 2px solid var(--color-error);
-  transition: all 0.5s;
   animation: off 1s infinite;
 }
 
