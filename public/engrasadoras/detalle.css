@@ -1,6 +1,9 @@
 .mainSection {
   height: 100vh;
   padding-top: 6vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .contenedor-barra {
@@ -58,14 +61,14 @@
 
 #contenedorMaquinas {
   width: 100%;
-  height: 75vh;
+  height: 80vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: center;
-  align-content: center;
-  padding: 0 2rem;
+  align-content: space-around;
+  padding: 2rem;
+  justify-content: space-evenly;
 }
 
 .card-maquina {
@@ -90,7 +93,6 @@
 
 .card-maquina .estado {
   font-size: 2rem;
-  margin: 0.5rem 0;
 }
 
 .card-maquina .nombre {
