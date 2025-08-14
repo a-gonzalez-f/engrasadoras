@@ -58,6 +58,8 @@ function renderizarGateways(gateways) {
 
   gateways.forEach((gw) => {
     const gwDiv = document.createElement("div");
+    gwDiv.setAttribute("data-id", gw._id);
+
     gwDiv.classList.add("gatewayCard");
     gwDiv.classList.add("off");
 
@@ -103,3 +105,33 @@ function filtrarGateways() {
 }
 
 cargarGateways();
+
+function actualizarEstadosPeriodicamente(intervaloSegundos = 5) {
+  setInterval(async () => {
+    try {
+      const res = await fetch("/api/gateways");
+      if (!res.ok) throw new Error("Error actualizando estados");
+
+      const nuevosDatos = await res.json();
+
+      nuevosDatos.forEach((nuevoGW) => {
+        const gwDiv = document.querySelector(
+          `.gatewayCard[data-id="${nuevoGW._id}"]`
+        );
+        if (!gwDiv) return;
+
+        if (nuevoGW.comunicacion_back === true) {
+          gwDiv.classList.remove("off");
+          gwDiv.classList.add("on");
+        } else {
+          gwDiv.classList.remove("on");
+          gwDiv.classList.add("off");
+        }
+      });
+    } catch (err) {
+      console.error("Error actualizando estados de gateways:", err);
+    }
+  }, intervaloSegundos * 1000);
+}
+
+actualizarEstadosPeriodicamente(5);
