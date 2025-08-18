@@ -407,15 +407,6 @@ async function enviarResetAccionam({ id }) {
   const mensaje = `2${idStr}`;
 
   await enviarMensajePorID({ idEngrasadora: id, mensaje });
-
-  // enviar a todos los gateways conectados
-  // for (const nombre in conexiones) {
-  //   const ws = conexiones[nombre];
-  //   if (ws.readyState === WebSocket.OPEN) {
-  //     ws.send(mensaje);
-  //     console.log(`Motor: 📤 Reset Accionam enviado a ${nombre}: ${mensaje}`);
-  //   }
-  // }
 }
 
 async function enviarOnOff({ id, on_off }) {
@@ -427,15 +418,6 @@ async function enviarOnOff({ id, on_off }) {
   const mensaje = `3${idStr}${on_offStr}`;
 
   await enviarMensajePorID({ idEngrasadora: id, mensaje });
-
-  // enviar a todos los gateways conectados
-  // for (const nombre in conexiones) {
-  //   const ws = conexiones[nombre];
-  //   if (ws.readyState === WebSocket.OPEN) {
-  //     ws.send(mensaje);
-  //     console.log(`Motor: 📤 ON-OFF enviado a ${nombre}: ${mensaje}`);
-  //   }
-  // }
 }
 
 async function actualizarComunicacion(gateway, estado) {
