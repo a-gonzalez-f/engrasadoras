@@ -25,6 +25,8 @@ async function obtenerTiempo() {
   }
 }
 
+todosComunicacionOFF();
+
 global.motorActivo = false;
 
 function actualizarEstadoMotor() {
@@ -450,6 +452,22 @@ async function actualizarComunicacion(gateway, estado) {
     if (!res.ok) throw new Error("Error al actualizar gateway");
   } catch (err) {
     console.error("Error guardando gateway:", err);
+  }
+}
+
+async function todosComunicacionOFF() {
+  try {
+    const gateways = await Gateway.find({}, "id");
+
+    if (gateways.length === 0) {
+      console.log("Motor: No se encontraron gateways para actualizar.");
+      return;
+    }
+
+    await Gateway.updateMany({}, { $set: { comunicacion_back: false } });
+    console.log("Todos los gw actualizados a comunicacion_back: false");
+  } catch (err) {
+    console.error("Error al resetear Comunicacion_back:", err.message);
   }
 }
 
