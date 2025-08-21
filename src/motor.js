@@ -180,7 +180,7 @@ async function procesarSensado(maquina, datos, nombre) {
   maquina.sens_power = datos.power;
   maquina.cont_accionam = datos.total_accionam;
   maquina.estado = datos.falla ? "alerta" : "funcionando";
-  maquina.lora_signal = datos.lora_signal;
+  maquina.lora_signal = datos.lora_signal * -1;
 
   maquina.historial.push({
     nro_evento: maquina.historial.length + 1,
@@ -194,7 +194,7 @@ async function procesarSensado(maquina, datos, nombre) {
     on_off: datos.on_off,
     sens_power: datos.power,
     cont_accionam: datos.total_accionam,
-    lora_signal: datos.lora_signal.toString(),
+    lora_signal: datos.lora_signal * -1,
     user: "gateway_" + nombre,
   });
 
