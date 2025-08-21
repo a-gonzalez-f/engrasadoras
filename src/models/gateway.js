@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const GatewaySchema = new mongoose.Schema(
   {
     ip: { type: String, required: true },
+    puerto: { type: Number, default: 80 },
     nombre: { type: String, default: "-" },
     id: { type: Number, required: true },
     linea: { type: String, default: "-" },
