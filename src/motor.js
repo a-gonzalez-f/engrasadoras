@@ -52,49 +52,6 @@ async function iniciarMotor() {
   setInterval(solicitarEstados, tiempoSolicitud * 1000);
 }
 
-function intentarReconectar(gateway, intento = 1) {
-  reconectando[gateway.nombre] = true;
-
-  const delay = Math.min(10000, intento * 2000);
-  console.log(
-    `Motor: Intentando reconectar a ${gateway.nombre} en ${delay / 1000}s...`
-  );
-
-  setTimeout(() => {
-    const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
-    console.log(
-      `Motor: Reintentando conexión a ${gateway.nombre} (intento ${intento})`
-    );
-
-    ws.on("open", () => {
-      actualizarEstadoMotor();
-      console.log(`Motor: ${gateway.nombre} reconectado`);
-      estado = true;
-      actualizarComunicacion(gateway.nombre, estado);
-
-      conexiones[gateway.nombre] = ws;
-      reconectando[gateway.nombre] = false;
-
-      ws.on("message", (data) => manejarMensaje(gateway.nombre, data));
-      ws.on("close", () => {
-        actualizarEstadoMotor();
-        console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
-
-        estado = false;
-        actualizarComunicacion(gateway.nombre, estado);
-
-        delete conexiones[gateway.nombre];
-        intentarReconectar(gateway, 1);
-      });
-    });
-
-    ws.on("error", (err) => {
-      console.error(`Error al reconectar a ${gateway.nombre}:`, err.message);
-      intentarReconectar(gateway, intento + 1);
-    });
-  }, delay);
-}
-
 async function manejarMensaje(nombre, data) {
   const msg = data.toString().trim();
   console.log(`Motor: Mensaje recibido crudo de ${nombre}:`, msg);
@@ -183,8 +140,10 @@ async function manejarMensaje(nombre, data) {
 function conectarGateway(gateway) {
   const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
 
+  ws.cierrePorCambioIP = false;
+
   ws.on("open", () => {
-    console.log(`Motor: 🟢 Conectado a ${gateway.nombre}`);
+    console.log(`CONECTAR-GW: 🟢 Conectado a ${gateway.nombre}`);
 
     estado = true;
     actualizarComunicacion(gateway.nombre, estado);
@@ -196,7 +155,7 @@ function conectarGateway(gateway) {
     ws.on("message", (data) => manejarMensaje(gateway.nombre, data));
 
     ws.on("close", () => {
-      console.log(`Motor: Conexión cerrada con ${gateway.nombre}`);
+      console.log(`CONECTAR-GW: Conexión cerrada con ${gateway.nombre}`);
 
       estado = false;
       actualizarComunicacion(gateway.nombre, estado);
@@ -204,14 +163,11 @@ function conectarGateway(gateway) {
       delete conexiones[gateway.nombre];
 
       actualizarEstadoMotor();
-
-      intentarReconectar(gateway, 1);
     });
   });
 
   ws.on("error", (err) => {
     console.error(`Error al conectar a ${gateway.nombre}:`, err.message);
-    intentarReconectar(gateway, 1);
   });
 }
 
@@ -448,14 +404,53 @@ async function todosComunicacionOFF() {
   }
 }
 
+async function verificarCambioIPTodas() {
+  try {
+    const gateways = await Gateway.find({});
+
+    for (const gateway of gateways) {
+      const nombre = gateway.nombre;
+      const conexionActiva = conexiones[nombre];
+      const ipDB = gateway.ip;
+
+      if (conexionActiva && conexionActiva._url !== `ws://${ipDB}/ws`) {
+        console.log(
+          `VERIFICADOR_IP: Cambio de IP detectado en ${nombre}. Reconectando...
+          Conexión vieja: ${conexionActiva._url}, Conexión nueva: ws://${ipDB}/ws`
+        );
+        try {
+          console.log("VERIFICADOR_IP: Cerrando conexión vieja");
+          conexionActiva.cierrePorCambioIP = true;
+          conexionActiva.terminate();
+          conectarGateway(gateway);
+        } catch (err) {
+          console.error("Error cerrando conexión vieja:", err.message);
+        }
+        conectarGateway(gateway);
+      }
+
+      if (!conexionActiva) {
+        console.log(
+          `VERIFICADOR_IP: ${nombre} sin conexión, intentando con IP ${ipDB}`
+        );
+        conectarGateway(gateway);
+      }
+    }
+  } catch (err) {
+    console.error("Error en verificarCambioIPTodas:", err.message);
+  }
+}
+
+setInterval(verificarCambioIPTodas, 5000);
+
 // Interfaz de consola
 const rl = readline.createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 
-console.log("Motor: Cuando quieras enviar un mensaje, usá el formato:");
-console.log("Motor: [nombre del gateway]: [mensaje]");
+console.log("Cuando quieras enviar un mensaje, usá el formato:");
+console.log("[nombre del gateway]: [mensaje]");
 
 rl.on("line", (input) => {
   const partes = input.split(":");
