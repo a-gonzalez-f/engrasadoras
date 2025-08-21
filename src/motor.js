@@ -145,8 +145,7 @@ function conectarGateway(gateway) {
   ws.on("open", () => {
     console.log(`CONECTAR-GW: 🟢 Conectado a ${gateway.nombre}`);
 
-    estado = true;
-    actualizarComunicacion(gateway.nombre, estado);
+    actualizarComunicacion(gateway.nombre, true);
 
     conexiones[gateway.nombre] = ws;
 
@@ -157,8 +156,7 @@ function conectarGateway(gateway) {
     ws.on("close", () => {
       console.log(`CONECTAR-GW: Conexión cerrada con ${gateway.nombre}`);
 
-      estado = false;
-      actualizarComunicacion(gateway.nombre, estado);
+      actualizarComunicacion(gateway.nombre, false);
 
       delete conexiones[gateway.nombre];
 
