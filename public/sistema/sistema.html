@@ -142,31 +142,58 @@
           >
             close
           </span>
-          <h3>SETEO DE FRECUENCIA</h3>
-          <div id="contentSectionTime">
-            <p>Solicitud de los datos de sensado</p>
-            <p>Tiempo de frecuencia:</p>
+          <h3>CONFIGURACIONES DEL SISTEMA</h3>
+          <div class="row contConf">
             <div>
-              <input
-                id="time"
-                type="number"
-                autocomplete="none"
-                min="1"
-                max="600"
-                required
-              />
-              <span>segundos</span>
+              <h3>FRECUENCIA DE SOLICITUD</h3>
+              <div class="contentSection">
+                <p>de los datos de sensado</p>
+                <div>
+                  <p class="label">Solicitud cada:</p>
+                  <div>
+                    <input
+                      id="time"
+                      type="number"
+                      autocomplete="none"
+                      min="1"
+                      max="600"
+                      required
+                    />
+                    <span>segundos</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="btn">
-              <button id="submitTime" type="submit" class="submit">
-                Actualizar Tiempo
-              </button>
+            <div>
+              <h3>TIMEOUT</h3>
+              <div class="contentSection">
+                <p>Tiempo de espera tras solicitud</p>
+                <div>
+                  <p class="label">Esperar:</p>
+                  <div>
+                    <input
+                      id="timeOut"
+                      type="number"
+                      autocomplete="none"
+                      min="1"
+                      max="600"
+                      required
+                    />
+                    <span>segundos</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div id="ultimoUser">
-              <p>Último cambio realizado por</p>
-              <span id="user"></span>
-              <span id="lastUpdate"></span>
-            </div>
+          </div>
+          <div class="btn">
+            <button id="submitTime" type="submit" class="submit">
+              Actualizar
+            </button>
+          </div>
+          <div id="ultimoUser">
+            <p>Último cambio realizado por</p>
+            <span id="user"></span>
+            <span id="lastUpdate"></span>
           </div>
         </section>
       </div>

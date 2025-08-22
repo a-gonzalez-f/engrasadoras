@@ -45,10 +45,12 @@ btnTime.addEventListener("click", async () => {
 
 window.addEventListener("click", (e) => {
   if (e.target === modal) modal.style.display = "none";
+  modalTimeAbierto = false;
 });
 
 closeModalTime.addEventListener("click", () => {
   modal.style.display = "none";
+  modalTimeAbierto = false;
 });
 
 const submitBtn = document.getElementById("submitTime");
