@@ -14,7 +14,7 @@ export function listarHistorialEnModal(historial) {
     return;
   }
 
-  const itemsOriginal = historial.slice(-10).reverse();
+  const itemsOriginal = historial.slice(-1000).reverse();
 
   let lastContSensado = null;
   const itemsFiltrados = [];
@@ -51,6 +51,7 @@ export function listarHistorialEnModal(historial) {
           year: "2-digit",
           hour: "2-digit",
           minute: "2-digit",
+          second: "2-digit",
           hour12: false,
         })}</td>
         <td>${formatearEstado(h.estado, "texto")}</td>

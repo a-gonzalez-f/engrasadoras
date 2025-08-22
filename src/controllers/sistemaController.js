@@ -14,18 +14,22 @@ exports.obtenerEstadoSistema = async (req, res) => {
 };
 
 exports.guardarTime = async (req, res) => {
-  const { tiempo } = req.body;
+  const { tiempo, timeOut } = req.body;
 
   if (!tiempo || typeof tiempo !== "number" || tiempo < 1 || tiempo > 600)
     return res.status(400).json({ error: "Tiempo inválido" });
+
+  if (!timeOut || typeof timeOut !== "number" || timeOut < 1 || timeOut > 600)
+    return res.status(400).json({ error: "TimeOut inválido" });
 
   try {
     let config = await ConfigSistema.findOne();
 
     if (!config) {
-      config = new ConfigSistema({ request_time: tiempo });
+      config = new ConfigSistema({ request_time: tiempo, time_out: timeOut });
     } else {
       config.request_time = tiempo;
+      config.time_out = timeOut;
     }
 
     await config.save();
@@ -45,13 +49,12 @@ exports.getTime = async (req, res) => {
       return res.status(404).json({ error: "No hay configuración de sistema" });
     }
 
-    res
-      .status(200)
-      .json({
-        tiempo: config.request_time,
-        user: config.user,
-        updatedAt: config.updatedAt,
-      });
+    res.status(200).json({
+      tiempo: config.request_time,
+      timeOut: config.time_out,
+      user: config.user,
+      updatedAt: config.updatedAt,
+    });
   } catch (err) {
     console.error("Error al obtener el tiempo:", err);
     res.status(500).json({ error: "Error al obtener el tiempo" });

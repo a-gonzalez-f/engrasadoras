@@ -13,8 +13,10 @@ btnTime.addEventListener("click", async () => {
 
       if (res.ok && data.tiempo) {
         document.getElementById("time").value = data.tiempo;
+        document.getElementById("timeOut").value = data.timeOut;
       } else {
         document.getElementById("time").value = "";
+        document.getElementById("timeOut").value = "";
         console.warn("No se pudo cargar el tiempo actual");
       }
 
@@ -57,9 +59,15 @@ const submitBtn = document.getElementById("submitTime");
 
 submitBtn.addEventListener("click", async () => {
   const tiempo = parseInt(document.getElementById("time").value);
+  const timeOut = parseInt(document.getElementById("timeOut").value);
 
   if (isNaN(tiempo) || tiempo < 1 || tiempo > 600) {
     alert("Ingresá un tiempo válido entre 1 y 600 segundos");
+    return;
+  }
+
+  if (isNaN(timeOut) || timeOut < 1 || timeOut > 600) {
+    alert("Ingresá un timeOut válido entre 1 y 600 segundos");
     return;
   }
 
@@ -69,7 +77,7 @@ submitBtn.addEventListener("click", async () => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ tiempo }),
+      body: JSON.stringify({ tiempo, timeOut }),
     });
 
     if (res.ok) {

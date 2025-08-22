@@ -47,12 +47,12 @@ mongoose
   .then(() => {
     console.log("Conectado a MongoDB");
 
-    // server.listen(process.env.PORT, () =>
-    //   console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
-    // );
-
-    server.listen(process.env.PORT, "0.0.0.0", () =>
-      console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
+    server.listen(process.env.PORT, () =>
+      console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
     );
+
+    // server.listen(process.env.PORT, "0.0.0.0", () =>
+    //   console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
+    // );
   })
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
