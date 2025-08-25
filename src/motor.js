@@ -143,7 +143,21 @@ async function manejarMensaje(nombre, data) {
         break;
       }
       case "2":
-        await procesarResetAccionamientos(maquina, datos, nombre);
+        if (confirmacionesPendientes.has(id)) {
+          const pendiente = confirmacionesPendientes.get(id);
+          clearTimeout(pendiente.timer);
+          await procesarResetAccionamientos(maquina, datos, nombre);
+          pendiente.resolve(`Seteo confirmado para ${id}`);
+          confirmacionesPendientes.delete(id);
+          console.log(
+            `Motor: ✅ Accionamientos reseteados para máquina ${id} (promesa resuelta)`
+          );
+        } else {
+          await procesarResetAccionamientos(maquina, datos, nombre);
+          console.log(
+            `Motor: ✅ Accionamiento reseteados para máquina ${id} (sin promesa pendiente)`
+          );
+        }
         break;
       case "3":
         await procesarSwitchOnOff(maquina, datos, nombre);
@@ -379,13 +393,21 @@ async function enviarSeteo({ id, tiempo, ejes }) {
 }
 
 async function enviarResetAccionam({ id }) {
-  console.log("Motor: 👉 Enviando reset accionamientos:", id);
+  return new Promise(async (resolve, reject) => {
+    console.log("Motor: 👉 Enviando reset accionamientos:", id);
 
-  const idStr = id.toString().padStart(3, "0");
+    const idStr = id.toString().padStart(3, "0");
 
-  const mensaje = `2${idStr}`;
+    const mensaje = `2${idStr}`;
 
-  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+    await enviarMensajePorID({ idEngrasadora: id, mensaje });
+    const timer = setTimeout(() => {
+      confirmacionesPendientes.delete(id);
+      reject(new Error(`La Engrasadora ${id} no respondió`));
+    }, timeOut * 1000);
+
+    confirmacionesPendientes.set(id, { resolve, reject, timer });
+  });
 }
 
 async function enviarOnOff({ id, on_off }) {

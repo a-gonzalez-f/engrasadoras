@@ -272,15 +272,13 @@ const resetAccionamientos = async (req, res) => {
 
   try {
     console.log("Enviando al motor:", { id });
-    motor.enviarResetAccionam({ id });
-    res.json({
-      mensaje: `Reset de accionamientos enviado a la engrasadora ${id}`,
+    await motor.enviarResetAccionam({ id });
+    return res.json({
+      mensaje: `Confirmación recibida de la engrasadora ${id}`,
     });
   } catch (err) {
-    console.error("Error al enviar reset accionam:", err);
-    res
-      .status(500)
-      .json({ mensaje: "Error al enviar el reset accionam al motor" });
+    console.error("Error al enviar reset accionamientos:", err);
+    return res.status(504).json({ mensaje: err.message });
   }
 };
 

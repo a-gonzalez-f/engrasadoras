@@ -142,23 +142,33 @@ function editarUbicacion(e) {
     .catch((err) => alert(err.message));
 }
 
-function resetearAccionamientos(e) {
-  if (!confirm("¿Seguro que desea resetear los accionamientos?")) return;
+async function resetearAccionamientos(e) {
+  try {
+    if (!confirm("¿Seguro que desea resetear los accionamientos?")) return;
+    const overlay = document.getElementById("overlay");
 
-  console.log(e.id);
+    console.log(e.id);
+    overlay.style.display = "flex";
+    const res = await fetch(`/api/engrasadoras/resetAccionam`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        id: e.id,
+      }),
+    });
 
-  fetch(`/api/engrasadoras/resetAccionam`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      id: e.id,
-    }),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      alert(data.mensaje);
-    })
-    .catch((err) => alert(err.message));
+    const data = await res.json();
+    overlay.style.display = "none";
+
+    if (!res.ok) {
+      alert("❌ " + data.mensaje);
+      return;
+    }
+    alert("✅ " + data.mensaje);
+  } catch (err) {
+    document.getElementById("overlay").style.display = "none";
+    alert(err.message);
+  }
 }
 
 function toBool(v) {
