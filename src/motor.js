@@ -10,6 +10,11 @@ const readline = require("readline");
 
 let tiempoSolicitud = 60;
 
+const pendientes = new Map();
+let timeOut = 2;
+
+const confirmacionesPendientes = new Map();
+
 async function obtenerTiempo() {
   try {
     const response = await fetch("http://localhost:3000/api/sistema/get-time");
@@ -19,7 +24,9 @@ async function obtenerTiempo() {
 
     const data = await response.json();
     tiempoSolicitud = data.tiempo;
+    timeOut = data.timeOut;
     console.log("Tiempo solicitud:", tiempoSolicitud);
+    console.log("TimeOut:", timeOut);
   } catch (error) {
     console.error("Hubo un error:", error.message);
   }
@@ -117,9 +124,24 @@ async function manejarMensaje(nombre, data) {
       case "0":
         await procesarSensado(maquina, datos, nombre);
         break;
-      case "1":
-        await procesarSeteo(maquina, datos, nombre);
+      case "1": {
+        if (confirmacionesPendientes.has(id)) {
+          const pendiente = confirmacionesPendientes.get(id);
+          clearTimeout(pendiente.timer);
+          await procesarSeteo(maquina, datos, nombre);
+          pendiente.resolve(`Seteo confirmado para ${id}`);
+          confirmacionesPendientes.delete(id);
+          console.log(
+            `Motor: ✅ Seteo actualizado para máquina ${id} (promesa resuelta)`
+          );
+        } else {
+          await procesarSeteo(maquina, datos, nombre);
+          console.log(
+            `Motor: ✅ Seteo actualizado para máquina ${id} (sin promesa pendiente)`
+          );
+        }
         break;
+      }
       case "2":
         await procesarResetAccionamientos(maquina, datos, nombre);
         break;
@@ -335,17 +357,25 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
 }
 
 async function enviarSeteo({ id, tiempo, ejes }) {
-  console.log("Motor: 👉 Enviando seteo al motor:", id, tiempo, ejes);
+  return new Promise(async (resolve, reject) => {
+    const idStr = id.toString().padStart(3, "0");
+    const ejesStr = ejes.toString().padStart(3, "0");
+    const tiempoStr = Math.trunc(tiempo * 10)
+      .toString()
+      .padStart(2, "0");
 
-  const idStr = id.toString().padStart(3, "0");
-  const ejesStr = ejes.toString().padStart(3, "0");
-  const tiempoStr = Math.trunc(tiempo * 10)
-    .toString()
-    .padStart(2, "0");
+    const mensaje = `1${idStr}${ejesStr}${tiempoStr}`;
 
-  const mensaje = `1${idStr}${ejesStr}${tiempoStr}`;
+    console.log("Motor: 👉 Enviando seteo:", mensaje);
+    await enviarMensajePorID({ idEngrasadora: id, mensaje });
 
-  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+    const timer = setTimeout(() => {
+      confirmacionesPendientes.delete(id);
+      reject(new Error(`La Engrasadora ${id} no respondió`));
+    }, timeOut * 1000);
+
+    confirmacionesPendientes.set(id, { resolve, reject, timer });
+  });
 }
 
 async function enviarResetAccionam({ id }) {
