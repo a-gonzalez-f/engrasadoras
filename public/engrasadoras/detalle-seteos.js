@@ -166,7 +166,7 @@ async function resetearAccionamientos(e) {
     }
     alert("✅ " + data.mensaje);
   } catch (err) {
-    document.getElementById("overlay").style.display = "none";
+    overlay.style.display = "none";
     alert(err.message);
   }
 }
@@ -178,7 +178,7 @@ function toBool(v) {
 
 async function toggleOnOff(e) {
   try {
-    // Traigo on_off mas reciente de la DB
+    const overlay = document.getElementById("overlay");
     const res = await fetch(`/api/engrasadoras/full/${e._id}`);
     if (!res.ok) throw new Error("No se pudo obtener el estado actual");
     const maquina = await res.json();
@@ -208,6 +208,7 @@ async function toggleOnOff(e) {
     console.log(e.id, "actual DB:", actualDB, "nuevo:", solicitado);
 
     // Envio el cambio
+    overlay.style.display = "flex";
     const resp = await fetch(`/api/engrasadoras/switchOnOff`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -218,13 +219,18 @@ async function toggleOnOff(e) {
     });
 
     const data = await resp.json();
-    if (!resp.ok) throw new Error(data.mensaje || "Error en el switchOnOff");
+    overlay.style.display = "none";
 
-    alert(data.mensaje);
+    if (!resp.ok) {
+      alert("❌ " + data.mensaje);
+      return;
+    }
+    alert("✅ " + data.mensaje);
 
-    //Actualizo el objeto en memoria para que el próximo click no reenvíe lo mismo
+    overlay.style.display = "none";
     e.on_off = solicitado;
   } catch (err) {
-    alert("Error al intentar cambiar estado: " + err.message);
+    overlay.style.display = "none";
+    alert(err.message);
   }
 }

@@ -292,13 +292,15 @@ const switchOnOff = async (req, res) => {
 
   try {
     console.log("Enviando al motor:", { id, on_off });
-    motor.enviarOnOff({ id, on_off });
-    res.json({
-      mensaje: `Switch ${on_offStr} enviado a la engrasadora ${id}`,
+    await motor.enviarOnOff({ id, on_off });
+    return res.json({
+      mensaje: `Switch ${on_offStr} confirmado por la engrasadora ${id}`,
     });
   } catch (err) {
     console.error("Error al enviar switch on-off:", err);
-    res.status(500).json({ mensaje: "Error al enviar switch on-off al motor" });
+    return res
+      .status(500)
+      .json({ mensaje: "Error al enviar switch on-off al motor" });
   }
 };
 

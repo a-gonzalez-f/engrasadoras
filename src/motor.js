@@ -160,7 +160,21 @@ async function manejarMensaje(nombre, data) {
         }
         break;
       case "3":
-        await procesarSwitchOnOff(maquina, datos, nombre);
+        if (confirmacionesPendientes.has(id)) {
+          const pendiente = confirmacionesPendientes.get(id);
+          clearTimeout(pendiente.timer);
+          await procesarSwitchOnOff(maquina, datos, nombre);
+          pendiente.resolve(`Seteo confirmado para ${id}`);
+          confirmacionesPendientes.delete(id);
+          console.log(
+            `Motor: ✅ Switch confirmado para máquina ${id} (promesa resuelta)`
+          );
+        } else {
+          await procesarSwitchOnOff(maquina, datos, nombre);
+          console.log(
+            `Motor: ✅ Switch confirmado para máquina ${id} (sin promesa pendiente)`
+          );
+        }
         break;
       case "4":
         await procesarForzarEngrase(maquina, datos, nombre);
@@ -411,14 +425,22 @@ async function enviarResetAccionam({ id }) {
 }
 
 async function enviarOnOff({ id, on_off }) {
-  console.log("Motor: 👉 Enviando on-off:", id);
+  return new Promise(async (resolve, reject) => {
+    console.log("Motor: 👉 Enviando on-off:", id);
 
-  const idStr = id.toString().padStart(3, "0");
-  const on_offStr = on_off ? "1" : "0";
+    const idStr = id.toString().padStart(3, "0");
+    const on_offStr = on_off ? "1" : "0";
+    const mensaje = `3${idStr}${on_offStr}`;
 
-  const mensaje = `3${idStr}${on_offStr}`;
+    await enviarMensajePorID({ idEngrasadora: id, mensaje });
 
-  await enviarMensajePorID({ idEngrasadora: id, mensaje });
+    const timer = setTimeout(() => {
+      confirmacionesPendientes.delete(id);
+      reject(new Error(`La Engrasadora ${id} no respondió`));
+    }, timeOut * 1000);
+
+    confirmacionesPendientes.set(id, { resolve, reject, timer });
+  });
 }
 
 async function actualizarComunicacion(gateway, estado) {
