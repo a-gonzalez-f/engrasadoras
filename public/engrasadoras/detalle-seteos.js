@@ -29,23 +29,29 @@ async function obtenerValoresActuales(id) {
 
 async function editarTiempo(e) {
   try {
+    const overlay = document.getElementById("overlay");
     const { set_ejes } = await obtenerValoresActuales(e.id);
 
     const nuevoValor = prompt(
       "Ingrese el nuevo tiempo de dosificación (0.2s - 2s):",
       e.set_tiempodosif
     );
-    if (nuevoValor === null) return;
+    if (nuevoValor === null) {
+      overlay.style.display = "none";
+      return;
+    }
 
     const valorSanitizado = nuevoValor.replace(",", ".");
     const numValor = parseFloat(valorSanitizado);
     if (isNaN(numValor) || numValor < 0.2 || numValor > 2) {
       alert("El tiempo debe estar entre 0.2s y 2s.");
+      overlay.style.display = "none";
       return;
     }
 
     const valorTruncado = Math.trunc(numValor * 10) / 10;
 
+    overlay.style.display = "flex";
     const res = await fetch(`/api/engrasadoras/setear`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -57,32 +63,41 @@ async function editarTiempo(e) {
     });
 
     const data = await res.json();
+    overlay.style.display = "none";
+
     if (!res.ok) {
       alert("❌ " + data.mensaje);
       return;
     }
     alert("✅ " + data.mensaje);
   } catch (err) {
+    document.getElementById("overlay").style.display = "none";
     alert(err.message);
   }
 }
 
 async function editarEjes(e) {
   try {
+    const overlay = document.getElementById("overlay");
     const { set_tiempodosif } = await obtenerValoresActuales(e.id);
 
     const nuevoValor = prompt(
       "Ingrese la nueva cantidad de ejes (1 - 128):",
       e.set_ejes
     );
-    if (nuevoValor === null) return;
+    if (nuevoValor === null) {
+      overlay.style.display = "none";
+      return;
+    }
 
     const numValor = parseInt(nuevoValor);
     if (isNaN(numValor) || numValor < 1 || numValor > 128) {
       alert("Cantidad de ejes debe estar entre 1 y 128.");
+      overlay.style.display = "none";
       return;
     }
 
+    overlay.style.display = "flex";
     const res = await fetch(`/api/engrasadoras/setear`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -94,8 +109,15 @@ async function editarEjes(e) {
     });
 
     const data = await res.json();
-    alert(data.mensaje);
+    overlay.style.display = "none";
+
+    if (!res.ok) {
+      alert("❌ " + data.mensaje);
+      return;
+    }
+    alert("✅ " + data.mensaje);
   } catch (err) {
+    document.getElementById("overlay").style.display = "none";
     alert(err.message);
   }
 }
