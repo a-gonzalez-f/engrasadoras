@@ -220,6 +220,14 @@ function conectarGateway(gateway) {
 }
 
 async function procesarSensado(maquina, datos, nombre) {
+  // limpiar timeout y resetear contador
+  if (solicitudesPendientes.has(maquina.id)) {
+    clearTimeout(solicitudesPendientes.get(maquina.id));
+    solicitudesPendientes.delete(maquina.id);
+  }
+
+  maquina.perdidos = 0;
+
   maquina.date = new Date();
   maquina.modelo = datos.modelo;
   maquina.set_tiempodosif = datos.tiempo_dosif;
@@ -329,6 +337,8 @@ async function procesarForzarEngrase(maquina, datos, nombre) {
   console.log(`Motor: Forzar Engrase pendiente de implementación`);
 }
 
+const solicitudesPendientes = new Map();
+
 async function solicitarEstados() {
   try {
     const maquinas = await Engrasadora.find({}, "id");
@@ -343,6 +353,28 @@ async function solicitarEstados() {
       const mensaje = `0${idStr}`;
 
       await enviarMensajePorID({ idEngrasadora: maquina.id, mensaje });
+      // arrancar timer de respuesta
+      if (solicitudesPendientes.has(maquina.id)) {
+        clearTimeout(solicitudesPendientes.get(maquina.id));
+      }
+
+      const timer = setTimeout(async () => {
+        try {
+          const m = await Engrasadora.findOne({ id: maquina.id });
+          if (m) {
+            m.perdidos = (m.perdidos || 0) + 1;
+            await m.save();
+            console.log(
+              `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos})`
+            );
+          }
+        } catch (err) {
+          console.error("Error incrementando perdidos:", err.message);
+        }
+        solicitudesPendientes.delete(maquina.id);
+      }, timeOut * 1000);
+
+      solicitudesPendientes.set(maquina.id, timer);
     }
   } catch (err) {
     console.error("Error al solicitar estados:", err.message);
