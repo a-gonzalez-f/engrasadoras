@@ -227,6 +227,7 @@ async function procesarSensado(maquina, datos, nombre) {
   }
 
   maquina.perdidos = 0;
+  maquina.estado = datos.falla ? "alerta" : "funcionando";
 
   maquina.date = new Date();
   maquina.modelo = datos.modelo;
@@ -358,11 +359,36 @@ async function solicitarEstados() {
         clearTimeout(solicitudesPendientes.get(maquina.id));
       }
 
+      const max_fallos = 5;
+
       const timer = setTimeout(async () => {
         try {
           const m = await Engrasadora.findOne({ id: maquina.id });
           if (m) {
-            m.perdidos = (m.perdidos || 0) + 1;
+            if (m.perdidos < 999) {
+              m.perdidos = (m.perdidos || 0) + 1;
+            }
+
+            if (m.perdidos >= max_fallos) {
+              m.estado = "desconectada";
+            }
+
+            if (m.perdidos === max_fallos) {
+              m.historial.push({
+                nro_evento: m.historial.length + 1,
+                tipo_evento: "Falla de comunicación",
+                fecha: new Date(),
+                estado: "desconectada",
+                set_tiempodosif: m.set_tiempodosif,
+                set_ejes: m.set_ejes,
+                sens_corriente: m.corriente,
+                sens_flujo: m.flujo,
+                on_off: m.on_off,
+                sens_power: m.power,
+                cont_accionam: m.cont_accionam,
+                lora_signal: m.lora_signal,
+              });
+            }
             await m.save();
             console.log(
               `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos})`
