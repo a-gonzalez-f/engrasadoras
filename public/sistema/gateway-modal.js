@@ -33,6 +33,7 @@ export function abrirModalGateway(gw) {
   }
 
   renderizarEngrasadoras(gw.engrasadoras || []);
+  listarHistorial(gw);
 }
 
 // Cerrar modal
