@@ -1,4 +1,7 @@
 // gateway-modal.js
+
+import { listarHistorial } from "./historial-gw.js";
+
 const modal = document.getElementById("gatewayModal");
 const cerrarBtn = document.getElementById("cerrarModal");
 const form = document.getElementById("formEditGateway");
@@ -267,11 +270,15 @@ bypassBtn.addEventListener("click", async () => {
 
     if (!res.ok) throw new Error("Error al actualizar estado bypass");
 
-    currentBypass = nuevoEstado;
+    const gateway = await res.json();
 
-    bypassBtn.textContent = nuevoEstado ? "toggle_off" : "toggle_on";
-    bypassBtn.classList.remove(nuevoEstado ? "activated" : "bypassed");
-    bypassBtn.classList.add(nuevoEstado ? "bypassed" : "activated");
+    currentBypass = gateway.bypass;
+
+    bypassBtn.textContent = currentBypass ? "toggle_off" : "toggle_on";
+    bypassBtn.classList.remove(currentBypass ? "activated" : "bypassed");
+    bypassBtn.classList.add(currentBypass ? "bypassed" : "activated");
+
+    listarHistorial(gateway);
   } catch (err) {
     console.error("Error al deshabilitar gateway:", err);
     alert("Error al cambiar estado bypass del Gateway");
