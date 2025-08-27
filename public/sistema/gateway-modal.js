@@ -259,8 +259,8 @@ bypassBtn.addEventListener("click", async () => {
   try {
     const nuevoEstado = !currentBypass;
 
-    const res = await fetch(`/api/gateways/${currentGatewayId}`, {
-      method: "PUT",
+    const res = await fetch(`/api/gateways/${currentGatewayId}/bypass`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ bypass: nuevoEstado }),
     });

@@ -2,6 +2,15 @@
 
 const mongoose = require("mongoose");
 
+const HistorialSchema = new mongoose.Schema({
+  nro_evento: Number,
+  tipo_evento: String,
+  fecha: { type: Date, default: Date.now },
+  estado: String,
+  user: String,
+  bypass: Boolean,
+});
+
 const GatewaySchema = new mongoose.Schema(
   {
     ip: { type: String, required: true },
@@ -18,6 +27,8 @@ const GatewaySchema = new mongoose.Schema(
 
     engrasadoras: [{ type: Number }],
     bypass: { type: Boolean, default: false },
+
+    historial: [HistorialSchema],
   },
   { timestamps: true }
 );

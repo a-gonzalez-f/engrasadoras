@@ -9,6 +9,7 @@ const {
   getGateway,
   borrarGateway,
   actualizarEstadoGW,
+  toggleBypass,
 } = require("../controllers/gatewaysController");
 
 router.get("/", listarGateways);
@@ -18,5 +19,7 @@ router.put("/:id", actualizarGateway);
 router.delete("/:id", borrarGateway);
 
 router.put("/nombre/:nombre", actualizarEstadoGW);
+
+router.patch("/:id/bypass", toggleBypass);
 
 module.exports = router;

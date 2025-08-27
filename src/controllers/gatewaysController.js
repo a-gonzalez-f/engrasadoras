@@ -78,3 +78,29 @@ exports.actualizarEstadoGW = async (req, res) => {
     res.status(500).json({ error: "Error al actualizar gateway" });
   }
 };
+
+// controllers/gatewaysController.js
+exports.toggleBypass = async (req, res) => {
+  try {
+    const gateway = await Gateway.findById(req.params.id);
+    if (!gateway) return res.status(404).json({ mensaje: "No encontrado" });
+
+    const nuevoEstado = !gateway.bypass;
+
+    gateway.bypass = nuevoEstado;
+
+    gateway.historial.push({
+      nro_evento: gateway.historial.length + 1,
+      tipo_evento: nuevoEstado ? "Deshabilitación" : "Habilitación",
+      estado: nuevoEstado ? "Deshabilitado" : "Habilitado",
+      user: "userX",
+      bypass: nuevoEstado,
+    });
+
+    await gateway.save();
+    res.json(gateway);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: "Error al cambiar bypass" });
+  }
+};
