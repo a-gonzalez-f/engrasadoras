@@ -5,9 +5,11 @@ const form = document.getElementById("formEditGateway");
 const containerEngrasadoras = document.getElementById("conectadasContainer");
 
 let currentGatewayId = null;
+let currentBypass = false;
 
 export function abrirModalGateway(gw) {
   currentGatewayId = gw._id;
+  currentBypass = gw.bypass || false;
   modal.classList.remove("hidden");
 
   document.getElementById("gw-ip").textContent = gw.ip;
@@ -15,6 +17,17 @@ export function abrirModalGateway(gw) {
   document.getElementById("gw-nombre").textContent = gw.nombre || "";
   document.getElementById("gw-linea").value = gw.linea || "";
   document.getElementById("gw-ubicacion").textContent = gw.ubicacion || "";
+  const bypassBtn = document.getElementById("bypassBtn");
+
+  if (gw.bypass) {
+    bypassBtn.textContent = "toggle_off";
+    bypassBtn.classList.remove("activated");
+    bypassBtn.classList.add("bypassed");
+  } else {
+    bypassBtn.textContent = "toggle_on";
+    bypassBtn.classList.remove("bypassed");
+    bypassBtn.classList.add("activated");
+  }
 
   renderizarEngrasadoras(gw.engrasadoras || []);
 }
@@ -202,6 +215,8 @@ activarEdicion("edit-nombre", "gw-nombre");
 activarEdicion("edit-id", "gw-id");
 activarEdicion("edit-ubi", "gw-ubicacion");
 
+// delete
+
 const deleteBtn = document.getElementById("deleteGW");
 
 deleteBtn.addEventListener("click", async () => {
@@ -223,5 +238,42 @@ deleteBtn.addEventListener("click", async () => {
   } catch (err) {
     console.error("Error eliminando gateway:", err);
     alert("No se pudo eliminar el Gateway.");
+  }
+});
+
+// bypass
+
+const bypassBtn = document.getElementById("bypassBtn");
+
+bypassBtn.addEventListener("click", async () => {
+  if (!currentGatewayId) return;
+
+  const confirmar = confirm(
+    currentBypass
+      ? "¿Seguro desea habilitar este Gateway?"
+      : "¿Seguro desea deshabilitar este Gateway?"
+  );
+
+  if (!confirmar) return;
+
+  try {
+    const nuevoEstado = !currentBypass;
+
+    const res = await fetch(`/api/gateways/${currentGatewayId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ bypass: nuevoEstado }),
+    });
+
+    if (!res.ok) throw new Error("Error al actualizar estado bypass");
+
+    currentBypass = nuevoEstado;
+
+    bypassBtn.textContent = nuevoEstado ? "toggle_off" : "toggle_on";
+    bypassBtn.classList.remove(nuevoEstado ? "activated" : "bypassed");
+    bypassBtn.classList.add(nuevoEstado ? "bypassed" : "activated");
+  } catch (err) {
+    console.error("Error al deshabilitar gateway:", err);
+    alert("Error al cambiar estado bypass del Gateway");
   }
 });

@@ -17,6 +17,7 @@ const GatewaySchema = new mongoose.Schema(
     ultimaConexion: { type: Date, default: null },
 
     engrasadoras: [{ type: Number }],
+    bypass: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

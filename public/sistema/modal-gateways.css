@@ -105,6 +105,7 @@ label.row {
 
 input.id {
   width: 10rem;
+  margin: 5px 0;
 }
 
 .titleBorder {
@@ -116,4 +117,21 @@ input.id {
 .editableInput {
   width: 9rem;
   padding: 2px 0.5rem;
+}
+
+#bypassBtn {
+  float: right;
+  opacity: 0.5;
+  transition: all 0.1s;
+}
+
+#bypassBtn:hover {
+  opacity: 1;
+}
+
+.bypassed {
+  color: var(--color-error);
+}
+.activated {
+  color: var(--color-pstv);
 }
