@@ -12,6 +12,11 @@
   flex-direction: row;
 }
 
+.porc {
+  transition: width 0.5s;
+  align-content: flex-end;
+}
+
 .barra {
   border-radius: 3px;
   margin: 0 2px;
