@@ -506,6 +506,15 @@ async function actualizarComunicacion(nombreGateway, estado) {
     const gateway = await Gateway.findOne({ nombre: nombreGateway });
     if (!gateway) return;
 
+    const ultimoEvento = gateway.historial[gateway.historial.length - 1];
+
+    if (
+      ultimoEvento &&
+      ultimoEvento.tipo_evento === (estado ? "Conexión" : "Desconexión")
+    ) {
+      return;
+    }
+
     gateway.comunicacion_back = estado;
 
     gateway.historial.push({
