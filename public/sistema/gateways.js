@@ -1,6 +1,7 @@
 // gateway.js
 
 import { abrirModalGateway } from "./gateway-modal.js";
+import { actualizarBarraPorcentual } from "./barraPorcentual.js";
 
 const container = document.getElementById("containerGateways");
 
@@ -17,6 +18,7 @@ async function cargarGateways() {
       container.innerHTML = "<p>No hay gateways cargados.</p>";
     } else {
       renderizarGateways(todosLosGateways);
+      actualizarBarraPorcentual(todosLosGateways);
     }
   } catch (err) {
     container.innerHTML = `<p style="color:red;">Error cargando gateways: ${err.message}</p>`;
@@ -113,6 +115,8 @@ function actualizarEstadosPeriodicamente(intervaloSegundos = 5) {
       if (!res.ok) throw new Error("Error actualizando estados");
 
       const nuevosDatos = await res.json();
+
+      actualizarBarraPorcentual(nuevosDatos);
 
       nuevosDatos.forEach((nuevoGW) => {
         const gwDiv = document.querySelector(
