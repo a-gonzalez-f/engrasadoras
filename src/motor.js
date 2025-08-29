@@ -350,6 +350,11 @@ async function solicitarEstados() {
         continue;
       }
 
+      const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
+      if (!gateway || gateway.bypass) {
+        continue;
+      }
+
       const idStr = maquina.id.toString().padStart(3, "0");
       const mensaje = `0${idStr}`;
 
@@ -411,6 +416,12 @@ async function iniciarGatewaysDesdeDB() {
   const gateways = await Gateway.find({});
 
   for (const gateway of gateways) {
+    if (gateway.bypass) {
+      console.log(
+        `⏸️  Gateway ${gateway.nombre} está en bypass, no se conecta`
+      );
+      continue;
+    }
     gateway.puerto = gateway.puerto || 80;
     conectarGateway(gateway);
   }
@@ -424,6 +435,11 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
       // console.warn(
       //   `❌ No se encontró un gateway con la engrasadora ID ${idEngrasadora}`
       // );
+      return;
+    }
+
+    if (gateway.bypass) {
+      console.log(`⏸️ Mensaje bloqueado: ${gateway.nombre} en bypass`);
       return;
     }
 
@@ -553,6 +569,12 @@ async function verificarCambioIPTodas() {
     const gateways = await Gateway.find({});
 
     for (const gateway of gateways) {
+      if (gateway.bypass) {
+        console.log(
+          `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`
+        );
+        continue;
+      }
       const nombre = gateway.nombre;
       const conexionActiva = conexiones[nombre];
       const ipDB = gateway.ip;
