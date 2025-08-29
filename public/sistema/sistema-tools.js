@@ -31,19 +31,14 @@ document.addEventListener("keydown", (e) => {
 
 const btnStatus = document.getElementById("closeStatus");
 const estadosSistema = document.getElementById("estadosSistema");
+const blurred = document.getElementById("blur");
 
-let abierto = true;
+let abierto = false;
 
 btnStatus.addEventListener("click", () => {
   abierto = !abierto;
 
   estadosSistema.style.left = abierto ? "0" : "-15vw";
   btnStatus.style.transform = abierto ? "rotate(0deg)" : "rotate(180deg)";
+  blurred.style.display = abierto ? "block" : "none";
 });
-
-// Cerrar después de x segundos
-setTimeout(() => {
-  abierto = false;
-  estadosSistema.style.left = "-15vw";
-  btnStatus.style.transform = "rotate(180deg)";
-}, 500);

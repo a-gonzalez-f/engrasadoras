@@ -113,15 +113,26 @@
   color: #fff;
 }
 
-#estadosSistema {
+#blur {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
   z-index: 2;
+  background-color: rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(2px);
+  width: 100vw;
+  height: 100vh;
+}
+
+#estadosSistema {
+  z-index: 3;
   position: fixed;
   width: 15vw;
   height: 95vh;
   padding: 1rem;
   background-color: black;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(2px);
   transition: all 0.5s ease-in-out;
 }
 
@@ -154,7 +165,7 @@
   right: -2rem;
   cursor: pointer;
   font-size: 1.8rem;
-  color: #444;
+  color: #909090;
   transition: all 0.2s ease;
 }
 

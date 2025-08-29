@@ -1,6 +1,6 @@
 .mainSection {
   height: 100vh;
-  padding-top: 6vh;
+  padding-top: 5vh;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -8,7 +8,7 @@
 
 .contenedor-barra {
   width: 100vw;
-  height: 15vh;
+  height: 8vh;
   padding: 1rem 5rem;
   display: flex;
   align-items: center;
@@ -61,7 +61,7 @@
 
 #contenedorMaquinas {
   width: 100%;
-  height: 80vh;
+  height: 87vh;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
