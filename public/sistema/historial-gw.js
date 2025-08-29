@@ -18,7 +18,7 @@ export function listarHistorial(gateway) {
   tbody.innerHTML = todos
     .map(
       (h) => `
-      <tr class="${h.estado}">
+      <tr>
         <td>${h.nro_evento || "-"}</td>
         <td>${h.tipo_evento || "-"}</td>
         <td>${new Date(h.fecha).toLocaleString("es-AR", {
@@ -29,8 +29,8 @@ export function listarHistorial(gateway) {
           minute: "2-digit",
           hour12: false,
         })}</td>
-        <td>${h.estado}</td>
-        <td>${h.bypass ? "No" : "Sí"}</td>
+        <td class="${h.estado}">${h.estado}</td>
+        <td class="${h.bypass ? "ngtv" : "pstv"}">${h.bypass ? "No" : "Sí"}</td>
       </tr>`
     )
     .join("");

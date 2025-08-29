@@ -92,7 +92,7 @@ exports.toggleBypass = async (req, res) => {
     gateway.historial.push({
       nro_evento: gateway.historial.length + 1,
       tipo_evento: nuevoEstado ? "Deshabilitación" : "Habilitación",
-      estado: nuevoEstado ? "Deshabilitado" : "Habilitado",
+      estado: gateway.comunicacion_back ? "Conectado" : "Desconectado",
       user: "userX",
       bypass: nuevoEstado,
     });

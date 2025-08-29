@@ -166,3 +166,13 @@ input.id {
   position: sticky;
   top: 0;
 }
+
+.ngtv,
+td.Desconectado {
+  color: var(--color-error);
+}
+
+.pstv,
+td.Conectado {
+  color: var(--color-pstv);
+}

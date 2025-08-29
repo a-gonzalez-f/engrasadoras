@@ -501,20 +501,25 @@ async function enviarOnOff({ id, on_off }) {
   });
 }
 
-async function actualizarComunicacion(gateway, estado) {
+async function actualizarComunicacion(nombreGateway, estado) {
   try {
-    const res = await fetch(
-      `http://localhost:3000/api/gateways/nombre/${gateway}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comunicacion_back: estado }),
-      }
-    );
+    const gateway = await Gateway.findOne({ nombre: nombreGateway });
+    if (!gateway) return;
 
-    if (!res.ok) throw new Error("Error al actualizar gateway");
+    gateway.comunicacion_back = estado;
+
+    gateway.historial.push({
+      nro_evento: gateway.historial.length + 1,
+      tipo_evento: estado ? "Conexión" : "Desconexión",
+      fecha: new Date(),
+      estado: estado ? "Conectado" : "Desconectado",
+      bypass: gateway.bypass,
+      user: "motor",
+    });
+
+    await gateway.save();
   } catch (err) {
-    console.error("Error guardando gateway:", err);
+    console.error("Error actualizando comunicacion gateway:", err.message);
   }
 }
 

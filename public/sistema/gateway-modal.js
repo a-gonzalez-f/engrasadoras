@@ -285,3 +285,15 @@ bypassBtn.addEventListener("click", async () => {
     alert("Error al cambiar estado bypass del Gateway");
   }
 });
+
+setInterval(async () => {
+  try {
+    const res = await fetch(`/api/gateways/${currentGatewayId}`);
+    if (!res.ok) throw new Error("Error al obtener historial");
+
+    const gateway = await res.json();
+    listarHistorial(gateway);
+  } catch (err) {
+    console.error("Error refrescando historial:", err.message);
+  }
+}, 5000);
