@@ -77,13 +77,13 @@ function renderizarGateways(gateways) {
         <p>${gw.ubicacion || ""}</p>
         <div class="miniCircle ${gw.linea}">${gw.linea}</div>
       </div>
-      <p><strong>Engrasadoras:</strong><br> ${
-        gw.engrasadoras
-          ? gw.engrasadoras.length > 3
-            ? gw.engrasadoras.slice(0, 3).join(", ") + ", ..."
-            : gw.engrasadoras.join(", ")
-          : "No asignadas"
-      }</p>
+      <div>
+        <span class="material-symbols-outlined ${
+          gw.bypass ? "bypassed" : "activated"
+        }" title="${gw.bypass ? "Deshabilitado" : "Habilitado"}"
+        data-toggle-id="${gw._id}">
+        ${gw.bypass ? "toggle_off" : "toggle_on"}
+        </span>
       </div>
     `;
 
@@ -126,6 +126,19 @@ function actualizarEstadosPeriodicamente(intervaloSegundos = 5) {
         } else {
           gwDiv.classList.remove("on");
           gwDiv.classList.add("off");
+        }
+
+        const toggle = gwDiv.querySelector(`[data-toggle-id="${nuevoGW._id}"]`);
+        if (nuevoGW.bypass === true) {
+          toggle.classList.add("bypassed");
+          toggle.classList.remove("activated");
+          toggle.textContent = "toggle_off";
+          toggle.title = "Deshabilitado";
+        } else {
+          toggle.classList.add("activated");
+          toggle.classList.remove("bypassed");
+          toggle.textContent = "toggle_on";
+          toggle.title = "Habilitado";
         }
       });
     } catch (err) {
