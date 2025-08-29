@@ -34,12 +34,29 @@ export function abrirModalGateway(gw) {
 
   renderizarEngrasadoras(gw.engrasadoras || []);
   listarHistorial(gw);
+
+  if (historialInterval) clearInterval(historialInterval);
+  historialInterval = setInterval(refrescarHistorial, 5000);
 }
 
 // Cerrar modal
-cerrarBtn.addEventListener("click", () => modal.classList.add("hidden"));
+cerrarBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+  currentGatewayId = null;
+  if (historialInterval) {
+    clearInterval(historialInterval);
+    historialInterval = null;
+  }
+});
 window.addEventListener("click", (e) => {
-  if (e.target === modal) modal.classList.add("hidden");
+  if (e.target === modal) {
+    modal.classList.add("hidden");
+    currentGatewayId = null;
+    if (historialInterval) {
+      clearInterval(historialInterval);
+      historialInterval = null;
+    }
+  }
 });
 
 // Render engrasadoras en #conectadasContainer
@@ -286,7 +303,10 @@ bypassBtn.addEventListener("click", async () => {
   }
 });
 
-setInterval(async () => {
+let historialInterval = null;
+
+async function refrescarHistorial() {
+  if (!currentGatewayId) return;
   try {
     const res = await fetch(`/api/gateways/${currentGatewayId}`);
     if (!res.ok) throw new Error("Error al obtener historial");
@@ -296,4 +316,4 @@ setInterval(async () => {
   } catch (err) {
     console.error("Error refrescando historial:", err.message);
   }
-}, 5000);
+}
