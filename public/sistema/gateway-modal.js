@@ -6,11 +6,22 @@ const modal = document.getElementById("gatewayModal");
 const cerrarBtn = document.getElementById("cerrarModal");
 const form = document.getElementById("formEditGateway");
 const containerEngrasadoras = document.getElementById("conectadasContainer");
+const bypassBtn = document.getElementById("bypassBtn");
 
 let currentGatewayId = null;
 let currentBypass = false;
 
-export function abrirModalGateway(gw) {
+export async function abrirModalGateway(gw) {
+  try {
+    const res = await fetch(`/api/gateways/${gw._id}`);
+    if (!res.ok) throw new Error("No se pudo obtener el gateway actualizado");
+    gw = await res.json();
+  } catch (err) {
+    console.error("Error al obtener gateway actualizado:", err);
+    alert("No se pudo cargar el estado actual del gateway.");
+    return;
+  }
+
   currentGatewayId = gw._id;
   currentBypass = gw.bypass || false;
   modal.classList.remove("hidden");
@@ -20,9 +31,10 @@ export function abrirModalGateway(gw) {
   document.getElementById("gw-nombre").textContent = gw.nombre || "";
   document.getElementById("gw-linea").value = gw.linea || "";
   document.getElementById("gw-ubicacion").textContent = gw.ubicacion || "";
-  const bypassBtn = document.getElementById("bypassBtn");
 
-  if (gw.bypass) {
+  currentBypass = gw.bypass || false;
+
+  if (currentBypass) {
     bypassBtn.textContent = "toggle_off";
     bypassBtn.classList.remove("activated");
     bypassBtn.classList.add("bypassed");
@@ -237,7 +249,6 @@ activarEdicion("edit-id", "gw-id");
 activarEdicion("edit-ubi", "gw-ubicacion");
 
 // delete
-
 const deleteBtn = document.getElementById("deleteGW");
 
 deleteBtn.addEventListener("click", async () => {
@@ -263,9 +274,6 @@ deleteBtn.addEventListener("click", async () => {
 });
 
 // bypass
-
-const bypassBtn = document.getElementById("bypassBtn");
-
 bypassBtn.addEventListener("click", async () => {
   if (!currentGatewayId) return;
 
