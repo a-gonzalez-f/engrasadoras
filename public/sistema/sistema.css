@@ -188,3 +188,52 @@
 #timeOut {
   width: 4rem;
 }
+
+#logBtnDiv {
+  width: 100%;
+  position: absolute;
+  bottom: 1rem;
+  left: 0;
+  display: flex;
+  justify-content: center;
+}
+
+#logsBtn {
+  padding: 0.5rem 1rem;
+  background-color: var(--color-secundario);
+  opacity: 0.85;
+  transition: all 0.2s;
+}
+
+#logsBtn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+#logsContent {
+  position: relative;
+  min-height: 50vh;
+  max-height: 75vh;
+  min-width: 50vw;
+  max-width: 80vw;
+}
+
+#logsContent > table {
+  margin-top: 1rem;
+}
+
+#logsContent > table > thead > tr {
+  border-bottom: 1px solid #444;
+}
+
+#logsContainer {
+  overflow-y: auto;
+  height: 60vh;
+}
+
+#logsContainer > table > thead {
+  position: sticky;
+  top: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  box-shadow: 0 10px 20px black;
+}

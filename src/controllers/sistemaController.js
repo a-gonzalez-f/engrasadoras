@@ -60,3 +60,49 @@ exports.getTime = async (req, res) => {
     res.status(500).json({ error: "Error al obtener el tiempo" });
   }
 };
+
+exports.getLogsSistema = async (req, res) => {
+  try {
+    const config = await ConfigSistema.findOne();
+
+    if (!config) {
+      return res
+        .status(404)
+        .json({ error: "No hay configuración de sistema encontrada" });
+    }
+
+    res.status(200).json({ logs: config.logs || [] });
+  } catch (err) {
+    console.error("Error al obtener los logs:", err);
+    res.status(500).json({ error: "Error al obtener los logs del sistema" });
+  }
+};
+
+exports.agregarLogSistema = async (req, res) => {
+  const { message } = req.body;
+
+  if (!message || typeof message !== "string") {
+    return res
+      .status(400)
+      .json({ error: "El mensaje es requerido y debe ser un string." });
+  }
+
+  try {
+    let config = await ConfigSistema.findOne();
+
+    if (!config) {
+      config = new ConfigSistema({
+        logs: [{ message }],
+      });
+    } else {
+      config.logs.push({ message });
+    }
+
+    await config.save();
+
+    res.status(201).json({ message: "Log agregado exitosamente." });
+  } catch (err) {
+    console.error("Error al agregar log:", err);
+    res.status(500).json({ error: "Error al agregar log al sistema" });
+  }
+};

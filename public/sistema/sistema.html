@@ -242,6 +242,9 @@
           <h4>Motor</h4>
           <div class="statusCircle" id="motorStatus"></div>
         </div>
+        <div id="logBtnDiv">
+          <button id="logsBtn" type="button">Logs</button>
+        </div>
       </section>
       <section id="sectionGateways">
         <div id="buscadorGateways">
@@ -278,6 +281,7 @@
     <script src="/sistema/sistema.js"></script>
     <script type="module" src="/sistema/gateways.js"></script>
     <script src="/sistema/timeSet.js"></script>
+    <script src="/sistema/logs.js"></script>
     <!-- Modal Gateway -->
     <div id="gatewayModal" class="modal hidden">
       <div class="modal-content">
@@ -368,6 +372,26 @@
               </tr>
             </thead>
             <tbody id="historialGW"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!-- Modal Logs -->
+    <div id="logsModal" class="modal hidden">
+      <div class="modal-content" id="logsContent">
+        <span id="closeModalLogs" class="material-symbols-outlined closeModal">
+          close
+        </span>
+        <h3>Logs del Sistema</h3>
+        <div id="logsContainer">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Mensaje consola</th>
+              </tr>
+            </thead>
+            <tbody id="eventosConsola"></tbody>
           </table>
         </div>
       </div>

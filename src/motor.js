@@ -29,6 +29,7 @@ async function obtenerTiempo() {
     console.log("TimeOut:", timeOut);
   } catch (error) {
     console.error("Hubo un error:", error.message);
+    guardarLog(error.message);
   }
 }
 
@@ -46,7 +47,8 @@ conectarDB()
     iniciarMotor();
   })
   .catch((err) => {
-    console.error("Motor: 🔴 Error al conectar motor.js a MongoDB:", err);
+    let message = `Motor: 🔴 Error al conectar motor.js a MongoDB: ${err}`;
+    console.error(message);
   });
 
 const conexiones = {};
@@ -183,7 +185,9 @@ async function manejarMensaje(nombre, data) {
         console.warn(`Acción ${accion} no reconocida`);
     }
   } catch (err) {
-    console.error("Error al decodificar o guardar:", err.message);
+    let message = `Error al decodificar o guardar: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
@@ -203,19 +207,29 @@ function conectarGateway(gateway) {
 
     ws.on("message", (data) => manejarMensaje(gateway.nombre, data));
 
-    ws.on("close", () => {
-      console.log(`CONECTAR-GW: Conexión cerrada con ${gateway.nombre}`);
+    ws.on("close", async () => {
+      try {
+        let message = `CONECTAR-GW: Conexión cerrada con ${gateway.nombre}`;
+        console.log(message);
+        await guardarLog(message);
+      } catch (err) {
+        console.error("Error guardando log en 'close':", err.message);
+      }
 
       actualizarComunicacion(gateway.nombre, false);
-
       delete conexiones[gateway.nombre];
-
       actualizarEstadoMotor();
     });
   });
 
-  ws.on("error", (err) => {
-    console.error(`Error al conectar a ${gateway.nombre}:`, err.message);
+  ws.on("error", async (err) => {
+    try {
+      let message = `Error al conectar a ${gateway.nombre}: ${err.message}`;
+      console.error(message);
+      await guardarLog(message);
+    } catch (err2) {
+      console.error("Error guardando log en 'error':", err2.message);
+    }
   });
 }
 
@@ -395,12 +409,14 @@ async function solicitarEstados() {
               });
             }
             await m.save();
-            console.log(
-              `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos})`
-            );
+            let message = `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos})`;
+            console.log(message);
+            await guardarLog(message);
           }
         } catch (err) {
-          console.error("Error incrementando perdidos:", err.message);
+          let message = `Error incrementando perdidos: ${err.message}`;
+          console.error(message);
+          await guardarLog(message);
         }
         solicitudesPendientes.delete(maquina.id);
       }, timeOut * 1000);
@@ -408,7 +424,9 @@ async function solicitarEstados() {
       solicitudesPendientes.set(maquina.id, timer);
     }
   } catch (err) {
-    console.error("Error al solicitar estados:", err.message);
+    let message = `Error al solicitar estados:", ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
@@ -417,9 +435,8 @@ async function iniciarGatewaysDesdeDB() {
 
   for (const gateway of gateways) {
     if (gateway.bypass) {
-      console.log(
-        `⏸️  Gateway ${gateway.nombre} está en bypass, no se conecta`
-      );
+      let message = `⏸️  Gateway ${gateway.nombre} está en bypass, no se conecta`;
+      console.log(message);
       continue;
     }
     gateway.puerto = gateway.puerto || 80;
@@ -454,7 +471,9 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
     ws.send(mensaje);
     console.log(`📤 Mensaje enviado a ${nombre}: ${mensaje}`);
   } catch (err) {
-    console.error("Error al enviar mensaje:", err.message);
+    let message = `Error al enviar mensaje: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
@@ -544,7 +563,9 @@ async function actualizarComunicacion(nombreGateway, estado) {
 
     await gateway.save();
   } catch (err) {
-    console.error("Error actualizando comunicacion gateway:", err.message);
+    let message = `Error actualizando comunicacion gateway: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
@@ -560,7 +581,9 @@ async function todosComunicacionOFF() {
     await Gateway.updateMany({}, { $set: { comunicacion_back: false } });
     console.log("Todos los gw actualizados a comunicacion_back: false");
   } catch (err) {
-    console.error("Error al resetear Comunicacion_back:", err.message);
+    let message = `Error al resetear Comunicacion_back: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
@@ -570,9 +593,8 @@ async function verificarCambioIPTodas() {
 
     for (const gateway of gateways) {
       if (gateway.bypass) {
-        console.log(
-          `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`
-        );
+        let message = `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`;
+        console.log(message);
         continue;
       }
       const nombre = gateway.nombre;
@@ -588,9 +610,10 @@ async function verificarCambioIPTodas() {
           console.log("VERIFICADOR_IP: Cerrando conexión vieja");
           conexionActiva.cierrePorCambioIP = true;
           conexionActiva.terminate();
-          conectarGateway(gateway);
         } catch (err) {
-          console.error("Error cerrando conexión vieja:", err.message);
+          let message = `Error cerrando conexión vieja: ${err.message}`;
+          console.error(message);
+          await guardarLog(message);
         }
         conectarGateway(gateway);
       }
@@ -603,11 +626,33 @@ async function verificarCambioIPTodas() {
       }
     }
   } catch (err) {
-    console.error("Error en verificarCambioIPTodas:", err.message);
+    let message = `Error en verificarCambioIPTodas: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
   }
 }
 
 setInterval(verificarCambioIPTodas, 5000);
+
+async function guardarLog(message) {
+  try {
+    const res = await fetch("http://localhost:3000/api/sistema/logs", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ message }),
+    });
+
+    if (res.ok) {
+      console.log("Log guardado correctamente");
+    } else {
+      console.log("Error al guardar el log");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 // Interfaz de consola
 const rl = readline.createInterface({
