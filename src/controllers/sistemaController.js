@@ -63,7 +63,9 @@ exports.getTime = async (req, res) => {
 
 exports.getLogsSistema = async (req, res) => {
   try {
-    const config = await ConfigSistema.findOne();
+    const { skip = 0, limit = 20 } = req.query;
+
+    const config = await ConfigSistema.findOne().lean();
 
     if (!config) {
       return res
@@ -71,7 +73,14 @@ exports.getLogsSistema = async (req, res) => {
         .json({ error: "No hay configuración de sistema encontrada" });
     }
 
-    res.status(200).json({ logs: config.logs || [] });
+    const logs = config.logs || [];
+
+    const logsOrdenados = logs
+      .slice()
+      .reverse()
+      .slice(Number(skip), Number(skip) + Number(limit));
+
+    res.status(200).json({ logs: logsOrdenados });
   } catch (err) {
     console.error("Error al obtener los logs:", err);
     res.status(500).json({ error: "Error al obtener los logs del sistema" });
@@ -96,6 +105,10 @@ exports.agregarLogSistema = async (req, res) => {
       });
     } else {
       config.logs.push({ message });
+
+      if (config.logs.length > 100) {
+        config.logs = config.logs.slice(-100);
+      }
     }
 
     await config.save();

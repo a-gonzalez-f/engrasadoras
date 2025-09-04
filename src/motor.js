@@ -595,6 +595,7 @@ async function verificarCambioIPTodas() {
       if (gateway.bypass) {
         let message = `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`;
         console.log(message);
+        await guardarLog(message);
         continue;
       }
       const nombre = gateway.nombre;

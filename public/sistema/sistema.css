@@ -235,5 +235,21 @@
   position: sticky;
   top: 0;
   background-color: rgba(0, 0, 0, 0.9);
-  box-shadow: 0 10px 20px black;
+  box-shadow: 0 0 20px black;
+}
+
+#updateDiv {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+}
+
+#updateLogs {
+  display: none;
+  opacity: 0.5;
+  transition: all 0.1s;
+}
+
+#updateLogs:hover {
+  opacity: 1;
 }
