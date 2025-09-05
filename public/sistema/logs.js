@@ -45,6 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  logsModal.addEventListener("click", (event) => {
+    if (!document.getElementById("logsContent").contains(event.target)) {
+      logsModal.classList.add("hidden");
+      modalAbierto = false;
+
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+  });
+
   // Infinite scroll
   const logsBody = document.getElementById("logsContainer");
 
