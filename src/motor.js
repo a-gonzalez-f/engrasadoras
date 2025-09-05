@@ -409,7 +409,7 @@ async function solicitarEstados() {
               });
             }
             await m.save();
-            let message = `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos})`;
+            let message = `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos}) (${gateway.nombre})`;
             console.log(message);
             await guardarLog(message);
           }
@@ -595,7 +595,6 @@ async function verificarCambioIPTodas() {
       if (gateway.bypass) {
         let message = `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`;
         console.log(message);
-        await guardarLog(message);
         continue;
       }
       const nombre = gateway.nombre;
