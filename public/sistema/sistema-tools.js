@@ -42,3 +42,14 @@ btnStatus.addEventListener("click", () => {
   btnStatus.style.transform = abierto ? "rotate(0deg)" : "rotate(180deg)";
   blurred.style.display = abierto ? "block" : "none";
 });
+
+document.addEventListener("click", function (event) {
+  if (abierto) {
+    if (!estadosSistema.contains(event.target) && event.target !== btnStatus) {
+      abierto = false;
+      estadosSistema.style.left = "-15vw";
+      btnStatus.style.transform = "rotate(180deg)";
+      blurred.style.display = "none";
+    }
+  }
+});
