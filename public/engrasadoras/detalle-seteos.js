@@ -19,6 +19,9 @@ export function inicializarSeteos(e) {
   document
     .getElementById("apagarEquipo")
     .addEventListener("click", () => toggleOnOff(e));
+  document
+    .getElementById("estado")
+    .addEventListener("change", () => selectEstado(e));
 }
 
 async function obtenerValoresActuales(id) {
@@ -233,4 +236,18 @@ async function toggleOnOff(e) {
     overlay.style.display = "none";
     alert(err.message);
   }
+}
+
+async function selectEstado(e) {
+  fetch(`/api/engrasadoras/${e._id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ estado: nuevoEstado }),
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      e.estado = data.nuevoEstado;
+      document.getElementById("estado").innerText = data.nuevoEstado;
+    })
+    .catch((err) => alert(err.message));
 }

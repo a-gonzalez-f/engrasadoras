@@ -372,7 +372,14 @@ async function solicitarEstados() {
       const idStr = maquina.id.toString().padStart(3, "0");
       const mensaje = `0${idStr}`;
 
-      await enviarMensajePorID({ idEngrasadora: maquina.id, mensaje });
+      const mensajeFueEnviado = await enviarMensajePorID({
+        idEngrasadora: maquina.id,
+        mensaje,
+      });
+      if (!mensajeFueEnviado) {
+        continue;
+      }
+
       // arrancar timer de respuesta
       if (solicitudesPendientes.has(maquina.id)) {
         clearTimeout(solicitudesPendientes.get(maquina.id));
@@ -384,11 +391,11 @@ async function solicitarEstados() {
         try {
           const m = await Engrasadora.findOne({ id: maquina.id });
           if (m) {
-            if (m.perdidos < 999) {
+            if (m.perdidos < 999 && m.estado !== "fs" && m.on_off) {
               m.perdidos = (m.perdidos || 0) + 1;
             }
 
-            if (m.perdidos >= max_fallos) {
+            if (m.perdidos >= max_fallos && m.estado !== "fs" && m.on_off) {
               m.estado = "desconectada";
             }
 
@@ -447,6 +454,7 @@ async function iniciarGatewaysDesdeDB() {
 async function enviarMensajePorID({ idEngrasadora, mensaje }) {
   try {
     const gateway = await Gateway.findOne({ engrasadoras: idEngrasadora });
+    const engrasadora = await Engrasadora.findOne({ id: idEngrasadora });
 
     if (!gateway) {
       // console.warn(
@@ -456,7 +464,21 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
     }
 
     if (gateway.bypass) {
-      console.log(`⏸️ Mensaje bloqueado: ${gateway.nombre} en bypass`);
+      console.log(`⏸️ Mensaje bloqueado: Gateway ${gateway.nombre} en bypass`);
+      return;
+    }
+
+    if (engrasadora.estado === "fs") {
+      console.log(
+        `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Fuera Servicio`
+      );
+      return;
+    }
+
+    if (!engrasadora.on_off) {
+      console.log(
+        `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Pausa Manual`
+      );
       return;
     }
 
@@ -470,10 +492,12 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
 
     ws.send(mensaje);
     console.log(`📤 Mensaje enviado a ${nombre}: ${mensaje}`);
+    return true;
   } catch (err) {
     let message = `Error al enviar mensaje: ${err.message}`;
     console.error(message);
     await guardarLog(message);
+    return false;
   }
 }
 

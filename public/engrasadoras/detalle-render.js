@@ -252,14 +252,16 @@ export function renderDetalleMaquina(maquina) {
 
     if (nuevoEstado === e.estado) return;
 
-    if (
-      !confirm(
-        `¿Seguro que desea cambiar el estado a "${formatearEstado(
-          nuevoEstado,
-          "texto"
-        )}"?`
-      )
-    ) {
+    let confirmacion = `¿Seguro que desea cambiar el estado a "${formatearEstado(
+      nuevoEstado,
+      "texto"
+    )}"?`;
+
+    if (nuevoEstado === "fs") {
+      confirmacion += `\nConfirme únicamente si la engrasadora NO está en servicio.\nSe desvinculará el monitoreo.`;
+    }
+
+    if (!confirm(confirmacion)) {
       selectEstado.value = e.estado;
       return;
     }
