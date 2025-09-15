@@ -1,4 +1,5 @@
 import { formatearEstado } from "./detalles-tools.js";
+import { formatearSignal } from "./formatear-signal.js";
 
 export function listarHistorialEnModal(historial) {
   const tbody = document.querySelector(".tabla-historial tbody");
@@ -60,7 +61,7 @@ export function listarHistorialEnModal(historial) {
         <td>${h.sens_corriente ? h.sens_corriente + "mA" : "-"}</td>
         <td>${h.sens_flujo ? "Sí" : "No"}</td>
         <td>${h.sens_power ? "Sí" : "No"}</td>
-        <td>${h.lora_signal || "-"}</td>
+        <td>${formatearSignal(h.lora_signal, "icono")}</td>
         <td>${h.on_off ? "ON" : "OFF"}</td>
         <td>${h.cont_accionam || "-"}</td>
       </tr>

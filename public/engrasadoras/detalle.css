@@ -92,7 +92,10 @@
 }
 
 .card-maquina .estado {
+  display: flex;
   font-size: 2rem;
+  gap: 1rem;
+  padding: 1rem 0;
 }
 
 .card-maquina .nombre {

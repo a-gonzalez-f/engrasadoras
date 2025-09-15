@@ -11,6 +11,7 @@ import {
   formatearEstado,
   actualizarBarraPorcentual,
 } from "./detalles-tools.js";
+import { formatearSignal } from "./formatear-signal.js";
 
 const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
@@ -88,8 +89,8 @@ setInterval(() => {
             `.card-maquina[data-id="${m._id}"]`
           );
           if (card) {
-            card.querySelector(".estado").innerHTML = formatearEstado(m.estado);
-            // +'<span class="material-symbols-outlined">signal_cellular_0_bar</span>';
+            card.querySelector(".estado").innerHTML =
+              formatearEstado(m.estado) + formatearSignal(m.lora_signal);
           }
         });
       }
@@ -120,8 +121,10 @@ setInterval(() => {
                 actualizada.sens_flujo ? "Si" : "No";
               document.getElementById("power").innerText =
                 actualizada.sens_power ? "Si" : "No";
-              document.getElementById("lora").innerText =
-                actualizada.lora_signal;
+              document.getElementById("lora").innerHTML = formatearSignal(
+                actualizada.lora_signal,
+                "icono"
+              );
 
               maquinaSeleccionada.historial = actualizada.historial;
 

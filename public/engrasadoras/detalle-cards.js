@@ -2,6 +2,7 @@
 
 import { formatearEstado } from "./detalles-tools.js";
 import { renderDetalleMaquina } from "./detalle-render.js";
+import { formatearSignal } from "./formatear-signal.js";
 
 export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
   contenedor.innerHTML = "";
@@ -53,7 +54,9 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
 
     card.innerHTML = `
       <div class="nombre">${e.nombre.toUpperCase()}</div>
-      <div class="estado">${formatearEstado(e.estado)}</div>
+      <div class="estado">${formatearEstado(e.estado)} ${formatearSignal(
+      e.lora_signal
+    )}</div>
     `;
 
     contenedor.appendChild(card);
