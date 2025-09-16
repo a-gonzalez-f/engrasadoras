@@ -370,7 +370,7 @@ async function solicitarEstados() {
       }
 
       const idStr = maquina.id.toString().padStart(3, "0");
-      const mensaje = `0${idStr}`;
+      const mensaje = `&e0${idStr}#`;
 
       const mensajeFueEnviado = await enviarMensajePorID({
         idEngrasadora: maquina.id,
@@ -509,7 +509,7 @@ async function enviarSeteo({ id, tiempo, ejes }) {
       .toString()
       .padStart(2, "0");
 
-    const mensaje = `1${idStr}${ejesStr}${tiempoStr}`;
+    const mensaje = `&e1${idStr}${ejesStr}${tiempoStr}#`;
 
     console.log("Motor: 👉 Enviando seteo:", mensaje);
     await enviarMensajePorID({ idEngrasadora: id, mensaje });
@@ -529,7 +529,7 @@ async function enviarResetAccionam({ id }) {
 
     const idStr = id.toString().padStart(3, "0");
 
-    const mensaje = `2${idStr}`;
+    const mensaje = `&e2${idStr}#`;
 
     await enviarMensajePorID({ idEngrasadora: id, mensaje });
     const timer = setTimeout(() => {
@@ -547,7 +547,7 @@ async function enviarOnOff({ id, on_off }) {
 
     const idStr = id.toString().padStart(3, "0");
     const on_offStr = on_off ? "1" : "0";
-    const mensaje = `3${idStr}${on_offStr}`;
+    const mensaje = `&e3${idStr}${on_offStr}#`;
 
     await enviarMensajePorID({ idEngrasadora: id, mensaje });
 
