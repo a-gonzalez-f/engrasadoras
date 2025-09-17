@@ -463,23 +463,27 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
       return;
     }
 
-    if (gateway.bypass) {
-      console.log(`⏸️ Mensaje bloqueado: Gateway ${gateway.nombre} en bypass`);
-      return;
-    }
+    if (mensaje && mensaje.startsWith("&e0")) {
+      if (gateway && gateway.bypass) {
+        console.log(
+          `⏸️ Mensaje bloqueado: Gateway ${gateway.nombre} en bypass`
+        );
+        return;
+      }
 
-    if (engrasadora.estado === "fs") {
-      console.log(
-        `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Fuera Servicio`
-      );
-      return;
-    }
+      if (engrasadora && engrasadora.estado === "fs") {
+        console.log(
+          `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Fuera Servicio`
+        );
+        return;
+      }
 
-    if (!engrasadora.on_off) {
-      console.log(
-        `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Pausa Manual`
-      );
-      return;
+      if (engrasadora && !engrasadora.on_off) {
+        console.log(
+          `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Pausa Manual`
+        );
+        return;
+      }
     }
 
     const nombre = gateway.nombre || gateway.ip;
