@@ -6,9 +6,9 @@ export function formatearSignal(signal, modo = "icono") {
     estado = "excelente";
   } else if (signal_abs <= -80 && signal_abs > -90) {
     estado = "buena";
-  } else if (signal_abs <= -90 && signal_abs > -100) {
+  } else if (signal_abs <= -90 && signal_abs > -110) {
     estado = "pobre";
-  } else if (signal_abs <= -100) {
+  } else if (signal_abs <= -110) {
     estado = "sinsenal";
   } else {
     estado = "sinsenal";
