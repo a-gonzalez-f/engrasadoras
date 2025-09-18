@@ -56,9 +56,9 @@ export function handleRightClick(event, maquina) {
   });
 
   menu.querySelector(".delete").addEventListener("click", (e) => {
-    const maquinaId = e.currentTarget.getAttribute("data-maquina-id");
     menu.remove();
-    console.log("Borrar máquina con id:", maquinaId);
+
+    deleteMaquina(maquina);
   });
 
   document.addEventListener("click", (e) => {
@@ -147,3 +147,31 @@ form.addEventListener("submit", async (e) => {
     alert("Error al guardar los cambios");
   }
 });
+
+// eliminar
+async function deleteMaquina(maquina) {
+  if (!maquina._id) return;
+
+  const confirmar = confirm(
+    "¿Seguro desea eliminar esta engrasadora?\nEsta acción NO se puede deshacer"
+  );
+  if (!confirmar) return;
+
+  try {
+    const res = await fetch(`/api/engrasadoras/${maquina._id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Error al eliminar engrasadora");
+
+    const maquinaElemento = document.querySelector(
+      `[data-maquina-id="${maquina._id}"]`
+    );
+    if (maquinaElemento) {
+      maquinaElemento.remove();
+    }
+  } catch (err) {
+    console.error("Error eliminando engrasadora:", err);
+    alert("No se pudo eliminar la engrasadora.");
+  }
+}

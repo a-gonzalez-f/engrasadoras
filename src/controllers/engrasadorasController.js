@@ -317,6 +317,21 @@ const actualizarEngrasadora = async (req, res) => {
   }
 };
 
+const deleteEngrasadora = async (req, res) => {
+  try {
+    const engrasadora = await Engrasadora.findByIdAndDelete(req.params.id);
+
+    if (!engrasadora) {
+      return res.status(404).json({ mensaje: "Engrasadora no encontrada" });
+    }
+
+    res.json({ mensaje: "Engrasadora eliminada" });
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ mensaje: "Error eliminando engrasadora" });
+  }
+};
+
 module.exports = {
   setear,
   resetAccionamientos,
@@ -331,4 +346,5 @@ module.exports = {
   getUnaEngrasadora,
   engrasadoraActualizada,
   actualizarEngrasadora,
+  deleteEngrasadora,
 };
