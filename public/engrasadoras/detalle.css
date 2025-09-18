@@ -497,3 +497,104 @@ option {
 .perdidos {
   font-size: 15px !important;
 }
+
+.actionsMenu {
+  z-index: 2;
+  width: max-content;
+  background: rgb(30, 30, 30);
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px black;
+}
+
+.actionsMenu > div {
+  padding: 5px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+div.edit:hover {
+  background-color: #0dae1a3c;
+}
+div.delete:hover {
+  background-color: #d904273b;
+}
+
+span.edit,
+span.delete {
+  font-size: 20px;
+}
+
+span.edit:hover {
+  color: var(--color-pstv);
+}
+span.delete:hover {
+  color: var(--color-error);
+}
+
+#modalEdit {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.3);
+  justify-content: center;
+  align-items: center;
+}
+
+#editContent {
+  position: relative;
+  background-color: var(--color-fondo);
+  padding: 2rem 4rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px black;
+}
+
+#cerrarModalEdit {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+#editContent > form > div {
+  margin-bottom: 1rem;
+}
+
+#editContent input,
+#editContent select {
+  color: black;
+  padding: 5px;
+  margin-top: 10px;
+  width: 100%;
+  border-radius: 5px;
+}
+
+#editContent h1 {
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 18px;
+  margin-bottom: 1rem;
+}
+
+#confirmEdit {
+  display: none;
+  padding: 0.5rem 1rem;
+  background-color: #777;
+}
+
+#confirmEdit:hover {
+  background-color: var(--color-pstv);
+}
+
+#editContent > form > div:last-child {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin: 2rem 0 0 0;
+}

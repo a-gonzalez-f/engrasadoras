@@ -3,6 +3,7 @@
 import { formatearEstado } from "./detalles-tools.js";
 import { renderDetalleMaquina } from "./detalle-render.js";
 import { formatearSignal } from "./formatear-signal.js";
+import { handleRightClick } from "./card-actions.js";
 
 export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
   contenedor.innerHTML = "";
@@ -12,6 +13,10 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
     const card = document.createElement("div");
     card.classList.add("card-maquina");
     card.dataset.id = e._id;
+
+    card.addEventListener("contextmenu", (event) => {
+      handleRightClick(event, e);
+    });
 
     const detalle = document.createElement("div");
     detalle.classList.add("detalle-hover");

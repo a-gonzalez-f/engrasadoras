@@ -304,6 +304,19 @@ const switchOnOff = async (req, res) => {
   }
 };
 
+const actualizarEngrasadora = async (req, res) => {
+  try {
+    const eng = await Engrasadora.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!eng) return res.status(404).json({ mensaje: "No encontrado" });
+    res.json(eng);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ mensaje: "Error actualizando engrasadora" });
+  }
+};
+
 module.exports = {
   setear,
   resetAccionamientos,
@@ -317,4 +330,5 @@ module.exports = {
   verificarId,
   getUnaEngrasadora,
   engrasadoraActualizada,
+  actualizarEngrasadora,
 };

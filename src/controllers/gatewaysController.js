@@ -79,7 +79,6 @@ exports.actualizarEstadoGW = async (req, res) => {
   }
 };
 
-// controllers/gatewaysController.js
 exports.toggleBypass = async (req, res) => {
   try {
     const gateway = await Gateway.findById(req.params.id);

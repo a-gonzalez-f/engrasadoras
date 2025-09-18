@@ -132,7 +132,43 @@
         </span>
       </div>
     </div>
-
+    <div id="modalEdit">
+      <div id="editContent">
+        <span id="cerrarModalEdit" class="material-symbols-outlined cerrar"
+          >close</span
+        >
+        <h1>Editar Engrasadora</h1>
+        <form id="editarEngrasadora">
+          <div>
+            <p>Nombre:</p>
+            <input id="eng-nombre" autocomplete="off" />
+          </div>
+          <div>
+            <p>ID:</p>
+            <input id="eng-id" autocomplete="off" />
+          </div>
+          <div>
+            <p>Línea:</p>
+            <select name="linea" id="eng-linea">
+              <option value="">-</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="C">C</option>
+              <option value="D">D</option>
+              <option value="E">E</option>
+              <option value="H">H</option>
+            </select>
+          </div>
+          <div>
+            <p>Modelo:</p>
+            <input id="eng-modelo" autocomplete="off" />
+          </div>
+          <div>
+            <button type="submit" id="confirmEdit">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
     <div class="total"><span id="total_value"></span></div>
     <script src="/app.js"></script>
     <script type="module" src="/engrasadoras/detalle.js"></script>
