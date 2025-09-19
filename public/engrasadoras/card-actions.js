@@ -112,7 +112,7 @@ function detectarCambios() {
     inputLinea.value !== originalData.linea ||
     inputModelo.value !== originalData.modelo;
 
-  btnGuardar.style.display = cambios ? "block" : "none";
+  btnGuardar.style.backgroundColor = cambios ? "var(--color-pstv)" : "#777";
 }
 
 // guardar

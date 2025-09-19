@@ -583,13 +583,13 @@ span.delete:hover {
 }
 
 #confirmEdit {
-  display: none;
   padding: 0.5rem 1rem;
   background-color: #777;
+  transition: all 0.3s;
 }
 
 #confirmEdit:hover {
-  background-color: var(--color-pstv);
+  box-shadow: 0 5px 5px black;
 }
 
 #editContent > form > div:last-child {
