@@ -583,6 +583,7 @@ span.delete:hover {
 }
 
 #confirmEdit {
+  display: block;
   padding: 0.5rem 1rem;
   background-color: #777;
   transition: all 0.3s;

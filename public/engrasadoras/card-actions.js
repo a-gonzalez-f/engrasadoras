@@ -97,7 +97,7 @@ function cerrarModal() {
   );
   inputs.forEach((input) => (input.value = ""));
 
-  btnGuardar.style.visibility = "hidden";
+  btnGuardar.style.backgroundColor = "#777";
 }
 
 [inputNombre, inputId, inputLinea, inputModelo].forEach((input) => {
