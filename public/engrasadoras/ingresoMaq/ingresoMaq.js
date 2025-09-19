@@ -1,4 +1,27 @@
+const modalBtn = document.getElementById("btnAddMaq");
+const modal = document.getElementById("modalIngresoMaq");
 const form = document.getElementById("formEngrasadora");
+const btnCerrar = document.getElementById("cerrarModalIngreso");
+
+let modalOpen = false;
+
+const params = new URLSearchParams(window.location.search);
+const linea = params.get("linea");
+
+modalBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+  modalOpen = true;
+  document.getElementById("linea-ingreso").value = `${linea}`;
+});
+
+btnCerrar.addEventListener("click", () => {
+  cerrarModalIngreso();
+});
+
+function cerrarModalIngreso() {
+  modal.style.display = "none";
+  modalOpen = false;
+}
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -39,7 +62,7 @@ form.addEventListener("submit", async (e) => {
     });
 
     if (res.ok) {
-      alert("Engrasadora guardada correctamente");
+      cerrarModalIngreso();
       form.reset();
     } else {
       alert("Hubo un error al guardar la engrasadora");

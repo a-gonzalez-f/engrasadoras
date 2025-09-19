@@ -67,9 +67,9 @@ form > label > select,
 }
 
 #gw-linea {
-  background-color: transparent;
-  border: transparent;
-  color: var(--color-texto);
+  background-color: transparent !important;
+  border: transparent !important;
+  color: var(--color-texto) !important;
 }
 
 .row {

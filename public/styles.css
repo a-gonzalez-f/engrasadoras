@@ -419,3 +419,8 @@ tr:hover {
   width: 80% !important;
   height: auto !important;
 }
+
+.modalBase {
+  background-color: black !important;
+  box-shadow: 0 2px 10px 5px rgb(73 73 73 / 20%) !important;
+}

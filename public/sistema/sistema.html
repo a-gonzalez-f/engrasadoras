@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="../img/emv/favicon-emova.png" sizes="32x32" />
     <link rel="stylesheet" href="/styles.css" />
-    <link rel="stylesheet" href="/ingresoMaq/ingresoMaq.css" />
+    <link rel="stylesheet" href="/engrasadoras/ingresoMaq/ingresoMaq.css" />
     <link rel="stylesheet" href="/sistema/ingresoGateway.css" />
     <link rel="stylesheet" href="/sistema/sistema.css" />
     <link rel="stylesheet" href="/sistema/gateways.css" />
@@ -29,7 +29,7 @@
         <span class="material-symbols-outlined"> menu </span>
       </button>
       <nav id="menu" class="menu">
-        <a href="/Ingreso">Ingreso</a>
+        <a href="/">Home</a>
         <a class="aA" href="/detalle?linea=A">Detalle A</a>
         <a class="aB" href="/detalle?linea=B">Detalle B</a>
         <a class="aC" href="/detalle?linea=C">Detalle C</a>
@@ -56,7 +56,7 @@
       <div id="modalIngreso">
         <section id="sectionIngreso">
           <span class="material-symbols-outlined closeModal"> close </span>
-          <form id="formGateway" class="formulario">
+          <form id="formGateway" class="formulario modalBase">
             <h3>Ingreso Gateway</h3>
 
             <label
@@ -377,7 +377,7 @@
       </div>
     </div>
     <!-- Modal Logs -->
-    <div id="logsModal" class="modal hidden">
+    <div id="logsModal" class="modalBase modal hidden">
       <div class="modal-content" id="logsContent">
         <div id="updateDiv">
           <span

@@ -80,7 +80,6 @@ function renderizarEngrasadoras(lista) {
     block.className = "engrasadoraBlock";
 
     block.innerHTML = `
-      <label>Engrasadora ${i + 1}: </label>
       <div class="flex">
         <input class="id" type="text" name="idEngrasadora" value="${id}" required />
         <div class="actionButtons flex">
@@ -152,7 +151,6 @@ document.getElementById("addEngrasadora").addEventListener("click", () => {
   block.className = "engrasadoraBlock";
 
   block.innerHTML = `
-    <label>Engrasadora ${index + 1}: </label>
     <div class="flex">
       <input class="id" type="text" name="idEngrasadora" required />
       <div class="actionButtons flex">

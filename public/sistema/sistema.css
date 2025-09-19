@@ -100,6 +100,7 @@
 }
 
 .closeModal {
+  z-index: 2;
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
@@ -187,6 +188,7 @@
 #time,
 #timeOut {
   width: 4rem;
+  color: var(--color-primario);
 }
 
 #logBtnDiv {

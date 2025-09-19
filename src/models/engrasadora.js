@@ -29,7 +29,7 @@ const EngrasadoraSchema = new mongoose.Schema(
   {
     date: { type: Date, default: () => new Date() },
 
-    id: { type: Number, unique: true },
+    id: { type: Number, unique: true, required: true, max: 999 },
     linea: String,
     nombre: String,
     modelo: String,
