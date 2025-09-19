@@ -138,7 +138,11 @@ form.addEventListener("submit", async (e) => {
       body: JSON.stringify(payload),
     });
 
-    if (!res.ok) throw new Error("Error al guardar engrasadora");
+    if (!res.ok) {
+      const errorData = await res.json();
+      alert(errorData.mensaje);
+      return;
+    }
 
     modal.classList.add("hidden");
     location.reload();

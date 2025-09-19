@@ -306,10 +306,30 @@ const switchOnOff = async (req, res) => {
 
 const actualizarEngrasadora = async (req, res) => {
   try {
-    const eng = await Engrasadora.findByIdAndUpdate(req.params.id, req.body, {
+    const { id: nuevoId } = req.body;
+    const { id } = req.params;
+
+    if (nuevoId) {
+      const existeId = await Engrasadora.findOne({
+        id: nuevoId,
+        _id: { $ne: id },
+      });
+
+      if (existeId) {
+        return res.status(400).json({
+          mensaje: `El ID ${nuevoId} ya está en uso por otra engrasadora.`,
+        });
+      }
+    }
+
+    const eng = await Engrasadora.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-    if (!eng) return res.status(404).json({ mensaje: "No encontrado" });
+
+    if (!eng) {
+      return res.status(404).json({ mensaje: "No encontrado" });
+    }
+
     res.json(eng);
   } catch (err) {
     console.error(err);
