@@ -501,7 +501,7 @@ option {
 .actionsMenu {
   z-index: 2;
   width: max-content;
-  background: rgb(30, 30, 30);
+  background: rgb(10, 10, 10);
   border-radius: 5px;
   box-shadow: 2px 2px 5px black;
 }
