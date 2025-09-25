@@ -66,6 +66,11 @@ form > label > select,
   margin: 5px 0 !important;
 }
 
+#formEditGateway input,
+#formEditGateway .row.padding.gap {
+  height: 24px;
+}
+
 #gw-linea {
   background-color: transparent !important;
   border: transparent !important;

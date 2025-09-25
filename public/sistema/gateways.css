@@ -150,3 +150,9 @@ select {
 .on {
   border: 2px solid var(--color-pstv);
 }
+
+input,
+select,
+option {
+  color: black;
+}
