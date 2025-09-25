@@ -15,21 +15,23 @@ export function listarHistorialEnModal(historial) {
     return;
   }
 
-  const itemsOriginal = historial.slice(-1000).reverse();
+  const itemsOriginal = historial.slice(-1000);
 
-  let lastContSensado = null;
+  const vistos = new Set();
   const itemsFiltrados = [];
 
   for (const h of itemsOriginal) {
     if (h.tipo_evento === "Sensado") {
-      if (h.cont_accionam !== lastContSensado) {
+      if (!vistos.has(h.cont_accionam)) {
         itemsFiltrados.push(h);
-        lastContSensado = h.cont_accionam;
+        vistos.add(h.cont_accionam);
       }
     } else {
       itemsFiltrados.push(h);
     }
   }
+
+  itemsFiltrados.reverse();
 
   if (itemsFiltrados.length === 0) {
     tbody.innerHTML = `
