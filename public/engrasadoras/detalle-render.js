@@ -112,12 +112,15 @@ export function renderDetalleMaquina(maquina) {
           </div>
           <div class="subCont">
             <h6>ULTIMO SENSADO</h6>
-            <div><p>Fecha:</p><p>${new Date(e.date).toLocaleString("es-AR", {
+            <div><p>Fecha:</p><p id="fechaHora">${new Date(
+              e.date
+            ).toLocaleString("es-AR", {
               day: "2-digit",
               month: "2-digit",
               year: "2-digit",
               hour: "2-digit",
               minute: "2-digit",
+              second: "2-digit",
               hour12: false,
             })}</p></div>              
             <div><p>Accionamientos:</p><p id="accionamientos">${

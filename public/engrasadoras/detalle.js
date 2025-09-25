@@ -106,6 +106,17 @@ setInterval(() => {
                 formatearEstado(actualizada.estado, "texto").toUpperCase();
               document.getElementById("estadoMaquina").className =
                 actualizada.estado;
+              document.getElementById("fechaHora").innerText = new Date(
+                actualizada.date
+              ).toLocaleString("es-AR", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: false,
+              });
               document.getElementById("accionamientos").innerText =
                 actualizada.cont_accionam;
               document.getElementById("tiempoDosif").innerText =
