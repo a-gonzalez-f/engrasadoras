@@ -352,6 +352,29 @@ const deleteEngrasadora = async (req, res) => {
   }
 };
 
+const consultaExterna = async (req, res) => {
+  try {
+    const filtro = {};
+
+    if (req.query.linea) {
+      filtro.linea = req.query.linea;
+    }
+
+    const resumen = await Engrasadora.find(filtro, {
+      id: 1,
+      nombre: 1,
+      linea: 1,
+      estado: 1,
+      _id: 0,
+    });
+
+    res.json(resumen);
+  } catch (error) {
+    console.error("Error al obtener resumen de engrasadoras:", error);
+    res.status(500).json({ error: "Error al obtener resumen de engrasadoras" });
+  }
+};
+
 module.exports = {
   setear,
   resetAccionamientos,
@@ -367,4 +390,5 @@ module.exports = {
   engrasadoraActualizada,
   actualizarEngrasadora,
   deleteEngrasadora,
+  consultaExterna,
 };

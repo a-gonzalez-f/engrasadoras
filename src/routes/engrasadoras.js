@@ -17,6 +17,7 @@ const {
   engrasadoraActualizada,
   actualizarEngrasadora,
   deleteEngrasadora,
+  consultaExterna,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
@@ -29,10 +30,13 @@ router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
 router.put("/:id/resetHistorial", resetHistorial);
 router.post("/", crearEngrasadora);
-router.get("/:id", verificarId);
 router.get("/full/:id", getUnaEngrasadora);
 router.get("/actualizada/:id", engrasadoraActualizada);
 router.put("/:id/editar", actualizarEngrasadora);
 router.delete("/:id/", deleteEngrasadora);
+
+router.get("/consulta", consultaExterna);
+
+router.get("/:id", verificarId);
 
 module.exports = router;
