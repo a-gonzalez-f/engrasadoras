@@ -375,6 +375,32 @@ const consultaExterna = async (req, res) => {
   }
 };
 
+const getHistorialPaginado = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const offset = parseInt(req.query.offset) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+
+    const engrasadora = await Engrasadora.findById(id).select("historial");
+
+    if (!engrasadora) {
+      return res.status(404).json({ error: "Engrasadora no encontrada" });
+    }
+
+    const historialCompleto = engrasadora.historial.slice().reverse();
+
+    const historialPaginado = historialCompleto.slice(offset, offset + limit);
+
+    res.json({
+      historial: historialPaginado,
+      total: historialCompleto.length,
+    });
+  } catch (err) {
+    console.error("Error obteniendo historial paginado:", err);
+    res.status(500).json({ error: "Error al obtener historial" });
+  }
+};
+
 module.exports = {
   setear,
   resetAccionamientos,
@@ -391,4 +417,5 @@ module.exports = {
   actualizarEngrasadora,
   deleteEngrasadora,
   consultaExterna,
+  getHistorialPaginado,
 };

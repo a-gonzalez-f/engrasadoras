@@ -18,6 +18,7 @@ const {
   actualizarEngrasadora,
   deleteEngrasadora,
   consultaExterna,
+  getHistorialPaginado,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
@@ -38,5 +39,7 @@ router.delete("/:id/", deleteEngrasadora);
 router.get("/consulta", consultaExterna);
 
 router.get("/:id", verificarId);
+
+router.get("/historial/:id", getHistorialPaginado);
 
 module.exports = router;

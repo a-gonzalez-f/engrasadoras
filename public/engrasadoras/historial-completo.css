@@ -12,11 +12,23 @@ h3 {
   cursor: pointer;
 }
 
-.modal-contenido {
+#modalHistorialCompleto > .modal-contenido {
   margin-top: 1rem;
+  height: 90vh;
 }
 
 .modal-body {
-  height: 75vh;
+  height: 80vh;
   overflow-y: auto;
+}
+
+.tabla-scrollable {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.tabla-scrollable thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
 }
