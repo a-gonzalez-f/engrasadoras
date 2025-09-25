@@ -27,6 +27,8 @@ export function renderDetalleMaquina(maquina) {
         </tr>
       </thead>
       <tbody>
+        <tr><td colspan="12" style="text-align: center">Cargando...</td></tr>
+      </tbody>
     `;
 
   let comentarioHtml = "Sin comentarios";
