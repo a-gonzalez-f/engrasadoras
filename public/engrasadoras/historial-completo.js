@@ -1,4 +1,5 @@
 import { formatearEstado } from "./detalles-tools.js";
+import { formatearSignal } from "./formatear-signal.js";
 
 export function abrirHistorialCompleto(maquina) {
   const modal = document.getElementById("modalHistorialCompleto");
@@ -29,7 +30,7 @@ export function abrirHistorialCompleto(maquina) {
         <td>${h.sens_corriente ? h.sens_corriente + " mA" : "-"}</td>
         <td>${h.sens_flujo ? "Sí" : "No"}</td>
         <td>${h.sens_power ? "Sí" : "No"}</td>
-        <td>${h.lora_signal || "-"}</td>
+        <td>${formatearSignal(h.lora_signal, "icono")}</td>
         <td>${h.on_off ? "ON" : "OFF"}</td>
         <td>${h.cont_accionam || "-"}</td>
       </tr>`
