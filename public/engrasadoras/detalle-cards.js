@@ -35,7 +35,9 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
       () => (detalle.style.display = "block")
     );
     card.addEventListener("mousemove", (eMouse) => {
-      document.body.appendChild(detalle);
+      if (!document.body.contains(detalle)) {
+        document.body.appendChild(detalle);
+      }
       const detalleWidth = detalle.offsetWidth;
       const detalleHeight = detalle.offsetHeight;
       let top = eMouse.clientY + 10;
