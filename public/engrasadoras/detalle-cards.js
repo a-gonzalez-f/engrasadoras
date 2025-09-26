@@ -30,13 +30,12 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
       Accionamientos: ${e.cont_accionam}<br>
     `;
 
-    document.body.appendChild(detalle);
-
     card.addEventListener(
       "mouseenter",
       () => (detalle.style.display = "block")
     );
     card.addEventListener("mousemove", (eMouse) => {
+      document.body.appendChild(detalle);
       const detalleWidth = detalle.offsetWidth;
       const detalleHeight = detalle.offsetHeight;
       let top = eMouse.clientY + 10;
@@ -50,7 +49,7 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
       detalle.style.top = `${Math.max(top, 0)}px`;
       detalle.style.left = `${Math.max(left, 0)}px`;
     });
-    card.addEventListener("mouseleave", () => (detalle.style.display = "none"));
+    card.addEventListener("mouseleave", () => detalle.remove());
 
     card.addEventListener("click", () => {
       setMaquinaSeleccionada(e);
