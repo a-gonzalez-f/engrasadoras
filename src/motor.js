@@ -463,7 +463,7 @@ async function iniciarGatewaysDesdeDB() {
   for (const gateway of gateways) {
     if (gateway.bypass) {
       let message = `⏸️  Gateway ${gateway.nombre} está en bypass, no se conecta`;
-      console.log(message);
+      // console.log(message);
       continue;
     }
     gateway.puerto = gateway.puerto || 80;
@@ -642,7 +642,7 @@ async function verificarCambioIPTodas() {
     for (const gateway of gateways) {
       if (gateway.bypass) {
         let message = `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`;
-        console.log(message);
+        // console.log(message);
         continue;
       }
       const nombre = gateway.nombre;
