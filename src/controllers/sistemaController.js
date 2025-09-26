@@ -97,21 +97,18 @@ exports.agregarLogSistema = async (req, res) => {
   }
 
   try {
-    let config = await ConfigSistema.findOne();
-
-    if (!config) {
-      config = new ConfigSistema({
-        logs: [{ message }],
-      });
-    } else {
-      config.logs.push({ message });
-
-      if (config.logs.length > 100) {
-        config.logs = config.logs.slice(-100);
-      }
-    }
-
-    await config.save();
+    const updateResult = await ConfigSistema.findOneAndUpdate(
+      {},
+      {
+        $push: {
+          logs: {
+            $each: [{ message }],
+            $slice: -100,
+          },
+        },
+      },
+      { new: true, upsert: true }
+    );
 
     res.status(201).json({ message: "Log agregado exitosamente." });
   } catch (err) {

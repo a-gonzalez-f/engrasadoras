@@ -9,9 +9,8 @@ const Gateway = require("./models/gateway");
 const readline = require("readline");
 
 let tiempoSolicitud = 60;
-
-const pendientes = new Map();
 let timeOut = 2;
+let intervaloSolicitudes = null;
 
 const confirmacionesPendientes = new Map();
 
@@ -23,10 +22,31 @@ async function obtenerTiempo() {
     }
 
     const data = await response.json();
-    tiempoSolicitud = data.tiempo;
-    timeOut = data.timeOut;
-    console.log("Tiempo solicitud:", tiempoSolicitud);
-    console.log("TimeOut:", timeOut);
+    const nuevoTiempoSolicitud = data.tiempo;
+    const nuevoTimeOut = data.timeOut;
+
+    if (nuevoTimeOut !== timeOut) {
+      timeOut = nuevoTimeOut;
+      let confirmacion = `⏱️ Nuevo timeOut: ${timeOut}`;
+      console.log(confirmacion);
+      guardarLog(confirmacion);
+    }
+
+    if (nuevoTiempoSolicitud !== tiempoSolicitud) {
+      tiempoSolicitud = nuevoTiempoSolicitud;
+      let confirmacion = `⏱️ Nuevo tiempoSolicitud: ${tiempoSolicitud}`;
+      console.log(confirmacion);
+      guardarLog(confirmacion);
+
+      if (intervaloSolicitudes) {
+        clearInterval(intervaloSolicitudes);
+      }
+
+      intervaloSolicitudes = setInterval(
+        solicitarEstados,
+        tiempoSolicitud * 1000
+      );
+    }
   } catch (error) {
     console.error("Hubo un error:", error.message);
     guardarLog(error.message);
@@ -58,7 +78,7 @@ async function iniciarMotor() {
   actualizarEstadoMotor();
   iniciarGatewaysDesdeDB();
   await obtenerTiempo();
-  setInterval(solicitarEstados, tiempoSolicitud * 1000);
+  setInterval(obtenerTiempo, 10 * 1000);
 }
 
 async function manejarMensaje(nombre, data) {
