@@ -5,16 +5,16 @@ services:
       - "3000:3000"
     env_file:
       - .env
-    depends_on:
-      - mongo
+    # depends_on:
+    #   - mongo
     restart: always
 
-  mongo:
-    image: mongo:6
-    container_name: mongo
-    volumes:
-      - mongo_data:/data/db
-    restart: always
+  # mongo:
+  #   image: mongo:6
+  #   container_name: mongo
+  #   volumes:
+  #     - mongo_data:/data/db
+  #   restart: always
 
 volumes:
   mongo_data:
