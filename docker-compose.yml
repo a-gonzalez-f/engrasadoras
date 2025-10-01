@@ -10,7 +10,7 @@ services:
     restart: always
 
   mongo:
-    image: mongo:6
+    image: mongo:4.4
     container_name: mongo
     volumes:
       - mongo_data:/data/db
