@@ -37,6 +37,7 @@
   letter-spacing: normal;
   white-space: nowrap;
   direction: ltr;
+  font-feature-settings: "liga";
   -webkit-font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
 }
