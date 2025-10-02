@@ -17,6 +17,30 @@
   --linea-H: #f0cd1f;
 }
 
+@font-face {
+  font-family: "Material Symbols Outlined";
+  src: url("/img/icons/MaterialSymbolsOutlined[FILL,GRAD,opsz,wght].woff2")
+    format("woff2");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.material-symbols-outlined {
+  cursor: pointer;
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  white-space: nowrap;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -195,10 +219,6 @@ button:hover {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-.material-symbols-outlined {
-  cursor: pointer;
 }
 
 .dashboard {
