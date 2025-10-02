@@ -27,6 +27,8 @@ document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
 
 async function cargarDetalle(data) {
+  console.log("entro a cargarDetalle");
+  console.log(data);
   try {
     const contenedor = document.getElementById("contenedorMaquinas");
     contenedor.innerHTML = "";
@@ -68,6 +70,15 @@ document.getElementById("cerrarComentarios").addEventListener("click", () => {
 });
 
 let ultimoListado = [];
+
+// Primera carga
+fetch(`/api/engrasadoras?linea=${linea}`)
+  .then((res) => res.json())
+  .then((data) => {
+    cargarDetalle(data);
+    ultimoListado = data;
+  })
+  .catch((err) => console.error("Error en carga inicial:", err));
 
 setInterval(() => {
   fetch(`/api/engrasadoras?linea=${linea}`)
