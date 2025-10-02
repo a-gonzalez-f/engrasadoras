@@ -92,6 +92,44 @@ function renderEstadoPorLinea(data) {
     const dataLinea = data.filter((e) => e.linea === linea);
     const total = dataLinea.length;
 
+    const canvas = document.getElementById(`chart${linea}`);
+    const container = canvas?.parentElement;
+
+    const detalleFunc = document.getElementById(`func-${linea}`);
+    const detalleAlerta = document.getElementById(`alerta-${linea}`);
+    const detalleSC = document.getElementById(`sc-${linea}`);
+    const detalleFS = document.getElementById(`fs-${linea}`);
+
+    // Si no hay datos en la línea
+    if (total === 0) {
+      // Oculta el canvas si existe
+      if (canvas) canvas.style.display = "none";
+
+      // Oculta los detalles
+      document.getElementById(`detalle-${linea}`).style.display = "none";
+      container.classList.add("centrar");
+
+      // Verifica si ya existe el mensaje para no duplicarlo
+      if (!document.getElementById(`sinMaquinas-${linea}`)) {
+        const sinMaquinas = document.createElement("div");
+        sinMaquinas.classList.add("sinMaquinas");
+        sinMaquinas.id = `sinMaquinas-${linea}`;
+        sinMaquinas.innerHTML =
+          `<span class="material-symbols-outlined" id="sinMaquinasIcon">error</span>` +
+          `<p style="color:grey;">Sin máquinas</p>`;
+
+        if (container) container.appendChild(sinMaquinas);
+      }
+
+      return;
+    }
+
+    // Si hay datos, asegurarse de mostrar el canvas y eliminar el mensaje
+    if (canvas) canvas.style.display = "block";
+
+    const mensajeExistente = document.getElementById(`sinMaquinas-${linea}`);
+    if (mensajeExistente) mensajeExistente.remove();
+
     const funcionando = dataLinea.filter(
       (e) => e.estado === "funcionando"
     ).length;
@@ -102,8 +140,6 @@ function renderEstadoPorLinea(data) {
     const fs = dataLinea.filter((e) => e.estado === "fs").length;
     const pm = dataLinea.filter((e) => e.estado === "pm").length;
 
-    // Render gráfico
-    const canvas = document.getElementById(`chart${linea}`);
     if (!chartsPorLinea[linea]) {
       chartsPorLinea[linea] = new Chart(canvas, {
         type: "doughnut",
@@ -148,20 +184,20 @@ function renderEstadoPorLinea(data) {
     }
 
     // Render detalle
-    document.getElementById(`func-${linea}`).innerText = `${
-      funcionando + pm
-    } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
-    document.getElementById(
-      `alerta-${linea}`
-    ).innerText = `${alerta} (${Math.round((alerta / total) * 100)}%)`;
-    document.getElementById(
-      `sc-${linea}`
-    ).innerText = `${desconectada} (${Math.round(
-      (desconectada / total) * 100
-    )}%)`;
-    document.getElementById(`fs-${linea}`).innerText = `${fs} (${Math.round(
-      (fs / total) * 100
-    )}%)`;
+    if (detalleFunc)
+      detalleFunc.innerText = `${funcionando + pm} (${Math.round(
+        ((funcionando + pm) / total) * 100
+      )}%)`;
+    if (detalleAlerta)
+      detalleAlerta.innerText = `${alerta} (${Math.round(
+        (alerta / total) * 100
+      )}%)`;
+    if (detalleSC)
+      detalleSC.innerText = `${desconectada} (${Math.round(
+        (desconectada / total) * 100
+      )}%)`;
+    if (detalleFS)
+      detalleFS.innerText = `${fs} (${Math.round((fs / total) * 100)}%)`;
   });
 }
 
