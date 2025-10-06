@@ -115,24 +115,45 @@ document.addEventListener("DOMContentLoaded", () => {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Recolectar datos
-    const data = {
-      ip: document.getElementById("ip").value.trim(),
-      nombre: document.getElementById("nombre").value.trim(),
-      id: document.getElementById("idGateway").value.trim(),
-      linea: document.getElementById("linea").value.trim(),
-      ubicacion: document.getElementById("ubi").value.trim(),
-      engrasadoras: Array.from(document.querySelectorAll(".id")).map((input) =>
-        input.value.trim()
-      ),
-    };
+    const ip = document.getElementById("ip").value.trim();
+    const nombre = document.getElementById("nombre").value.trim();
+    const id = document.getElementById("idGateway").value.trim();
 
     try {
-      const res = await enviarFormularioGateway(data);
-      alert("Gateway ingresado correctamente");
+      const res = await fetch("/api/gateways");
+      const gateways = await res.json();
+
+      let errores = [];
+
+      const existeIP = gateways.some((gw) => gw.ip === ip);
+      const existeID = gateways.some((gw) => String(gw.id) === String(id));
+      const existeNombre = gateways.some(
+        (gw) => String(gw.nombre) === String(nombre)
+      );
+
+      if (existeIP) errores.push("Ya existe un gateway con esta IP");
+      if (existeID) errores.push("Ya existe un gateway con este ID");
+      if (existeNombre) errores.push("Ya existe un gateway con este nombre");
+
+      if (errores.length > 0) {
+        alert(errores.join("\n"));
+        return;
+      }
+
+      const data = {
+        ip,
+        nombre,
+        id,
+        linea: document.getElementById("linea").value.trim(),
+        ubicacion: document.getElementById("ubi").value.trim(),
+        engrasadoras: Array.from(document.querySelectorAll(".id")).map(
+          (input) => input.value.trim()
+        ),
+      };
+
+      const response = await enviarFormularioGateway(data);
       modalIngreso.style.display = "none";
-      console.log(res);
-      window.location.reload(); // provisorio, que no se necesite refrescar
+      window.location.reload();
     } catch (err) {
       alert("Error al enviar: " + err.message);
     }

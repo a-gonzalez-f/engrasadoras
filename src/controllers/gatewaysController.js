@@ -29,6 +29,22 @@ exports.getGateway = async (req, res) => {
 
 exports.crearGateway = async (req, res) => {
   try {
+    const { ip, nombre, id } = req.body;
+
+    const existeIP = await Gateway.findOne({ ip });
+    const existeID = await Gateway.findOne({ id });
+    const existeNombre = await Gateway.findOne({ nombre });
+
+    if (existeIP) {
+      return res.status(400).json({ mensaje: "La IP ya está en uso" });
+    }
+    if (existeID) {
+      return res.status(400).json({ mensaje: "El ID ya está en uso" });
+    }
+    if (existeNombre) {
+      return res.status(400).json({ mensaje: "El nombre ya está en uso" });
+    }
+
     const gw = await Gateway.create(req.body);
     res.status(201).json(gw);
   } catch (err) {
