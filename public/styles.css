@@ -437,24 +437,21 @@ tr:hover {
   padding: 2rem 1rem 1rem 1rem;
 }
 
-#buscador {
+.filters input,
+.fselect,
+.fselect > option {
   background-color: var(--color-texto);
-  width: 250px;
   color: black;
   padding: 0.5rem 1rem;
   border-radius: 5px;
 }
 
-.buscador > table {
-  margin: 1rem 0 5rem 0;
+#buscador {
+  width: 250px;
 }
 
-.fselect,
-.fselect > option {
-  padding: 0.5rem 1rem;
-  background-color: var(--color-texto);
-  color: var(--color-fondo);
-  border-radius: 5px;
+.buscador > table {
+  margin: 1rem 0 5rem 0;
 }
 
 .analytics {
@@ -471,4 +468,35 @@ tr:hover {
 .modalBase {
   background-color: black !important;
   box-shadow: 0 2px 10px 5px rgb(73 73 73 / 20%) !important;
+}
+
+#tabla {
+  background-color: #1d1d1d;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 20px;
+  border: 2px solid black;
+  box-shadow: 0 2px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+#theadbuscador {
+  position: sticky;
+  top: 0;
+  background-color: #1d1d1d;
+}
+
+#actionsTable {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+#actionsTable button {
+  padding: 5px;
+  color: grey;
+}
+
+#actionsTable button:hover {
+  color: var(--color-texto);
+  background-color: transparent;
 }

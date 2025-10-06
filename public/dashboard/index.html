@@ -363,6 +363,10 @@
             <input type="text" id="buscador" placeholder="Buscar por nombre" />
           </div>
           <div>
+            <label for="id">ID</label>
+            <input type="number" id="id" max="999" min="0" placeholder="ID" />
+          </div>
+          <div>
             <label for="selectModelo">Modelo</label>
             <select name="modelo" id="selectModelo" class="fselect">
               <option value="todas">Todas</option>
@@ -383,24 +387,31 @@
             </select>
           </div>
         </div>
-        <table>
-          <thead id="theadbuscador">
-            <tr>
-              <th>Fecha</th>
-              <th>Línea</th>
-              <th>Nombre</th>
-              <th>Modelo</th>
-              <th>Tiempo Dosif.</th>
-              <th>Cant. de ejes</th>
-              <th>Corriente</th>
-              <th>Flujo</th>
-              <th>Power</th>
-              <th>Cant. Accionamientos</th>
-              <th>Estado</th>
-            </tr>
-          </thead>
-          <tbody id="tablaEngrasadoras"></tbody>
-        </table>
+        <div id="tabla">
+          <table>
+            <thead id="theadbuscador">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Línea</th>
+                <th>Modelo</th>
+                <th>Último sensado</th>
+                <th>Tiempo Dosif.</th>
+                <th>Cant. de ejes</th>
+                <th>Corriente</th>
+                <th>Flujo</th>
+                <th>Power</th>
+                <th>Accionamientos</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaEngrasadoras"></tbody>
+          </table>
+          <div id="actionsTable">
+            <button id="cargarTodos">Cargar todo</button>
+            <button id="cargarMas">Cargar 10+</button>
+          </div>
+        </div>
       </section>
     </main>
     <script src="/app.js"></script>

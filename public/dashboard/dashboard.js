@@ -10,8 +10,6 @@ async function cargarEngrasadoras() {
   datosEngrasadoras = data;
   // generarAnalytics(data);
 
-  filtrarTabla();
-
   // Calcular gráfico de estado global
   const total = data.length;
   const funcionando = data.filter((e) => e.estado === "funcionando").length;
@@ -218,17 +216,18 @@ function renderTabla(data) {
     const fila = document.createElement("tr");
     fila.classList.add(`${e.estado}`);
     fila.innerHTML = `
-      <td>${new Date(e.date).toLocaleString("es-AR")}</td>
-      <td>${e.linea}</td>
+      <td>${e.id ? e.id : "Sin ID"}</td>
       <td>${e.nombre}</td>
+      <td>${e.linea}</td>
       <td>${e.modelo}</td>
-      <td>${e.set_tiempodosif}</td>
-      <td>${e.set_ejes}</td>
-      <td>${e.sens_corriente}</td>
-      <td>${booleanToIcon(e.sens_flujo)}</td>
-      <td>${booleanToIcon(e.sens_power)}</td>
-      <td>${e.cont_accionam}</td>
-      <td>${formatearEstado(e.estado)}</td>
+      <td>${new Date(e.date).toLocaleString("es-AR")}</td>
+      <td>${e.set_tiempodosif ? e.set_tiempodosif : "-"}</td>
+      <td>${e.set_ejes ? e.set_ejes : "-"}</td>
+      <td>${e.sens_corriente ? e.sens_corriente : "-"}</td>
+      <td>${e.sens_flujo ? booleanToIcon(e.sens_flujo) : "-"}</td>
+      <td>${e.sens_power ? booleanToIcon(e.sens_power) : "-"}</td>
+      <td>${e.cont_accionam ? e.cont_accionam : "-"}</td>
+      <td>${e.estado ? formatearEstado(e.estado) : "-"}</td>
     `;
     tbody.appendChild(fila);
   });
@@ -247,38 +246,72 @@ function formatearEstado(estado) {
     case "alerta":
       return `<span class="material-symbols-outlined" style="color:var(--color-alerta)"> error </span>`;
     case "desconectada":
-      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada"> wifi_off </span>`;
+      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada)"> wifi_off </span>`;
     case "fs":
-      return `<span class="material-symbols-outlined" style="color:var(--color-error"> block </span>`;
+      return `<span class="material-symbols-outlined" style="color:var(--color-error)"> block </span>`;
     default:
       return estado;
   }
 }
 
+let registrosMostrados = 0;
+let datosFiltrados = [];
+const cantidadPorCarga = 10;
+
+const cargarTodoBtn = document.querySelector("#cargarTodos");
+const cargarMasBtn = document.querySelector("#cargarMas");
+const actionButtons = document.querySelector("#actionsTable");
+
 function filtrarTabla() {
   const texto = document.getElementById("buscador").value.toLowerCase();
   const modelo = document.getElementById("selectModelo").value;
   const linea = document.getElementById("selectLinea").value;
+  const id = document.getElementById("id").value;
 
-  const filtrados = datosEngrasadoras.filter((item) => {
-    const coincideNombre = texto === "" || item.nombre.toLowerCase() === texto;
+  datosFiltrados = datosEngrasadoras.filter((item) => {
+    const coincideNombre =
+      texto === "" || item.nombre.toLowerCase().includes(texto);
     const coincideModelo =
       modelo === "todas" || item.modelo.toString() === modelo;
     const coincideLinea =
       linea === "todas" || item.linea.toLowerCase() === linea;
+    const coincideID = id === "" || item.id.toString() === id.toString();
 
-    return coincideNombre && coincideModelo && coincideLinea;
+    return coincideNombre && coincideModelo && coincideLinea && coincideID;
   });
 
-  renderTabla(filtrados);
+  registrosMostrados = 0;
+  cargarMas();
 }
 
+function cargarMas() {
+  const total = datosFiltrados.length;
+  const hasta = Math.min(registrosMostrados + cantidadPorCarga, total);
+  const datosParaMostrar = datosFiltrados.slice(0, hasta);
+
+  renderTabla(datosParaMostrar);
+
+  registrosMostrados = hasta;
+
+  actionsTable.style.display = registrosMostrados >= total ? "none" : "flex";
+}
+
+function cargarTodo() {
+  registrosMostrados = datosFiltrados.length;
+  renderTabla(datosFiltrados);
+
+  actionsTable.style.display = "none";
+}
+
+cargarTodoBtn.addEventListener("click", cargarTodo);
+cargarMasBtn.addEventListener("click", cargarMas);
+
 document.getElementById("buscador").addEventListener("input", filtrarTabla);
+document.getElementById("id").addEventListener("input", filtrarTabla);
 document
   .getElementById("selectModelo")
   .addEventListener("change", filtrarTabla);
 document.getElementById("selectLinea").addEventListener("change", filtrarTabla);
 
-renderTabla([]);
-cargarEngrasadoras();
+cargarEngrasadoras().then(filtrarTabla);
 setInterval(cargarEngrasadoras, 5000);
