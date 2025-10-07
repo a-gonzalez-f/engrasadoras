@@ -75,13 +75,21 @@ window.addEventListener("click", (e) => {
 function renderizarEngrasadoras(lista) {
   containerEngrasadoras.innerHTML = "";
 
-  lista.forEach((id, i) => {
-    const block = document.createElement("div");
-    block.className = "engrasadoraBlock";
+  console.log(lista, lista.length);
 
-    block.innerHTML = `
+  if (lista.length == 0) {
+    const message = document.createElement("div");
+    message.className = "sinEngradoras";
+    message.innerHTML = `<p>Sin engrasadoras conectadas</p>`;
+    containerEngrasadoras.appendChild(message);
+  } else {
+    lista.forEach((id, i) => {
+      const block = document.createElement("div");
+      block.className = "engrasadoraBlock";
+
+      block.innerHTML = `
       <div class="flex">
-        <input class="id" type="text" name="idEngrasadora" value="${id}" required />
+        <input class="id" type="text" name="idEngrasadora" value="${id}" autocomplete="off" required />
         <div class="actionButtons flex">
           <button type="button" class="btnRemove">
             <span class="material-symbols-outlined remove">remove</span>
@@ -90,14 +98,15 @@ function renderizarEngrasadoras(lista) {
       </div>
     `;
 
-    block.querySelector(".btnRemove").addEventListener("click", () => {
-      if (confirm("¿Seguro quiere desconectar esta Engrasadora?")) {
-        block.remove();
-      }
-    });
+      block.querySelector(".btnRemove").addEventListener("click", () => {
+        if (confirm("¿Seguro quiere desconectar esta Engrasadora?")) {
+          block.remove();
+        }
+      });
 
-    containerEngrasadoras.appendChild(block);
-  });
+      containerEngrasadoras.appendChild(block);
+    });
+  }
 }
 
 // Guardar cambios
@@ -108,7 +117,7 @@ form.addEventListener("submit", async (e) => {
     containerEngrasadoras.querySelectorAll("input.id")
   )
     .map((input) => input.value.trim())
-    .filter((val) => val !== "");
+    .filter((val) => val !== "" && val !== null);
 
   const ipEl = document.getElementById("gw-ip");
   const idEl = document.getElementById("gw-id");
@@ -127,13 +136,60 @@ form.addEventListener("submit", async (e) => {
   };
 
   try {
-    const res = await fetch(`/api/gateways/${currentGatewayId}`, {
+    const res = await fetch("/api/gateways");
+    const gateways = await res.json();
+
+    let errores = [];
+
+    // Excluir el gateway actual (el que se está editando) de las validaciones
+    const otrosGateways = gateways.filter(
+      (gw) => !(String(gw.id) === String(payload.id) && gw.ip === payload.ip)
+    );
+
+    const existeIP = otrosGateways.some((gw) => gw.ip === payload.ip);
+    const existeID = otrosGateways.some(
+      (gw) => String(gw.id) === String(payload.id)
+    );
+    const existeNombre = otrosGateways.some(
+      (gw) => String(gw.nombre) === String(payload.nombre)
+    );
+
+    if (existeIP) errores.push("Ya existe un gateway con esta IP");
+    if (existeID) errores.push("Ya existe un gateway con este ID");
+    if (existeNombre) errores.push("Ya existe un gateway con este nombre");
+
+    // Validar si las engrasadoras ya están en uso por otros gateways
+    const engrasadorasYaUsadas = [];
+
+    engrasadoras.forEach((idEng) => {
+      const yaUsada = otrosGateways.some((gw) =>
+        gw.engrasadoras.includes(Number(idEng))
+      );
+      if (yaUsada) {
+        engrasadorasYaUsadas.push(idEng);
+      }
+    });
+
+    if (engrasadorasYaUsadas.length > 0) {
+      errores.push(
+        `Las siguientes engrasadoras ya están registradas en otro gateway: ${engrasadorasYaUsadas.join(
+          ", "
+        )}`
+      );
+    }
+
+    if (errores.length > 0) {
+      alert(errores.join("\n"));
+      return;
+    }
+
+    const putRes = await fetch(`/api/gateways/${currentGatewayId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
-    if (!res.ok) throw new Error("Error al guardar gateway");
+    if (!putRes.ok) throw new Error("Error al guardar gateway");
 
     modal.classList.add("hidden");
     location.reload();
@@ -152,7 +208,7 @@ document.getElementById("addEngrasadora").addEventListener("click", () => {
 
   block.innerHTML = `
     <div class="flex">
-      <input class="id" type="text" name="idEngrasadora" required />
+      <input class="id" type="text" name="idEngrasadora" autocomplete="off" required />
       <div class="actionButtons flex">
         <button type="button" class="btnRemove">
           <span class="material-symbols-outlined remove">remove</span>

@@ -181,3 +181,13 @@ td.Desconectado {
 td.Conectado {
   color: var(--color-pstv);
 }
+
+.sinEngradoras {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.sinEngradoras > * {
+  color: grey;
+}

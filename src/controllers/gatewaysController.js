@@ -45,6 +45,20 @@ exports.crearGateway = async (req, res) => {
       return res.status(400).json({ mensaje: "El nombre ya está en uso" });
     }
 
+    const { engrasadoras = [] } = req.body;
+
+    if (Array.isArray(engrasadoras) && engrasadoras.length > 0) {
+      const conflicto = await Gateway.findOne({
+        engrasadoras: { $in: engrasadoras },
+      });
+
+      if (conflicto) {
+        return res.status(400).json({
+          mensaje: `Una o más engrasadoras ya están en uso por otro gateway.`,
+        });
+      }
+    }
+
     const gw = await Gateway.create(req.body);
     res.status(201).json(gw);
   } catch (err) {

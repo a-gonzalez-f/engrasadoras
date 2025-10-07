@@ -135,6 +135,32 @@ document.addEventListener("DOMContentLoaded", () => {
       if (existeID) errores.push("Ya existe un gateway con este ID");
       if (existeNombre) errores.push("Ya existe un gateway con este nombre");
 
+      // Verificar que ninguna engrasadora ya esté en uso
+      const engrasadorasIngresadas = Array.from(
+        document.querySelectorAll(".id")
+      )
+        .map((input) => input.value.trim())
+        .filter((val) => val !== "" && val !== null);
+
+      const engrasadorasYaUsadas = [];
+
+      engrasadorasIngresadas.forEach((idEng) => {
+        const yaUsada = gateways.some((gw) =>
+          gw.engrasadoras.includes(Number(idEng))
+        );
+        if (yaUsada) {
+          engrasadorasYaUsadas.push(idEng);
+        }
+      });
+
+      if (engrasadorasYaUsadas.length > 0) {
+        errores.push(
+          `Las siguientes engrasadoras ya están registradas en otro gateway: ${engrasadorasYaUsadas.join(
+            ", "
+          )}`
+        );
+      }
+
       if (errores.length > 0) {
         alert(errores.join("\n"));
         return;
@@ -146,9 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
         id,
         linea: document.getElementById("linea").value.trim(),
         ubicacion: document.getElementById("ubi").value.trim(),
-        engrasadoras: Array.from(document.querySelectorAll(".id")).map(
-          (input) => input.value.trim()
-        ),
+        engrasadoras: engrasadorasIngresadas,
       };
 
       const response = await enviarFormularioGateway(data);
