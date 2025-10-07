@@ -139,8 +139,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const engrasadorasIngresadas = Array.from(
         document.querySelectorAll(".id")
       )
-        .map((input) => input.value.trim())
-        .filter((val) => val !== "" && val !== null);
+        .map((input) => Number(input.value.trim()))
+        .filter((val) => !isNaN(val));
 
       const engrasadorasYaUsadas = [];
 

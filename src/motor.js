@@ -702,6 +702,45 @@ async function guardarLog(message) {
   }
 }
 
+async function verificarConexionesActivas() {
+  try {
+    const gateways = await Gateway.find({ bypass: false });
+
+    for (const gateway of gateways) {
+      const nombre = gateway.nombre;
+      const ws = conexiones[nombre];
+
+      const estaConectado = ws && ws.readyState === WebSocket.OPEN;
+
+      if (gateway.comunicacion_back !== estaConectado) {
+        gateway.comunicacion_back = estaConectado;
+
+        gateway.historial.push({
+          nro_evento: gateway.historial.length + 1,
+          tipo_evento: estaConectado ? "Conexión" : "Desconexión",
+          fecha: new Date(),
+          estado: estaConectado ? "Conectado" : "Desconectado",
+          bypass: gateway.bypass,
+          user: "verificador",
+        });
+
+        await gateway.save();
+        const logMsg = `${nombre} actualizado a ${
+          estaConectado ? "Conectado" : "Desconectado"
+        }`;
+        console.log(logMsg);
+        await guardarLog(logMsg);
+      }
+    }
+  } catch (err) {
+    const msg = `Error en verificarConexionesActivas: ${err.message}`;
+    console.error(msg);
+    await guardarLog(msg);
+  }
+}
+
+setInterval(verificarConexionesActivas, 15000);
+
 // Interfaz de consola
 const rl = readline.createInterface({
   input: process.stdin,
