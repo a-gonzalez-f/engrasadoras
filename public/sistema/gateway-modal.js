@@ -11,7 +11,11 @@ const bypassBtn = document.getElementById("bypassBtn");
 let currentGatewayId = null;
 let currentBypass = false;
 
+let currentGW = null;
+
 export async function abrirModalGateway(gw) {
+  currentGW = gw;
+  console.log(currentGW);
   try {
     const res = await fetch(`/api/gateways/${gw._id}`);
     if (!res.ok) throw new Error("No se pudo obtener el gateway actualizado");
@@ -55,6 +59,7 @@ export async function abrirModalGateway(gw) {
 cerrarBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
   currentGatewayId = null;
+  currentGW = null;
   if (historialInterval) {
     clearInterval(historialInterval);
     historialInterval = null;
@@ -141,41 +146,56 @@ form.addEventListener("submit", async (e) => {
 
     let errores = [];
 
-    // Excluir el gateway actual (el que se está editando) de las validaciones
+    // Excluir el gateway actual
     const otrosGateways = gateways.filter(
-      (gw) => !(String(gw.id) === String(payload.id) && gw.ip === payload.ip)
+      (gw) => String(gw._id) !== String(currentGatewayId)
     );
 
-    const existeIP = otrosGateways.some((gw) => gw.ip === payload.ip);
-    const existeID = otrosGateways.some(
-      (gw) => String(gw.id) === String(payload.id)
-    );
-    const existeNombre = otrosGateways.some(
-      (gw) => String(gw.nombre) === String(payload.nombre)
-    );
+    // Validar campos solo si cambiaron
+    if (payload.ip !== currentGW.ip) {
+      const ipUsada = otrosGateways.some((gw) => gw.ip === payload.ip);
+      if (ipUsada) errores.push("Ya existe un gateway con esta IP");
+    }
 
-    if (existeIP) errores.push("Ya existe un gateway con esta IP");
-    if (existeID) errores.push("Ya existe un gateway con este ID");
-    if (existeNombre) errores.push("Ya existe un gateway con este nombre");
-
-    // Validar si las engrasadoras ya están en uso por otros gateways
-    const engrasadorasYaUsadas = [];
-
-    engrasadoras.forEach((idEng) => {
-      const yaUsada = otrosGateways.some((gw) =>
-        gw.engrasadoras.includes(Number(idEng))
+    if (String(payload.id) !== String(currentGW.id)) {
+      const idUsado = otrosGateways.some(
+        (gw) => String(gw.id) === String(payload.id)
       );
-      if (yaUsada) {
-        engrasadorasYaUsadas.push(idEng);
+      if (idUsado) errores.push("Ya existe un gateway con este ID");
+    }
+
+    if (payload.nombre !== currentGW.nombre) {
+      const nombreUsado = otrosGateways.some(
+        (gw) => gw.nombre === payload.nombre
+      );
+      if (nombreUsado) errores.push("Ya existe un gateway con este nombre");
+    }
+
+    // Validar engrasadoras solo si cambiaron
+    const originales = (currentGW.engrasadoras || []).map(String).sort();
+    const nuevas = payload.engrasadoras.map(String).sort();
+    const cambiaronEngrasadoras =
+      JSON.stringify(originales) !== JSON.stringify(nuevas);
+
+    if (cambiaronEngrasadoras) {
+      const engrasadorasYaUsadas = [];
+
+      payload.engrasadoras.forEach((idEng) => {
+        const yaUsada = otrosGateways.some((gw) =>
+          (gw.engrasadoras || []).includes(Number(idEng))
+        );
+        if (yaUsada) {
+          engrasadorasYaUsadas.push(idEng);
+        }
+      });
+
+      if (engrasadorasYaUsadas.length > 0) {
+        errores.push(
+          `Las siguientes engrasadoras ya están registradas en otro gateway: ${engrasadorasYaUsadas.join(
+            ", "
+          )}`
+        );
       }
-    });
-
-    if (engrasadorasYaUsadas.length > 0) {
-      errores.push(
-        `Las siguientes engrasadoras ya están registradas en otro gateway: ${engrasadorasYaUsadas.join(
-          ", "
-        )}`
-      );
     }
 
     if (errores.length > 0) {
