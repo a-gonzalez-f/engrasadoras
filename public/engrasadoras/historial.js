@@ -3,37 +3,9 @@ import { formatearSignal } from "./formatear-signal.js";
 
 export function listarHistorialEnModal(historial) {
   const tbody = document.querySelector(".tabla-historial tbody");
-
   if (!tbody) return;
 
-  if (historial.length === 0) {
-    tbody.innerHTML = `
-      <tr>
-        <td colspan="12" style="text-align:center">No hay historial registrado</td>
-      </tr>
-    `;
-    return;
-  }
-
-  const itemsOriginal = historial.slice(-1000);
-
-  const vistos = new Set();
-  const itemsFiltrados = [];
-
-  for (const h of itemsOriginal) {
-    if (h.tipo_evento === "Sensado") {
-      if (!vistos.has(h.cont_accionam)) {
-        itemsFiltrados.push(h);
-        vistos.add(h.cont_accionam);
-      }
-    } else {
-      itemsFiltrados.push(h);
-    }
-  }
-
-  itemsFiltrados.reverse();
-
-  if (itemsFiltrados.length === 0) {
+  if (!historial || historial.length === 0) {
     tbody.innerHTML = `
       <tr>
         <td colspan="12" style="text-align:center">No hay historial válido para mostrar</td>
@@ -42,7 +14,8 @@ export function listarHistorialEnModal(historial) {
     return;
   }
 
-  tbody.innerHTML = itemsFiltrados
+  tbody.innerHTML = historial
+    .reverse()
     .map(
       (h) => `
       <tr class="historial-item ${h.estado}">

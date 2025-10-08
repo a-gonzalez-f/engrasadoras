@@ -215,8 +215,31 @@ const verificarId = async (req, res) => {
 
 const getUnaEngrasadora = async (req, res) => {
   try {
-    const engrasadora = await Engrasadora.findById(req.params.id);
+    const engrasadora = await Engrasadora.findById(req.params.id).lean();
     if (!engrasadora) return res.status(404).json({ error: "No encontrada" });
+
+    const vistos = new Set();
+    const filtrado = [];
+
+    for (let i = engrasadora.historial.length - 1; i >= 0; i--) {
+      const h = engrasadora.historial[i];
+
+      if (h.tipo_evento === "Sensado") {
+        if (!vistos.has(h.cont_accionam)) {
+          filtrado.push(h);
+          vistos.add(h.cont_accionam);
+        }
+      } else {
+        filtrado.push(h);
+      }
+
+      if (filtrado.length >= 20) break;
+    }
+
+    filtrado.reverse();
+
+    engrasadora.historial = filtrado;
+
     res.json(engrasadora);
   } catch (err) {
     console.error(err);
