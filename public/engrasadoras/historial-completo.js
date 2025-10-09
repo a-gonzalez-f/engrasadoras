@@ -66,7 +66,7 @@ export function abrirHistorialCompleto(maquina) {
 
         offset += historial.length;
         loading = false;
-        hasMore = historial.length === limit; // Si recibimos menos que el límite, no hay más
+        hasMore = historial.length === limit;
       })
       .catch((err) => {
         console.error("Error al obtener historial:", err);

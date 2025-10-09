@@ -32,3 +32,15 @@ h3 {
   top: 0;
   z-index: 1;
 }
+
+#filtros-tabla > th > .filtro {
+  color: black;
+  padding: 0.3rem 0.5rem;
+  background-color: var(--color-texto);
+  border-radius: 5px;
+}
+
+#filtros-tabla > th > input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
