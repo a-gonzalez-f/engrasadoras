@@ -12,6 +12,8 @@ let tiempoSolicitud = 60;
 let timeOut = 2;
 let intervaloSolicitudes = null;
 
+let max_eventos = 100000;
+
 const confirmacionesPendientes = new Map();
 
 async function obtenerTiempo() {
@@ -291,6 +293,10 @@ async function procesarSensado(maquina, datos, nombre) {
     user: "gateway_" + nombre,
   });
 
+  if (maquina.historial.length > max_eventos) {
+    maquina.historial = maquina.historial.slice(-max_eventos);
+  }
+
   await maquina.save();
   console.log(
     `Motor: → Engrasadora ${maquina.id} actualizada con evento de sensado`
@@ -311,6 +317,10 @@ async function procesarSeteo(maquina, datos, nombre) {
     user: "gateway_" + nombre,
   });
 
+  if (maquina.historial.length > max_eventos) {
+    maquina.historial = maquina.historial.slice(-max_eventos);
+  }
+
   await maquina.save();
   console.log(`Motor: ✅ Seteo actualizado para máquina ${maquina.id}`);
 }
@@ -328,6 +338,10 @@ async function procesarResetAccionamientos(maquina, datos, nombre) {
     cont_accionam: 0,
     user: "gateway_" + nombre,
   });
+
+  if (maquina.historial.length > max_eventos) {
+    maquina.historial = maquina.historial.slice(-max_eventos);
+  }
 
   await maquina.save();
   console.log(
@@ -363,6 +377,10 @@ async function procesarSwitchOnOff(maquina, datos, nombre) {
     lora_signal: datos.lora_signal.toString(),
     user: "gateway_" + nombre,
   });
+
+  if (maquina.historial.length > max_eventos) {
+    maquina.historial = maquina.historial.slice(-max_eventos);
+  }
 
   await maquina.save();
   console.log(`Motor: ✅ Switch on_off actualizado para máquina ${maquina.id}`);

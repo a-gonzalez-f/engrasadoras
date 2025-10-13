@@ -215,8 +215,31 @@ const verificarId = async (req, res) => {
 
 const getUnaEngrasadora = async (req, res) => {
   try {
-    const engrasadora = await Engrasadora.findById(req.params.id);
+    const engrasadora = await Engrasadora.findById(req.params.id).lean();
     if (!engrasadora) return res.status(404).json({ error: "No encontrada" });
+
+    const vistos = new Set();
+    const filtrado = [];
+
+    for (let i = engrasadora.historial.length - 1; i >= 0; i--) {
+      const h = engrasadora.historial[i];
+
+      if (h.tipo_evento === "Sensado") {
+        if (!vistos.has(h.cont_accionam)) {
+          filtrado.push(h);
+          vistos.add(h.cont_accionam);
+        }
+      } else {
+        filtrado.push(h);
+      }
+
+      if (filtrado.length >= 20) break;
+    }
+
+    filtrado.reverse();
+
+    engrasadora.historial = filtrado;
+
     res.json(engrasadora);
   } catch (err) {
     console.error(err);
@@ -381,19 +404,61 @@ const getHistorialPaginado = async (req, res) => {
     const offset = parseInt(req.query.offset) || 0;
     const limit = parseInt(req.query.limit) || 50;
 
+    const { tipo, estado, fecha, flujo, power, onoff, repetidos } = req.query;
+
     const engrasadora = await Engrasadora.findById(id).select("historial");
 
     if (!engrasadora) {
       return res.status(404).json({ error: "Engrasadora no encontrada" });
     }
 
-    const historialCompleto = engrasadora.historial.slice().reverse();
+    let historial = engrasadora.historial.slice().reverse();
 
-    const historialPaginado = historialCompleto.slice(offset, offset + limit);
+    // Aplicar filtros
+    if (tipo && tipo !== "todos") {
+      historial = historial.filter((h) => h.tipo_evento === tipo);
+    }
+
+    if (estado && estado !== "todos") {
+      historial = historial.filter((h) => h.estado === estado);
+    }
+
+    if (fecha) {
+      const fechaStr = new Date(fecha).toISOString().slice(0, 10);
+      historial = historial.filter((h) => {
+        const fechaEventoStr = new Date(h.fecha).toISOString().slice(0, 10);
+        return fechaEventoStr === fechaStr;
+      });
+    }
+
+    if (flujo && flujo !== "todos") {
+      historial = historial.filter((h) => String(h.sens_flujo) === flujo);
+    }
+
+    if (power && power !== "todos") {
+      historial = historial.filter((h) => String(h.sens_power) === power);
+    }
+
+    if (onoff && onoff !== "todos") {
+      historial = historial.filter((h) => String(h.on_off) === onoff);
+    }
+
+    if (repetidos === "false") {
+      const vistos = new Set();
+      historial = historial.filter((h) => {
+        if (vistos.has(h.cont_accionam)) {
+          return false;
+        }
+        vistos.add(h.cont_accionam);
+        return true;
+      });
+    }
+
+    const historialPaginado = historial.slice(offset, offset + limit);
 
     res.json({
       historial: historialPaginado,
-      total: historialCompleto.length,
+      total: historial.length,
     });
   } catch (err) {
     console.error("Error obteniendo historial paginado:", err);

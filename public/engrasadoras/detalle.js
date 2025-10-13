@@ -27,8 +27,6 @@ document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
 
 async function cargarDetalle(data) {
-  console.log("entro a cargarDetalle");
-  console.log(data);
   try {
     const contenedor = document.getElementById("contenedorMaquinas");
     contenedor.innerHTML = "";
