@@ -98,11 +98,11 @@
           >close</span
         >
         <div class="modal-header">
-          <h3>HISTORIAL COMPLETO</h3>
+          <h3>HISTORIAL COMPLETO <span id="titleHistorial"></span></h3>
         </div>
         <div class="modal-body">
           <div class="tabla-scrollable">
-            <table class="tabla-historial">
+            <table class="tabla-historial" id="tablaHistorialCompleto">
               <thead>
                 <tr>
                   <th>N° Evento</th>
@@ -115,16 +115,16 @@
                   <th>Flujo</th>
                   <th>Power</th>
                   <th>Señal Lora</th>
-                  <th>On/Off</th>
+                  <th>Pausa</th>
                   <th>Accionamientos</th>
                 </tr>
                 <tr id="filtros-tabla">
                   <th>
-                    <button id="evento-filtro">
+                    <!-- <button type="button" id="evento-filtro" value="ascendente">
                       <span class="material-symbols-outlined">
                         keyboard_arrow_up
                       </span>
-                    </button>
+                    </button> -->
                   </th>
                   <th>
                     <select
@@ -133,47 +133,66 @@
                       id="tipoEvento-filtro"
                     >
                       <option value="todos">Todos</option>
+                      <option value="Sensado">Sensado</option>
+                      <option value="Seteo">Seteo</option>
+                      <option value="Reset Accionam.">Reset Accionam.</option>
+                      <option value="Switch ON/OFF">Switch ON/OFF</option>
+                      <option value="Falla de comunicación">
+                        Falla comunicación
+                      </option>
                     </select>
                   </th>
-                  <th><input class="filtro" type="date" /></th>
+                  <th>
+                    <input id="fecha-filtro" class="filtro" type="date" />
+                  </th>
                   <th>
                     <select class="filtro" name="estado" id="estado-filtro">
                       <option value="todos">Todos</option>
+                      <option value="funcionando">Funcionando</option>
+                      <option value="alerta">Alerta</option>
+                      <option value="fs">Fuera servicio</option>
+                      <option value="desconectada">Desconectada</option>
                     </select>
                   </th>
                   <th>
-                    <select class="filtro" name="tiempo" id="tiempo-filtro">
-                      <option value="todos">Todos</option>
-                    </select>
-                  </th>
-                  <th>
-                    <select class="filtro" name="ejes" id="ejes-filtro">
-                      <option value="todos">Todos</option>
-                    </select>
-                  </th>
-                  <th>
-                    <button id="corriente-filtro">
+                    <!-- <button type="button" id="tiempo-filtro" value="unset">
                       <span class="material-symbols-outlined"> remove </span>
-                    </button>
+                    </button> -->
+                  </th>
+                  <th>
+                    <!-- <button type="button" id="ejes-filtro" value="unset">
+                      <span class="material-symbols-outlined"> remove </span>
+                    </button> -->
+                  </th>
+                  <th>
+                    <!-- <button type="button" id="corriente-filtro" value="unset">
+                      <span class="material-symbols-outlined"> remove </span>
+                    </button> -->
                   </th>
                   <th>
                     <select class="filtro" name="flujo" id="flujo-filtro">
                       <option value="todos">Todos</option>
+                      <option value="true">Sí</option>
+                      <option value="false">No</option>
                     </select>
                   </th>
                   <th>
                     <select class="filtro" name="power" id="power-filtro">
                       <option value="todos">Todos</option>
+                      <option value="true">Sí</option>
+                      <option value="false">No</option>
                     </select>
                   </th>
                   <th>
-                    <button id="senal-filtro">
+                    <!-- <button type="button" id="senal-filtro" value="unset">
                       <span class="material-symbols-outlined"> remove </span>
-                    </button>
+                    </button> -->
                   </th>
                   <th>
                     <select class="filtro" name="onoff" id="onoff-filtro">
                       <option value="todos">Todos</option>
+                      <option value="false">Sí</option>
+                      <option value="true">No</option>
                     </select>
                   </th>
                   <th>

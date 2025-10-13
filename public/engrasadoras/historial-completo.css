@@ -33,6 +33,11 @@ h3 {
   z-index: 1;
 }
 
+#tablaHistorialCompleto > thead {
+  background-color: #0c171e;
+  box-shadow: 0 5px 5px rgba(0, 0, 0, 0.3);
+}
+
 #filtros-tabla > th > .filtro {
   color: black;
   padding: 0.3rem 0.5rem;
