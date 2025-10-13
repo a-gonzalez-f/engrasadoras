@@ -444,7 +444,14 @@ const getHistorialPaginado = async (req, res) => {
     }
 
     if (repetidos === "false") {
-      historial = historial.filter((h) => !h.repetido);
+      const vistos = new Set();
+      historial = historial.filter((h) => {
+        if (vistos.has(h.cont_accionam)) {
+          return false;
+        }
+        vistos.add(h.cont_accionam);
+        return true;
+      });
     }
 
     const historialPaginado = historial.slice(offset, offset + limit);
