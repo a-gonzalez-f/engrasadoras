@@ -129,6 +129,7 @@ form.addEventListener("submit", async (e) => {
 
     try {
       overlay.style.display = "flex";
+
       const resID = await fetch(`/api/engrasadoras/editarID`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -139,14 +140,19 @@ form.addEventListener("submit", async (e) => {
       });
 
       const data = await resID.json();
-      overlay.style.display = "none";
 
       if (!resID.ok) {
+        // Aquí mostramos error, cerramos overlay y retornamos
         alert("❌ " + data.mensaje);
+        overlay.style.display = "none";
         return;
       }
 
+      // Para verificar, imprime data que recibes
+      console.log("Respuesta cambio ID:", data);
+
       alert("✅ " + data.mensaje);
+
       overlay.style.display = "none";
       originalData.id = nuevoId;
     } catch (err) {
