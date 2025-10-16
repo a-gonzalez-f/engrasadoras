@@ -71,7 +71,8 @@ async function abrirModal(maquina) {
   currentEngId = maquina._id;
   if (modalOpen) return;
 
-  modal.style.display = "flex";
+  modal.classList.remove("hidden");
+  modal.classList.add("visible");
   modalOpen = true;
 
   inputNombre.value = maquina.nombre || "";
@@ -88,11 +89,13 @@ async function abrirModal(maquina) {
 }
 
 function cerrarModal() {
+  modal.classList.remove("visible");
   modal.classList.add("hidden");
   modalOpen = false;
 
   [inputNombre, inputId, inputLinea, inputModelo].forEach((input) => {
     input.value = "";
+    input.classList.remove("cambio");
   });
 
   btnGuardar.style.backgroundColor = "#777";
@@ -103,6 +106,12 @@ function cerrarModal() {
   input.addEventListener("change", detectarCambios);
 });
 
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modalOpen) {
+    cerrarModal();
+  }
+});
+
 function detectarCambios() {
   const cambios =
     inputNombre.value !== originalData.nombre ||
@@ -111,6 +120,21 @@ function detectarCambios() {
     inputModelo.value !== originalData.modelo;
 
   btnGuardar.style.backgroundColor = cambios ? "var(--color-pstv)" : "#777";
+
+  const campos = [
+    { input: inputNombre, key: "nombre" },
+    { input: inputId, key: "id" },
+    { input: inputLinea, key: "linea" },
+    { input: inputModelo, key: "modelo" },
+  ];
+
+  campos.forEach(({ input, key }) => {
+    if (input.value !== originalData[key]) {
+      input.classList.add("cambio");
+    } else {
+      input.classList.remove("cambio");
+    }
+  });
 }
 
 // guardar
@@ -142,14 +166,10 @@ form.addEventListener("submit", async (e) => {
       const data = await resID.json();
 
       if (!resID.ok) {
-        // Aquí mostramos error, cerramos overlay y retornamos
         alert("❌ " + data.mensaje);
         overlay.style.display = "none";
         return;
       }
-
-      // Para verificar, imprime data que recibes
-      console.log("Respuesta cambio ID:", data);
 
       alert("✅ " + data.mensaje);
 
@@ -171,7 +191,7 @@ form.addEventListener("submit", async (e) => {
     cambiosDirectos.modelo = inputModelo.value;
 
   if (Object.keys(cambiosDirectos).length === 0) {
-    modal.classList.add("hidden");
+    cerrarModal();
     location.reload();
     return;
   }
@@ -189,7 +209,7 @@ form.addEventListener("submit", async (e) => {
       return;
     }
 
-    modal.classList.add("hidden");
+    cerrarModal();
     location.reload();
   } catch (err) {
     alert("❌ Error al guardar los cambios: " + err.message);

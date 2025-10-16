@@ -455,7 +455,7 @@ option {
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.85);
   border-radius: 10px;
   padding: 2rem;
 }
@@ -598,4 +598,15 @@ span.delete:hover {
   width: 100%;
   justify-content: center;
   margin: 2rem 0 0 0;
+}
+
+.cambio {
+  outline: 2px solid var(--color-alerta);
+}
+
+#modalEdit.hidden {
+  display: none !important;
+}
+#modalEdit.visible {
+  display: flex;
 }
