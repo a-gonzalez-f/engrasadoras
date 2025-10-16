@@ -30,10 +30,17 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
       Accionamientos: ${e.cont_accionam}<br>
     `;
 
-    card.addEventListener(
-      "mouseenter",
-      () => (detalle.style.display = "block")
-    );
+    let hoverTimeout;
+
+    card.addEventListener("mouseenter", () => {
+      hoverTimeout = setTimeout(() => {
+        if (!document.body.contains(detalle)) {
+          document.body.appendChild(detalle);
+        }
+        detalle.style.display = "block";
+      }, 500);
+    });
+
     card.addEventListener("mousemove", (eMouse) => {
       if (!document.body.contains(detalle)) {
         document.body.appendChild(detalle);
@@ -51,7 +58,13 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
       detalle.style.top = `${Math.max(top, 0)}px`;
       detalle.style.left = `${Math.max(left, 0)}px`;
     });
-    card.addEventListener("mouseleave", () => detalle.remove());
+
+    card.addEventListener("mouseleave", () => {
+      clearTimeout(hoverTimeout);
+      if (document.body.contains(detalle)) {
+        detalle.remove();
+      }
+    });
 
     card.addEventListener("click", () => {
       setMaquinaSeleccionada(e);
