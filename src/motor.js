@@ -438,6 +438,18 @@ async function procesarCambioID(maquina, idOriginal, idNuevo) {
 
   await maquina.save();
 
+  const gateway = await Gateway.findOne({ engrasadoras: idOriginal });
+  if (gateway) {
+    const index = gateway.engrasadoras.indexOf(idOriginal);
+    if (index !== -1) {
+      gateway.engrasadoras[index] = idNuevo;
+      await gateway.save();
+      console.log(
+        `Engrasadora conectada en Gateway actualizada: ID ${idOriginal} reemplazado por ${idNuevo}`
+      );
+    }
+  }
+
   console.log(`Motor: ✅ Cambio de ID confirmado: ${idAnterior} → ${idNuevo}`);
   await guardarLog(`✅ Cambio de ID confirmado: ${idAnterior} → ${idNuevo}`);
 }
