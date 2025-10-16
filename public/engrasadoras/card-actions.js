@@ -146,8 +146,17 @@ form.addEventListener("submit", async (e) => {
   const cambioID = nuevoId !== idOriginal;
 
   if (cambioID) {
+    overlay.style.display = "flex";
+    const idYaExiste = await verificarIdExiste(nuevoId);
+
+    if (idYaExiste) {
+      alert(`❌ El ID "${nuevoId}" ya está en uso. Por favor, elige otro.`);
+      overlay.style.display = "none";
+      return;
+    }
+
     const confirmarCambio = confirm(
-      `¿Seguro que desea cambiar el ID de "${idOriginal}" a "${nuevoId}"?`
+      `¿Seguro que desea cambiar el ID de ${idOriginal} a ${nuevoId}?`
     );
     if (!confirmarCambio) return;
 
@@ -216,7 +225,17 @@ form.addEventListener("submit", async (e) => {
   }
 });
 
-// eliminar
+async function verificarIdExiste(id) {
+  console.log("verificando si existe ID nuevo");
+  try {
+    const res = await fetch(`/api/engrasadoras/${id}`);
+    return res.ok;
+  } catch (err) {
+    console.error("Error al verificar ID:", err);
+    return false;
+  }
+}
+
 async function deleteMaquina(maquina) {
   if (!maquina._id) return;
 
