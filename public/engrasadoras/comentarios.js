@@ -49,6 +49,9 @@ export function listarComentarios(maquina, abrirModal = true) {
 export function eliminarComentario(maquina, indexComentario) {
   if (!confirm("¿Seguro que desea eliminar este comentario?")) return;
 
+  document.getElementById("overlay").style.display = "flex";
+  document.getElementById("overlay-message").innerText = "Cargando...";
+
   fetch(`/api/engrasadoras/${maquina._id}/comentarios/${indexComentario}`, {
     method: "DELETE",
   })
@@ -57,6 +60,10 @@ export function eliminarComentario(maquina, indexComentario) {
       return res.json();
     })
     .then((data) => {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("overlay-message").innerText =
+        "Esperando confirmación...";
+
       maquina.comentarios = data.comentarios;
       listarComentarios(maquina, false);
 
@@ -88,7 +95,12 @@ export function eliminarComentario(maquina, indexComentario) {
 
       document.getElementById("ultimoComentario").innerHTML = ultComentario;
     })
-    .catch((err) => alert(err.message));
+    .catch((err) => {
+      document.getElementById("overlay").style.display = "none";
+      document.getElementById("overlay-message").innerText =
+        "Esperando confirmación...";
+      alert(err.message);
+    });
 }
 
 export function renderUltimoComentario(comentarios) {
