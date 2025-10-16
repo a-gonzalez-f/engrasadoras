@@ -249,6 +249,8 @@ function formatearEstado(estado) {
       return `<span class="material-symbols-outlined" style="color:var(--color-desconectada)"> wifi_off </span>`;
     case "fs":
       return `<span class="material-symbols-outlined" style="color:var(--color-error)"> block </span>`;
+    case "pm":
+      return `<span class="material-symbols-outlined" style="color:var(--color-pstv-alt)">pause_circle</span>`;
     default:
       return estado;
   }
