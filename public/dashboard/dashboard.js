@@ -7,7 +7,7 @@ let datosEngrasadoras = [];
 let chartGlobal = null;
 const chartsPorLinea = {};
 
-export async function fetchEngrasadoras() {
+async function fetchEngrasadoras() {
   const res = await fetch("/api/engrasadoras");
   const data = await res.json();
   return data;
@@ -17,7 +17,7 @@ export function returnDatos() {
   return datosEngrasadoras;
 }
 
-export function actualizarDatos(data) {
+function actualizarDatos(data) {
   datosEngrasadoras = data;
 }
 
