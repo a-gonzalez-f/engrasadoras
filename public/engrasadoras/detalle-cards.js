@@ -69,6 +69,7 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
     card.addEventListener("click", () => {
       setMaquinaSeleccionada(e);
       renderDetalleMaquina(e);
+      document.querySelectorAll(".detalle-hover").forEach((d) => d.remove());
     });
 
     card.innerHTML = `
