@@ -11,7 +11,7 @@ function getWeekNumber(fecha) {
   return `${d.getUTCFullYear()}-S${weekNum.toString().padStart(2, "0")}`;
 }
 
-function generarAnalytics(datos) {
+export function generarAnalytics(datos) {
   const conteoPorSemana = {};
 
   datos.forEach((item) => {

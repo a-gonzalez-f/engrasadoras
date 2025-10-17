@@ -1,16 +1,33 @@
+// dashboard.jsx
+
 let datosEngrasadoras = [];
 
 let chartGlobal = null;
 const chartsPorLinea = {};
 
-async function cargarEngrasadoras() {
+async function fetchEngrasadoras() {
   const res = await fetch("/api/engrasadoras");
   const data = await res.json();
+  return data;
+}
 
+function actualizarDatos(data) {
   datosEngrasadoras = data;
-  // generarAnalytics(data);
+}
 
-  // Calcular gráfico de estado global
+function actualizarGraficos(data) {
+  actualizarGraficoGlobal(data);
+  renderEstadoPorLinea(data);
+}
+
+async function cargarEngrasadoras() {
+  const data = await fetchEngrasadoras();
+  actualizarDatos(data);
+  actualizarGraficos(data);
+  actualizarResumenGlobal(data);
+}
+
+async function actualizarGraficoGlobal(data) {
   const total = data.length;
   const funcionando = data.filter((e) => e.estado === "funcionando").length;
   const alerta = data.filter((e) => e.estado === "alerta").length;
@@ -64,8 +81,16 @@ async function cargarEngrasadoras() {
     ];
     chartGlobal.update();
   }
+}
 
-  // Actualizar resumen global
+function actualizarResumenGlobal(data) {
+  const total = data.length;
+  const funcionando = data.filter((e) => e.estado === "funcionando").length;
+  const alerta = data.filter((e) => e.estado === "alerta").length;
+  const sinConexion = data.filter((e) => e.estado === "desconectada").length;
+  const fs = data.filter((e) => e.estado === "fs").length;
+  const pm = data.filter((e) => e.estado === "pm").length;
+
   document.getElementById("func-global").innerText = `${
     funcionando + pm
   } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
@@ -79,8 +104,6 @@ async function cargarEngrasadoras() {
     (fs / total) * 100
   )}%)`;
   document.getElementById("total-global").innerText = `${total}`;
-
-  renderEstadoPorLinea(data);
 }
 
 function renderEstadoPorLinea(data) {
@@ -316,4 +339,4 @@ document
 document.getElementById("selectLinea").addEventListener("change", filtrarTabla);
 
 cargarEngrasadoras().then(filtrarTabla);
-setInterval(cargarEngrasadoras, 5000);
+setInterval(cargarEngrasadoras, 60000);
