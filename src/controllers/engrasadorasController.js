@@ -409,6 +409,7 @@ const consultaExterna = async (req, res) => {
       nombre: 1,
       linea: 1,
       estado: 1,
+      cont_accionam: 1,
       _id: 0,
     });
 
