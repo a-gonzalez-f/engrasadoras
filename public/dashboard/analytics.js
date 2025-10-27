@@ -1,3 +1,7 @@
+// analytics.js
+
+import { returnDatos } from "./dashboard.js";
+
 let chartAnalytics = null;
 
 function getWeekNumber(fecha) {
@@ -11,7 +15,9 @@ function getWeekNumber(fecha) {
   return `${d.getUTCFullYear()}-S${weekNum.toString().padStart(2, "0")}`;
 }
 
-export function generarAnalytics(datos) {
+function generarAnalytics() {
+  const datos = returnDatos();
+
   const conteoPorSemana = {};
 
   datos.forEach((item) => {
@@ -97,3 +103,5 @@ export function generarAnalytics(datos) {
     },
   });
 }
+
+generarAnalytics();

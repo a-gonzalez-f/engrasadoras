@@ -1,4 +1,4 @@
-// dashboard.jsx
+// dashboard.js
 
 import { filtrarTabla } from "./table.js";
 
