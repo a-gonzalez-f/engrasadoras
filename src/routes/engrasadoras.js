@@ -19,11 +19,13 @@ const {
   deleteEngrasadora,
   consultaExterna,
   getHistorialPaginado,
+  editarID,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
 router.post("/resetAccionam", resetAccionamientos);
 router.post("/switchOnOff", switchOnOff);
+router.post("/editarID", editarID);
 
 router.get("/", getPorLinea);
 router.put("/:id", actualizarSeteo);

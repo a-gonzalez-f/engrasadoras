@@ -87,6 +87,43 @@ async function manejarMensaje(nombre, data) {
   const msg = data.toString().trim();
   console.log(`Motor: Mensaje recibido crudo de ${nombre}:`, msg);
 
+  if (msg.length === 7) {
+    const accion = msg[0];
+    if (accion !== "4") {
+      console.warn("Código de 7 caracteres que no es acción 4");
+      return;
+    }
+
+    const idOriginal = parseInt(msg.slice(1, 4));
+    const idOriginalStr = msg.slice(1, 4);
+    const idNuevo = parseInt(msg.slice(4, 7));
+
+    const maquina = await Engrasadora.findOne({ id: idOriginal });
+
+    if (!maquina) {
+      console.warn(`Engrasadora con ID ${idOriginal} no encontrada`);
+      return;
+    }
+
+    if (confirmacionesPendientes.has(idOriginalStr)) {
+      const pendiente = confirmacionesPendientes.get(idOriginalStr);
+      clearTimeout(pendiente.timer);
+      pendiente.resolve(`Cambio de ID confirmado para ${idOriginalStr}`);
+      confirmacionesPendientes.delete(idOriginalStr);
+      console.log(
+        `Motor: ✅ Cambio de ID confirmado y promesa resuelta para máquina ${idOriginalStr}`
+      );
+    } else {
+      console.log(
+        `Motor: Cambio de ID confirmado para ${idOriginalStr} sin promesa pendiente`
+      );
+    }
+
+    await procesarCambioID(maquina, idOriginal, idNuevo);
+
+    return;
+  }
+
   if (msg.length !== 26) {
     console.warn("El codigo no es de 26 caracteres");
     return;
@@ -199,9 +236,6 @@ async function manejarMensaje(nombre, data) {
             `Motor: ✅ Switch confirmado para máquina ${id} (sin promesa pendiente)`
           );
         }
-        break;
-      case "4":
-        await procesarForzarEngrase(maquina, datos, nombre);
         break;
       default:
         console.warn(`Acción ${accion} no reconocida`);
@@ -386,8 +420,38 @@ async function procesarSwitchOnOff(maquina, datos, nombre) {
   console.log(`Motor: ✅ Switch on_off actualizado para máquina ${maquina.id}`);
 }
 
-async function procesarForzarEngrase(maquina, datos, nombre) {
-  console.log(`Motor: Forzar Engrase pendiente de implementación`);
+async function procesarCambioID(maquina, idOriginal, idNuevo) {
+  console.log(`Motor: Procesando cambio de ID para máquina ${idOriginal}`);
+
+  const existeIDNuevo = await Engrasadora.findOne({ id: idNuevo });
+  if (existeIDNuevo) {
+    console.warn(
+      `❌ Ya existe una máquina con ID ${idNuevo}, no se puede aplicar`
+    );
+    await guardarLog(`❌ Error: ya existe una máquina con ID ${idNuevo}`);
+    return;
+  }
+
+  const idAnterior = maquina.id;
+  maquina.id = idNuevo;
+  maquina.date = new Date();
+
+  await maquina.save();
+
+  const gateway = await Gateway.findOne({ engrasadoras: idOriginal });
+  if (gateway) {
+    const index = gateway.engrasadoras.indexOf(idOriginal);
+    if (index !== -1) {
+      gateway.engrasadoras[index] = idNuevo;
+      await gateway.save();
+      console.log(
+        `Engrasadora conectada en Gateway actualizada: ID ${idOriginal} reemplazado por ${idNuevo}`
+      );
+    }
+  }
+
+  console.log(`Motor: ✅ Cambio de ID confirmado: ${idAnterior} → ${idNuevo}`);
+  await guardarLog(`✅ Cambio de ID confirmado: ${idAnterior} → ${idNuevo}`);
 }
 
 const solicitudesPendientes = new Map();
@@ -602,6 +666,25 @@ async function enviarOnOff({ id, on_off }) {
   });
 }
 
+async function enviarCambioID({ id, idNuevo }) {
+  return new Promise(async (resolve, reject) => {
+    console.log("Motor: 👉 Enviando cambio ID:", id, "por:", idNuevo);
+
+    const idOriginalStr = id.toString().padStart(3, "0");
+    const idONuevolStr = idNuevo.toString().padStart(3, "0");
+    const mensaje = `&e4${idOriginalStr}${idONuevolStr}#`;
+
+    await enviarMensajePorID({ idEngrasadora: id, mensaje });
+
+    const timer = setTimeout(() => {
+      confirmacionesPendientes.delete(idOriginalStr);
+      reject(new Error(`La Engrasadora ${id} no respondió`));
+    }, timeOut * 1000);
+
+    confirmacionesPendientes.set(idOriginalStr, { resolve, reject, timer });
+  });
+}
+
 async function actualizarComunicacion(nombreGateway, estado) {
   try {
     const gateway = await Gateway.findOne({ nombre: nombreGateway });
@@ -792,4 +875,5 @@ module.exports = {
   enviarSeteo,
   enviarResetAccionam,
   enviarOnOff,
+  enviarCambioID,
 };

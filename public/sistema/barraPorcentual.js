@@ -12,7 +12,8 @@ export function actualizarBarraPorcentual(gateways) {
     (gateway) => gateway.comunicacion_back == true
   ).length;
   const cant_desconectadas = gateways.filter(
-    (gateway) => gateway.comunicacion_back == false
+    (gateway) =>
+      gateway.comunicacion_back === false || gateway.comunicacion_back == null
   ).length;
 
   const porc_conectadas = Math.round((cant_conectadas / total) * 100);

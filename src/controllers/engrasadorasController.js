@@ -327,6 +327,27 @@ const switchOnOff = async (req, res) => {
   }
 };
 
+const editarID = async (req, res) => {
+  const { id, idNuevo } = req.body;
+
+  if (!id || !idNuevo) {
+    return res.status(400).json({ mensaje: "Faltan datos para el seteo" });
+  }
+
+  try {
+    console.log("Enviando al motor:", { id, idNuevo });
+    await motor.enviarCambioID({ id, idNuevo });
+    return res.json({
+      mensaje: `Cambio de ID ${id} por ${idNuevo} confirmado por la engrasadora`,
+    });
+  } catch (err) {
+    console.error("Error al enviar el cambio de ID:", err);
+    return res
+      .status(500)
+      .json({ mensaje: "Error al enviar el cambio de ID al motor" });
+  }
+};
+
 const actualizarEngrasadora = async (req, res) => {
   try {
     const { id: nuevoId } = req.body;
@@ -470,6 +491,7 @@ module.exports = {
   setear,
   resetAccionamientos,
   switchOnOff,
+  editarID,
   getPorLinea,
   actualizarSeteo,
   agregarComentario,

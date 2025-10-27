@@ -205,6 +205,9 @@ export function renderDetalleMaquina(maquina) {
       return;
     }
 
+    document.getElementById("overlay").style.display = "flex";
+    document.getElementById("overlay-message").innerText = "Cargando...";
+
     fetch(`/api/engrasadoras/${e._id}/comentarios`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -218,6 +221,10 @@ export function renderDetalleMaquina(maquina) {
         return res.json();
       })
       .then((data) => {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay-message").innerText =
+          "Esperando confirmación...";
+
         document.getElementById("newComment").value = "";
 
         e.comentarios = data.comentarios;
@@ -247,7 +254,13 @@ export function renderDetalleMaquina(maquina) {
 
         listarComentarios(e, false);
       })
-      .catch((err) => alert(err.message));
+      .catch((err) => {
+        document.getElementById("overlay").style.display = "none";
+        document.getElementById("overlay-message").innerText =
+          "Esperando confirmación...";
+
+        alert(err.message);
+      });
   });
 
   const selectEstado = document.getElementById("estado");

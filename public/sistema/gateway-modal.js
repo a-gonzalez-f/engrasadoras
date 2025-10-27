@@ -55,8 +55,44 @@ export async function abrirModalGateway(gw) {
   historialInterval = setInterval(refrescarHistorial, 5000);
 }
 
+function huboCambios() {
+  if (!currentGW) return false;
+
+  const nombre = document.getElementById("gw-nombre").textContent.trim();
+  const linea = document.getElementById("gw-linea").value.trim();
+  const ubicacion = document.getElementById("gw-ubicacion").textContent.trim();
+  const ip = document.getElementById("gw-ip").textContent.trim();
+  const id = document.getElementById("gw-id").textContent.trim();
+
+  const engrasadorasActuales = Array.from(
+    containerEngrasadoras.querySelectorAll("input.id")
+  )
+    .map((input) => input.value.trim())
+    .filter((val) => val !== "" && val !== null)
+    .sort();
+
+  const engrasadorasOriginales = (currentGW.engrasadoras || [])
+    .map(String)
+    .sort();
+
+  return (
+    ip !== String(currentGW.ip) ||
+    id !== String(currentGW.id) ||
+    nombre !== (currentGW.nombre || "") ||
+    linea !== (currentGW.linea || "") ||
+    ubicacion !== (currentGW.ubicacion || "") ||
+    JSON.stringify(engrasadorasActuales) !==
+      JSON.stringify(engrasadorasOriginales)
+  );
+}
+
 // Cerrar modal
-cerrarBtn.addEventListener("click", () => {
+function cerrarModalSiProcede() {
+  if (huboCambios()) {
+    const salir = confirm("¿Seguro desea salir sin aplicar los cambios?");
+    if (!salir) return;
+  }
+
   modal.classList.add("hidden");
   currentGatewayId = null;
   currentGW = null;
@@ -64,15 +100,13 @@ cerrarBtn.addEventListener("click", () => {
     clearInterval(historialInterval);
     historialInterval = null;
   }
-});
+}
+
+cerrarBtn.addEventListener("click", cerrarModalSiProcede);
+
 window.addEventListener("click", (e) => {
   if (e.target === modal) {
-    modal.classList.add("hidden");
-    currentGatewayId = null;
-    if (historialInterval) {
-      clearInterval(historialInterval);
-      historialInterval = null;
-    }
+    cerrarModalSiProcede();
   }
 });
 

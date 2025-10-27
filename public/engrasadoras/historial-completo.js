@@ -10,7 +10,7 @@ export function abrirHistorialCompleto(maquina) {
   // const ordenBtn = document.getElementById("evento-filtro");
 
   modal.style.display = "flex";
-  tbody.innerHTML = `<tr><td colspan="12" style="text-align:center">Cargando...</td></tr>`;
+  tbody.innerHTML = `<tr class="fila-cargando"><td colspan="12" style="text-align:center">Cargando...</td></tr>`;
 
   let offset = 0;
   const limit = 50;
@@ -25,7 +25,7 @@ export function abrirHistorialCompleto(maquina) {
     if (reiniciar) {
       offset = 0;
       historialCargado = [];
-      tbody.innerHTML = `<tr><td colspan="12" style="text-align:center">Cargando...</td></tr>`;
+      tbody.innerHTML = `<tr class="fila-cargando"><td colspan="12" style="text-align:center">Cargando...</td></tr>`;
     }
 
     loading = true;
@@ -51,6 +51,18 @@ export function abrirHistorialCompleto(maquina) {
     });
 
     if (fecha) params.append("fecha", fecha);
+
+    const filaCargandoExistente = tbody.querySelector(".fila-cargando");
+    if (filaCargandoExistente) {
+      filaCargandoExistente.remove();
+    }
+
+    const trCargando = document.createElement("tr");
+    trCargando.classList.add("fila-cargando");
+    trCargando.innerHTML = `
+    <td colspan="12" style="text-align: center">Cargando...</td>
+    `;
+    tbody.appendChild(trCargando);
 
     fetch(`/api/engrasadoras/historial/${maquina._id}?${params.toString()}`)
       .then((res) => res.json())

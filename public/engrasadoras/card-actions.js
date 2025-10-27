@@ -1,6 +1,7 @@
 // card-actions.js
 
 const modal = document.getElementById("modalEdit");
+const overlay = document.getElementById("overlay");
 let modalOpen = false;
 let currentEngId = null;
 let originalData = {};
@@ -49,15 +50,13 @@ export function handleRightClick(event, maquina) {
 
   document.body.appendChild(menu);
 
-  menu.querySelector(".edit").addEventListener("click", (e) => {
+  menu.querySelector(".edit").addEventListener("click", () => {
     menu.remove();
-
     abrirModal(maquina);
   });
 
-  menu.querySelector(".delete").addEventListener("click", (e) => {
+  menu.querySelector(".delete").addEventListener("click", () => {
     menu.remove();
-
     deleteMaquina(maquina);
   });
 
@@ -72,7 +71,8 @@ async function abrirModal(maquina) {
   currentEngId = maquina._id;
   if (modalOpen) return;
 
-  modal.style.display = "flex";
+  modal.classList.remove("hidden");
+  modal.classList.add("visible");
   modalOpen = true;
 
   inputNombre.value = maquina.nombre || "";
@@ -89,13 +89,14 @@ async function abrirModal(maquina) {
 }
 
 function cerrarModal() {
-  modal.style.display = "none";
+  modal.classList.remove("visible");
+  modal.classList.add("hidden");
   modalOpen = false;
 
-  const inputs = document.querySelectorAll(
-    "#eng-nombre, #eng-id, #eng-linea, #eng-modelo"
-  );
-  inputs.forEach((input) => (input.value = ""));
+  [inputNombre, inputId, inputLinea, inputModelo].forEach((input) => {
+    input.value = "";
+    input.classList.remove("cambio");
+  });
 
   btnGuardar.style.backgroundColor = "#777";
 }
@@ -103,6 +104,12 @@ function cerrarModal() {
 [inputNombre, inputId, inputLinea, inputModelo].forEach((input) => {
   input.addEventListener("input", detectarCambios);
   input.addEventListener("change", detectarCambios);
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modalOpen) {
+    cerrarModal();
+  }
 });
 
 function detectarCambios() {
@@ -113,21 +120,88 @@ function detectarCambios() {
     inputModelo.value !== originalData.modelo;
 
   btnGuardar.style.backgroundColor = cambios ? "var(--color-pstv)" : "#777";
+
+  const campos = [
+    { input: inputNombre, key: "nombre" },
+    { input: inputId, key: "id" },
+    { input: inputLinea, key: "linea" },
+    { input: inputModelo, key: "modelo" },
+  ];
+
+  campos.forEach(({ input, key }) => {
+    if (input.value !== originalData[key]) {
+      input.classList.add("cambio");
+    } else {
+      input.classList.remove("cambio");
+    }
+  });
 }
 
 // guardar
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  let payload = {};
-  if (inputNombre.value !== originalData.nombre)
-    payload.nombre = inputNombre.value;
-  if (inputId.value !== originalData.id) payload.id = inputId.value;
-  if (inputLinea.value !== originalData.linea) payload.linea = inputLinea.value;
-  if (inputModelo.value !== originalData.modelo)
-    payload.modelo = inputModelo.value;
+  const nuevoId = inputId.value;
+  const idOriginal = originalData.id;
+  const cambioID = nuevoId !== idOriginal;
 
-  if (Object.keys(payload).length === 0) {
+  if (cambioID) {
+    overlay.style.display = "flex";
+    const idYaExiste = await verificarIdExiste(nuevoId);
+
+    if (idYaExiste) {
+      alert(`❌ El ID "${nuevoId}" ya está en uso. Por favor, elige otro.`);
+      overlay.style.display = "none";
+      return;
+    }
+
+    const confirmarCambio = confirm(
+      `¿Seguro que desea cambiar el ID de ${idOriginal} a ${nuevoId}?`
+    );
+    if (!confirmarCambio) return;
+
+    try {
+      overlay.style.display = "flex";
+
+      const resID = await fetch(`/api/engrasadoras/editarID`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: idOriginal,
+          idNuevo: nuevoId,
+        }),
+      });
+
+      const data = await resID.json();
+
+      if (!resID.ok) {
+        alert("❌ " + data.mensaje);
+        overlay.style.display = "none";
+        return;
+      }
+
+      alert("✅ " + data.mensaje);
+
+      overlay.style.display = "none";
+      originalData.id = nuevoId;
+    } catch (err) {
+      overlay.style.display = "none";
+      alert("❌ Error al cambiar el ID: " + err.message);
+      return;
+    }
+  }
+
+  let cambiosDirectos = {};
+  if (inputNombre.value !== originalData.nombre)
+    cambiosDirectos.nombre = inputNombre.value;
+  if (inputLinea.value !== originalData.linea)
+    cambiosDirectos.linea = inputLinea.value;
+  if (inputModelo.value !== originalData.modelo)
+    cambiosDirectos.modelo = inputModelo.value;
+
+  if (Object.keys(cambiosDirectos).length === 0) {
+    cerrarModal();
+    location.reload();
     return;
   }
 
@@ -135,24 +209,33 @@ form.addEventListener("submit", async (e) => {
     const res = await fetch(`/api/engrasadoras/${currentEngId}/editar`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(cambiosDirectos),
     });
 
     if (!res.ok) {
       const errorData = await res.json();
-      alert(errorData.mensaje);
+      alert("❌ " + errorData.mensaje);
       return;
     }
 
-    modal.classList.add("hidden");
+    cerrarModal();
     location.reload();
   } catch (err) {
-    console.error("Error guardando engrasadora:", err);
-    alert("Error al guardar los cambios");
+    alert("❌ Error al guardar los cambios: " + err.message);
   }
 });
 
-// eliminar
+async function verificarIdExiste(id) {
+  console.log("verificando si existe ID nuevo");
+  try {
+    const res = await fetch(`/api/engrasadoras/${id}`);
+    return res.ok;
+  } catch (err) {
+    console.error("Error al verificar ID:", err);
+    return false;
+  }
+}
+
 async function deleteMaquina(maquina) {
   if (!maquina._id) return;
 
@@ -176,6 +259,6 @@ async function deleteMaquina(maquina) {
     }
   } catch (err) {
     console.error("Error eliminando engrasadora:", err);
-    alert("No se pudo eliminar la engrasadora.");
+    alert("❌ No se pudo eliminar la engrasadora.");
   }
 }
