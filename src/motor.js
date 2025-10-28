@@ -562,28 +562,31 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
       // console.warn(
       //   `❌ No se encontró un gateway con la engrasadora ID ${idEngrasadora}`
       // );
+      await guardarLog(
+        `No se encontró un gateway con la engrasadora ${idEngrasadora}`
+      );
       return;
     }
 
     if (mensaje && mensaje.startsWith("&e0")) {
       if (gateway && gateway.bypass) {
-        console.log(
-          `⏸️ Mensaje bloqueado: Gateway ${gateway.nombre} en bypass`
-        );
+        let message = `⏸️ Mensaje bloqueado: Gateway ${gateway.nombre} en bypass`;
+        console.log(message);
+        await guardarLog(message);
         return;
       }
 
       if (engrasadora && engrasadora.estado === "fs") {
-        console.log(
-          `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Fuera Servicio`
-        );
+        let message = `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Fuera Servicio`;
+        console.log(message);
+        await guardarLog(message);
         return;
       }
 
       if (engrasadora && !engrasadora.on_off) {
-        console.log(
-          `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Pausa Manual`
-        );
+        let message = `⏸️ Mensaje bloqueado: Engrasadora ${idEngrasadora} en Pausa Manual`;
+        console.log(message);
+        await guardarLog(message);
         return;
       }
     }
@@ -597,7 +600,9 @@ async function enviarMensajePorID({ idEngrasadora, mensaje }) {
     }
 
     ws.send(mensaje);
-    console.log(`📤 Mensaje enviado a ${nombre}: ${mensaje}`);
+    let message = `📤 Mensaje enviado a ${nombre}: ${mensaje}`;
+    console.log(message);
+    await guardarLog(message);
     return true;
   } catch (err) {
     let message = `Error al enviar mensaje: ${err.message}`;
