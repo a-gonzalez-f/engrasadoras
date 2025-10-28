@@ -13,7 +13,7 @@ export function listarHistorial(gateway) {
     return;
   }
 
-  const todos = gateway.historial.reverse();
+  const todos = gateway.historial.slice(-100).reverse();
 
   tbody.innerHTML = todos
     .map(

@@ -710,6 +710,10 @@ async function actualizarComunicacion(nombreGateway, estado) {
       user: "motor",
     });
 
+    if (gateway.historial.length > 100) {
+      gateway.historial = gateway.historial.slice(-100);
+    }
+
     await gateway.save();
   } catch (err) {
     let message = `Error actualizando comunicacion gateway: ${err.message}`;
@@ -825,7 +829,12 @@ async function verificarConexionesActivas() {
           user: "verificador",
         });
 
+        if (gateway.historial.length > 100) {
+          gateway.historial = gateway.historial.slice(-100);
+        }
+
         await gateway.save();
+
         const logMsg = `${nombre} actualizado a ${
           estaConectado ? "Conectado" : "Desconectado"
         }`;
