@@ -7,6 +7,7 @@ const {
   resetAccionamientos,
   switchOnOff,
   getPorLinea,
+  getPorLineaFiltrada,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
@@ -28,6 +29,7 @@ router.post("/switchOnOff", switchOnOff);
 router.post("/editarID", editarID);
 
 router.get("/", getPorLinea);
+router.get("/filtrado", getPorLineaFiltrada);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);

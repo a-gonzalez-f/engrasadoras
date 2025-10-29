@@ -72,7 +72,7 @@ document.getElementById("cerrarComentarios").addEventListener("click", () => {
 let ultimoListado = [];
 
 // Primera carga
-fetch(`/api/engrasadoras?linea=${linea}`)
+fetch(`/api/engrasadoras/filtrado?linea=${linea}`)
   .then((res) => res.json())
   .then((data) => {
     cargarDetalle(data);

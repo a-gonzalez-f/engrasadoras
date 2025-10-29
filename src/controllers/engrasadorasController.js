@@ -11,6 +11,23 @@ const getPorLinea = async (req, res) => {
       filtro.linea = req.query.linea;
     }
 
+    const engrasadoras = await Engrasadora.find(filtro);
+
+    res.json(engrasadoras);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener las engrasadoras" });
+  }
+};
+
+const getPorLineaFiltrada = async (req, res) => {
+  try {
+    const filtro = {};
+
+    if (req.query.linea) {
+      filtro.linea = req.query.linea;
+    }
+
     const engrasadoras = await Engrasadora.find(
       filtro,
       "nombre modelo estado lora_signal sens_corriente sens_flujo sens_power cont_accionam id _id"
@@ -498,6 +515,7 @@ module.exports = {
   switchOnOff,
   editarID,
   getPorLinea,
+  getPorLineaFiltrada,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
