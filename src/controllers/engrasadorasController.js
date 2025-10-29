@@ -11,7 +11,11 @@ const getPorLinea = async (req, res) => {
       filtro.linea = req.query.linea;
     }
 
-    const engrasadoras = await Engrasadora.find(filtro);
+    const engrasadoras = await Engrasadora.find(
+      filtro,
+      "nombre modelo estado lora_signal sens_corriente sens_flujo sens_power cont_accionam id _id"
+    );
+
     res.json(engrasadoras);
   } catch (error) {
     console.error(error);

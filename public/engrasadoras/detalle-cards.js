@@ -9,6 +9,7 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
   contenedor.innerHTML = "";
   document.querySelectorAll(".detalle-hover").forEach((d) => d.remove());
 
+  console.log(data);
   data.forEach((e) => {
     const card = document.createElement("div");
     card.classList.add("card-maquina");
