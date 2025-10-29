@@ -167,7 +167,9 @@ setInterval(() => {
             }
 
             const perdidos = document.getElementById("perdidos");
-            perdidos.innerHTML = actualizada.perdidos;
+            if (actualizada.perdidos) {
+              perdidos.innerHTML = actualizada.perdidos;
+            }
           })
           .catch((err) => console.error("Error al actualizar modal:", err));
       }
