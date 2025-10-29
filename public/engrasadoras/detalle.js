@@ -49,11 +49,13 @@ async function cargarDetalle(data) {
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
   document.getElementById("modalDetalle").style.display = "none";
+  maquinaSeleccionada = null;
 });
 
 document.getElementById("modalDetalle").addEventListener("click", (e) => {
   if (e.target.id === "modalDetalle") {
     document.getElementById("modalDetalle").style.display = "none";
+    maquinaSeleccionada = null;
   }
 });
 
