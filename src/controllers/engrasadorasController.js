@@ -3,6 +3,26 @@
 const Engrasadora = require("../models/engrasadora");
 const motor = require("../motor");
 
+const resumenDashboard = async (req, res) => {
+  try {
+    const filtro = {};
+
+    if (req.query.linea) {
+      filtro.linea = req.query.linea;
+    }
+
+    const engrasadoras = await Engrasadora.find(
+      filtro,
+      "id nombre linea modelo date set_tiempodosif set_ejes sens_corriente sens_flujo sens_power cont_accionam estado _id"
+    );
+
+    res.json(engrasadoras);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al obtener las engrasadoras" });
+  }
+};
+
 const getPorLinea = async (req, res) => {
   try {
     const filtro = {};
@@ -510,6 +530,7 @@ const getHistorialPaginado = async (req, res) => {
 };
 
 module.exports = {
+  resumenDashboard,
   setear,
   resetAccionamientos,
   switchOnOff,

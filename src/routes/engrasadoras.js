@@ -3,6 +3,7 @@
 const express = require("express");
 const router = express.Router();
 const {
+  resumenDashboard,
   setear,
   resetAccionamientos,
   switchOnOff,
@@ -28,6 +29,7 @@ router.post("/resetAccionam", resetAccionamientos);
 router.post("/switchOnOff", switchOnOff);
 router.post("/editarID", editarID);
 
+router.get("/resumen", resumenDashboard);
 router.get("/", getPorLinea);
 router.get("/filtrado", getPorLineaFiltrada);
 router.put("/:id", actualizarSeteo);
