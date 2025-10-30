@@ -883,7 +883,7 @@ async function verificarUltimoSensado() {
 
         maquina.historial.push({
           nro_evento: maquina.historial.length + 1,
-          tipo_evento: `Sin sensado hace ${Math.round(diferencia / 1000)}s`,
+          tipo_evento: `No se detectan sensados`,
           fecha: new Date(),
           estado: "desconectada",
           set_tiempodosif: maquina.set_tiempodosif,
