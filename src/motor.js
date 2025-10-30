@@ -466,6 +466,11 @@ async function solicitarEstados() {
         continue;
       }
 
+      if (maquina.id == 11) {
+        console.log("maquina 11 bypasseada harcodeada");
+        continue;
+      }
+
       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
       if (!gateway || gateway.bypass) {
         continue;
@@ -854,6 +859,67 @@ async function verificarConexionesActivas() {
   }
 }
 
+async function verificarUltimoSensado() {
+  try {
+    const maquinas = await Engrasadora.find({});
+
+    console.log("🕒 Verificando último sensado...");
+
+    const ahora = Date.now();
+
+    for (const maquina of maquinas) {
+      if (maquina.id == null) continue;
+      if (!maquina.on_off) continue;
+      if (["desconectada", "fs"].includes(maquina.estado)) continue;
+
+      const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
+      if (!gateway || gateway.bypass) continue;
+
+      const diferencia = ahora - maquina.date.getTime();
+      const umbral = tiempoSolicitud * 5 * 1000;
+
+      if (diferencia > umbral) {
+        maquina.estado = "desconectada";
+
+        maquina.historial.push({
+          nro_evento: maquina.historial.length + 1,
+          tipo_evento: `No se detectan sensados`,
+          fecha: new Date(),
+          estado: "desconectada",
+          set_tiempodosif: maquina.set_tiempodosif,
+          set_ejes: maquina.set_ejes,
+          sens_corriente: maquina.sens_corriente,
+          sens_flujo: maquina.sens_flujo,
+          on_off: maquina.on_off,
+          sens_power: maquina.sens_power,
+          cont_accionam: maquina.cont_accionam,
+          lora_signal: maquina.lora_signal,
+          user: "motor",
+        });
+
+        if (maquina.historial.length > max_eventos) {
+          maquina.historial = maquina.historial.slice(-max_eventos);
+        }
+
+        await maquina.save();
+
+        const message = `⚠️ Engrasadora ${
+          maquina.id
+        } marcada como desconectada (sin sensado en ${Math.round(
+          diferencia / 1000
+        )}s)`;
+        console.log(message);
+        await guardarLog(message);
+      }
+    }
+  } catch (err) {
+    const message = `Error al verificar último sensado: ${err.message}`;
+    console.error(message);
+    await guardarLog(message);
+  }
+}
+
+setInterval(verificarUltimoSensado, 30000);
 setInterval(verificarConexionesActivas, 15000);
 
 // Interfaz de consola

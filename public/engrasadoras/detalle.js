@@ -49,11 +49,13 @@ async function cargarDetalle(data) {
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
   document.getElementById("modalDetalle").style.display = "none";
+  maquinaSeleccionada = null;
 });
 
 document.getElementById("modalDetalle").addEventListener("click", (e) => {
   if (e.target.id === "modalDetalle") {
     document.getElementById("modalDetalle").style.display = "none";
+    maquinaSeleccionada = null;
   }
 });
 
@@ -70,7 +72,7 @@ document.getElementById("cerrarComentarios").addEventListener("click", () => {
 let ultimoListado = [];
 
 // Primera carga
-fetch(`/api/engrasadoras?linea=${linea}`)
+fetch(`/api/engrasadoras/filtrado?linea=${linea}`)
   .then((res) => res.json())
   .then((data) => {
     cargarDetalle(data);
@@ -165,7 +167,9 @@ setInterval(() => {
             }
 
             const perdidos = document.getElementById("perdidos");
-            perdidos.innerHTML = actualizada.perdidos;
+            if (actualizada.perdidos) {
+              perdidos.innerHTML = actualizada.perdidos;
+            }
           })
           .catch((err) => console.error("Error al actualizar modal:", err));
       }

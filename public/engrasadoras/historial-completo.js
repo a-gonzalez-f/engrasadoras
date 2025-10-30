@@ -7,7 +7,8 @@ export function abrirHistorialCompleto(maquina) {
   const cerrarBtn = modal.querySelector("#cerrarHistorialCompleto");
   const contenedorScroll = modal.querySelector(".tabla-scrollable");
   const title = document.getElementById("titleHistorial");
-  // const ordenBtn = document.getElementById("evento-filtro");
+
+  modal.dataset.idmaquina = maquina._id;
 
   modal.style.display = "flex";
   tbody.innerHTML = `<tr class="fila-cargando"><td colspan="12" style="text-align:center">Cargando...</td></tr>`;
@@ -67,6 +68,7 @@ export function abrirHistorialCompleto(maquina) {
     fetch(`/api/engrasadoras/historial/${maquina._id}?${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
+        if (modal.dataset.idmaquina !== maquina._id) return;
         title.innerText = ` - ${maquina.nombre} (${maquina.id})`.toUpperCase();
 
         const historial = data.historial;
@@ -101,28 +103,16 @@ export function abrirHistorialCompleto(maquina) {
   };
 
   function aplicarFiltros() {
-    // const orden = ordenBtn.value;
     const tipo = document.getElementById("tipoEvento-filtro").value;
     const fecha = document.getElementById("fecha-filtro");
     const estado = document.getElementById("estado-filtro").value;
-    // const tiempo = document.getElementById("tiempo-filtro").value;
-    // const ejes = document.getElementById("ejes-filtro").value;
-    // const corriente = document.getElementById("corriente-filtro").value;
     const flujo = document.getElementById("flujo-filtro").value;
     const power = document.getElementById("power-filtro").value;
-    // const senal = document.getElementById("senal-filtro").value;
     const onoff = document.getElementById("onoff-filtro").value;
     const mostrarRepetidos =
       document.getElementById("repetidos-filtros").checked;
 
     let filtrado = historialCargado.filter((h) => {
-      // if (tiempo !== "unset" && String(h.set_tiempodosif) !== tiempo)
-      //   return false;
-      // if (ejes !== "unset" && String(h.set_ejes) !== ejes) return false;
-      // if (corriente !== "unset" && String(h.sens_corriente) !== corriente)
-      //   return false;
-      // if (senal !== "unset" && String(h.lora_signal) !== senal) return false;
-
       if (tipo !== "todos" && h.tipo_evento !== tipo) return false;
       if (estado !== "todos" && h.estado !== estado) return false;
       if (fecha.value) {
@@ -140,11 +130,6 @@ export function abrirHistorialCompleto(maquina) {
 
       return true;
     });
-
-    // filtrado.sort((a, b) => {
-    //   if (orden === "ascendente") return a.nro_evento - b.nro_evento;
-    //   else return b.nro_evento - a.nro_evento;
-    // });
 
     renderizarTabla(filtrado);
   }
@@ -186,7 +171,16 @@ export function abrirHistorialCompleto(maquina) {
     });
   }
 
-  // Escuchas de filtros
+  const scrollHandler = () => {
+    if (
+      contenedorScroll.scrollTop + contenedorScroll.clientHeight >=
+      contenedorScroll.scrollHeight - 150
+    ) {
+      fetchHistorial();
+    }
+  };
+  contenedorScroll.addEventListener("scroll", scrollHandler);
+
   document.querySelectorAll(".filtro").forEach((f) => {
     f.addEventListener("change", () => {
       hasMore = true;
@@ -194,31 +188,12 @@ export function abrirHistorialCompleto(maquina) {
     });
   });
 
-  // ✅ Solo una vez el listener de ordenamiento
-  // ordenBtn.addEventListener("click", (e) => {
-  //   const btn = e.currentTarget;
-  //   btn.value = btn.value === "ascendente" ? "descendente" : "ascendente";
-  //   btn.querySelector("span").textContent =
-  //     btn.value === "ascendente" ? "keyboard_arrow_up" : "keyboard_arrow_down";
-  //   aplicarFiltros();
-  // });
-
-  // Carga inicial
-  fetchHistorial();
-
-  // Scroll infinito
-  contenedorScroll.addEventListener("scroll", () => {
-    const el = contenedorScroll;
-    if (el.scrollTop + el.clientHeight >= el.scrollHeight - 150) {
-      fetchHistorial();
-    }
-  });
-
   cerrarBtn.addEventListener("click", () => {
     modal.style.display = "none";
+    modal.dataset.idmaquina = "";
     tbody.innerHTML = "";
-    offset = 0;
-    hasMore = true;
-    loading = false;
+    contenedorScroll.removeEventListener("scroll", scrollHandler);
   });
+
+  fetchHistorial(true);
 }

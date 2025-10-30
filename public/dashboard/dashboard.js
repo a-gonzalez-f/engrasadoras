@@ -8,7 +8,7 @@ let chartGlobal = null;
 const chartsPorLinea = {};
 
 async function fetchEngrasadoras() {
-  const res = await fetch("/api/engrasadoras");
+  const res = await fetch("/api/engrasadoras/resumen");
   const data = await res.json();
   return data;
 }
@@ -229,4 +229,4 @@ function renderDonutPorLinea(data) {
 }
 
 cargarEngrasadoras().then(filtrarTabla);
-setInterval(cargarEngrasadoras, 60000);
+setInterval(cargarEngrasadoras, 30000);

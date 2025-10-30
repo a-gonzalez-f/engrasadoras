@@ -3,10 +3,12 @@
 const express = require("express");
 const router = express.Router();
 const {
+  resumenDashboard,
   setear,
   resetAccionamientos,
   switchOnOff,
   getPorLinea,
+  getPorLineaFiltrada,
   actualizarSeteo,
   agregarComentario,
   eliminarComentario,
@@ -27,7 +29,9 @@ router.post("/resetAccionam", resetAccionamientos);
 router.post("/switchOnOff", switchOnOff);
 router.post("/editarID", editarID);
 
+router.get("/resumen", resumenDashboard);
 router.get("/", getPorLinea);
+router.get("/filtrado", getPorLineaFiltrada);
 router.put("/:id", actualizarSeteo);
 router.post("/:id/comentarios", agregarComentario);
 router.delete("/:id/comentarios/:index", eliminarComentario);
