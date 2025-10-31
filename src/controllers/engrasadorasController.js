@@ -529,6 +529,38 @@ const getHistorialPaginado = async (req, res) => {
   }
 };
 
+const ultimoUpdatePorID = async (req, res) => {
+  try {
+    const engrasadora = await Engrasadora.findById(req.params.id)
+      .select("updatedAt")
+      .lean();
+
+    if (!engrasadora) {
+      return res.status(404).json({ error: "No encontrada" });
+    }
+
+    res.json({ updatedAt: engrasadora.updatedAt });
+  } catch (err) {
+    console.error("Error en ultimoUpdate:", err);
+    res.status(500).json({ error: "Error al obtener el último update" });
+  }
+};
+
+const ultimoUpdateAll = async (req, res) => {
+  try {
+    const engrasadoras = await Engrasadora.find(
+      req.query.linea ? { linea: req.query.linea } : {}
+    )
+      .select("_id updatedAt")
+      .lean();
+
+    res.json(engrasadoras);
+  } catch (err) {
+    console.error("Error en ultimoUpdateAll:", err);
+    res.status(500).json({ error: "Error al obtener los últimos updates" });
+  }
+};
+
 module.exports = {
   resumenDashboard,
   setear,
@@ -549,4 +581,6 @@ module.exports = {
   deleteEngrasadora,
   consultaExterna,
   getHistorialPaginado,
+  ultimoUpdatePorID,
+  ultimoUpdateAll,
 };

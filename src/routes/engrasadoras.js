@@ -22,6 +22,8 @@ const {
   consultaExterna,
   getHistorialPaginado,
   editarID,
+  ultimoUpdatePorID,
+  ultimoUpdateAll,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
@@ -41,6 +43,8 @@ router.get("/full/:id", getUnaEngrasadora);
 router.get("/actualizada/:id", engrasadoraActualizada);
 router.put("/:id/editar", actualizarEngrasadora);
 router.delete("/:id/", deleteEngrasadora);
+router.get("/:id/ultimoUpdate", ultimoUpdatePorID);
+router.get("/ultimoUpdate", ultimoUpdateAll);
 
 router.get("/consulta", consultaExterna);
 
