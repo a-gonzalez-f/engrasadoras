@@ -546,18 +546,18 @@ const ultimoUpdatePorID = async (req, res) => {
   }
 };
 
-const ultimoUpdateAll = async (req, res) => {
+const ultimaVersionAll = async (req, res) => {
   try {
     const engrasadoras = await Engrasadora.find(
       req.query.linea ? { linea: req.query.linea } : {}
     )
-      .select("_id updatedAt")
+      .select("_id __v")
       .lean();
 
     res.json(engrasadoras);
   } catch (err) {
-    console.error("Error en ultimoUpdateAll:", err);
-    res.status(500).json({ error: "Error al obtener los últimos updates" });
+    console.error("Error en ultimaVersionAll:", err);
+    res.status(500).json({ error: "Error al obtener las últimas versiones" });
   }
 };
 
@@ -582,5 +582,5 @@ module.exports = {
   consultaExterna,
   getHistorialPaginado,
   ultimoUpdatePorID,
-  ultimoUpdateAll,
+  ultimaVersionAll,
 };

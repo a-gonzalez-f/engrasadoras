@@ -70,7 +70,7 @@ document.getElementById("cerrarComentarios").addEventListener("click", () => {
 });
 
 let ultimoListado = [];
-let ultimoUpdatedAt_All = [];
+let ultimaVersion_All = [];
 
 // Primera carga
 fetch(`/api/engrasadoras/filtrado?linea=${linea}`)
@@ -81,26 +81,26 @@ fetch(`/api/engrasadoras/filtrado?linea=${linea}`)
   })
   .catch((err) => console.error("Error en carga inicial:", err));
 
-fetch(`/api/engrasadoras/ultimoUpdate?linea=${linea}`)
+fetch(`/api/engrasadoras/ultimaVersion?linea=${linea}`)
   .then((res) => res.json())
   .then((data) => {
-    ultimoUpdatedAt_All = data;
+    ultimaVersion_All = data;
   })
-  .catch((err) => console.error("Error en cargar inicia de updatedAt:", err));
+  .catch((err) => console.error("Error en cargar inicia de version:", err));
 
 setInterval(() => {
-  fetch(`/api/engrasadoras/ultimoUpdate?linea=${linea}`)
+  fetch(`/api/engrasadoras/ultimaVersion?linea=${linea}`)
     .then((res) => res.json())
     .then((data) => {
-      const hayCambios = hayCambiosEnUpdatedAt(data, ultimoUpdatedAt_All);
+      const hayCambios = hayCambiosEnVersion(data, ultimaVersion_All);
 
       if (!hayCambios) {
-        console.log("✅ no cambió ningún updatedAt");
+        console.log("✅ no cambió ningún version");
         return;
       }
 
-      console.log("🔄 cambió algún updatedAt");
-      ultimoUpdatedAt_All = data;
+      console.log("🔄 cambió algún version");
+      ultimaVersion_All = data;
 
       return fetch(`/api/engrasadoras?linea=${linea}`);
     })
@@ -204,14 +204,14 @@ setInterval(() => {
     .catch((err) => console.error("Error en ciclo de actualización:", err));
 }, 5000);
 
-function hayCambiosEnUpdatedAt(nuevo, anterior) {
+function hayCambiosEnVersion(nuevo, anterior) {
   if (!Array.isArray(anterior) || nuevo.length !== anterior.length) return true;
 
   for (let i = 0; i < nuevo.length; i++) {
     const actual = nuevo[i];
     const previo = anterior.find((a) => a._id === actual._id);
 
-    if (!previo || actual.updatedAt !== previo.updatedAt) {
+    if (!previo || Number(actual.__v) !== Number(previo.__v)) {
       return true;
     }
   }
