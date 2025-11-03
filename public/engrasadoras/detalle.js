@@ -1,11 +1,6 @@
 // detalle.js
 
 import { renderCardsMaquinas } from "./detalle-cards.js";
-import {
-  listarComentarios,
-  eliminarComentario,
-  renderUltimoComentario,
-} from "./comentarios.js";
 import { listarHistorialEnModal } from "./historial.js";
 import {
   formatearEstado,
@@ -38,6 +33,17 @@ async function cargarDetalle(data) {
 
     renderCardsMaquinas(data, contenedor, (maquina) => {
       maquinaSeleccionada = maquina;
+
+      // primera carga al abrir modal de una maquina
+      if (maquinaSeleccionada) {
+        fetch(`/api/engrasadoras/full/${maquinaSeleccionada._id}`)
+          .then((res) => res.json())
+          .then((actualizada) => {
+            if (!actualizada) return;
+            renderizarModal(actualizada);
+          })
+          .catch((err) => console.error("Error al actualizar modal:", err));
+      }
     });
   } catch (err) {
     console.error(err);
@@ -92,14 +98,13 @@ setInterval(() => {
   fetch(`/api/engrasadoras/ultimaVersion?linea=${linea}`)
     .then((res) => res.json())
     .then((data) => {
+      // detecto si hay cambios en version
       const hayCambios = hayCambiosEnVersion(data, ultimaVersion_All);
 
       if (!hayCambios) {
-        console.log("✅ no cambió ningún version");
         return;
       }
 
-      console.log("🔄 cambió algún version");
       ultimaVersion_All = data;
 
       return fetch(`/api/engrasadoras?linea=${linea}`);
@@ -108,7 +113,6 @@ setInterval(() => {
     .then((data) => {
       if (!data) return;
       // dinamizo cambios en cards
-      console.log("dinamizo cambios en cards");
       actualizarBarraPorcentual(data);
 
       const idsActuales = data.map((m) => m._id).join(",");
@@ -136,67 +140,7 @@ setInterval(() => {
             if (!actualizada) return;
             // dinamizo cambios en maquina seleccionada
 
-            console.log("actualizando maquina seleccionada");
-
-            maquinaSeleccionada = actualizada;
-
-            document.getElementById("estadoMaquina").innerText =
-              formatearEstado(actualizada.estado, "texto").toUpperCase();
-            document.getElementById("estadoMaquina").className =
-              actualizada.estado;
-            document.getElementById("fechaHora").innerText = new Date(
-              actualizada.date
-            ).toLocaleString("es-AR", {
-              day: "2-digit",
-              month: "2-digit",
-              year: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-              second: "2-digit",
-              hour12: false,
-            });
-            document.getElementById("accionamientos").innerText =
-              actualizada.cont_accionam;
-            document.getElementById("tiempoDosif").innerText =
-              actualizada.set_tiempodosif;
-            document.getElementById("cantEjes").innerText =
-              actualizada.set_ejes;
-            document.getElementById("estado").value = actualizada.estado;
-            document.getElementById("corriente").innerText =
-              actualizada.sens_corriente
-                ? actualizada.sens_corriente + " mA"
-                : "-";
-            document.getElementById("flujo").innerText = actualizada.sens_flujo
-              ? "Si"
-              : "No";
-            document.getElementById("power").innerText = actualizada.sens_power
-              ? "Si"
-              : "No";
-            document.getElementById("lora").innerHTML = formatearSignal(
-              actualizada.lora_signal,
-              "icono"
-            );
-
-            maquinaSeleccionada.historial = actualizada.historial;
-            listarHistorialEnModal(actualizada.historial);
-
-            const btnApagar = document.getElementById("apagarEquipo");
-            const switchButton = document.querySelector(
-              "#apagarEquipo > div > span"
-            );
-            btnApagar.classList.remove("apagar", "encender");
-            if (actualizada.on_off === false) {
-              btnApagar.classList.add("encender");
-              switchButton.innerHTML = "play_arrow";
-            } else if (actualizada.on_off === true) {
-              btnApagar.classList.add("apagar");
-              switchButton.innerHTML = "pause";
-            }
-
-            const perdidos = document.getElementById("perdidos");
-            if (actualizada.perdidos) {
-              perdidos.innerHTML = actualizada.perdidos;
-            }
+            renderizarModal(actualizada);
           })
           .catch((err) => console.error("Error al actualizar modal:", err));
       }
@@ -217,4 +161,57 @@ function hayCambiosEnVersion(nuevo, anterior) {
   }
 
   return false;
+}
+
+function renderizarModal(maquina) {
+  maquinaSeleccionada = maquina;
+
+  document.getElementById("estadoMaquina").innerText = formatearEstado(
+    maquina.estado,
+    "texto"
+  ).toUpperCase();
+  document.getElementById("estadoMaquina").className = maquina.estado;
+  document.getElementById("fechaHora").innerText = new Date(
+    maquina.date
+  ).toLocaleString("es-AR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  });
+  document.getElementById("accionamientos").innerText = maquina.cont_accionam;
+  document.getElementById("tiempoDosif").innerText = maquina.set_tiempodosif;
+  document.getElementById("cantEjes").innerText = maquina.set_ejes;
+  document.getElementById("estado").value = maquina.estado;
+  document.getElementById("corriente").innerText = maquina.sens_corriente
+    ? maquina.sens_corriente + " mA"
+    : "-";
+  document.getElementById("flujo").innerText = maquina.sens_flujo ? "Si" : "No";
+  document.getElementById("power").innerText = maquina.sens_power ? "Si" : "No";
+  document.getElementById("lora").innerHTML = formatearSignal(
+    maquina.lora_signal,
+    "icono"
+  );
+
+  maquinaSeleccionada.historial = maquina.historial;
+  listarHistorialEnModal(maquina.historial);
+
+  const btnApagar = document.getElementById("apagarEquipo");
+  const switchButton = document.querySelector("#apagarEquipo > div > span");
+  btnApagar.classList.remove("apagar", "encender");
+  if (maquina.on_off === false) {
+    btnApagar.classList.add("encender");
+    switchButton.innerHTML = "play_arrow";
+  } else if (maquina.on_off === true) {
+    btnApagar.classList.add("apagar");
+    switchButton.innerHTML = "pause";
+  }
+
+  const perdidos = document.getElementById("perdidos");
+  if (maquina.perdidos) {
+    perdidos.innerHTML = maquina.perdidos;
+  }
 }

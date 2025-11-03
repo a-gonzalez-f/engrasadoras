@@ -529,23 +529,6 @@ const getHistorialPaginado = async (req, res) => {
   }
 };
 
-const ultimoUpdatePorID = async (req, res) => {
-  try {
-    const engrasadora = await Engrasadora.findById(req.params.id)
-      .select("updatedAt")
-      .lean();
-
-    if (!engrasadora) {
-      return res.status(404).json({ error: "No encontrada" });
-    }
-
-    res.json({ updatedAt: engrasadora.updatedAt });
-  } catch (err) {
-    console.error("Error en ultimoUpdate:", err);
-    res.status(500).json({ error: "Error al obtener el último update" });
-  }
-};
-
 const ultimaVersionAll = async (req, res) => {
   try {
     const engrasadoras = await Engrasadora.find(
@@ -581,6 +564,5 @@ module.exports = {
   deleteEngrasadora,
   consultaExterna,
   getHistorialPaginado,
-  ultimoUpdatePorID,
   ultimaVersionAll,
 };
