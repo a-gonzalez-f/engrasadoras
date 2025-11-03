@@ -610,3 +610,7 @@ span.delete:hover {
 #modalEdit.visible {
   display: flex;
 }
+
+.card-maquina.sinVincular {
+  border: 2px solid black;
+}
