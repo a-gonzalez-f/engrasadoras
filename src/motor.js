@@ -466,10 +466,10 @@ async function solicitarEstados() {
         continue;
       }
 
-      if (maquina.id == 11) {
-        console.log("maquina 11 bypasseada harcodeada");
-        continue;
-      }
+      // if (maquina.id == 11) {
+      //   console.log("maquina 11 bypasseada harcodeada");
+      //   continue;
+      // }
 
       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
       if (!gateway || gateway.bypass) {

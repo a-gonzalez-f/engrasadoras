@@ -28,7 +28,6 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
     detalle.classList.add("detalle-hover");
     detalle.innerHTML = `
       <strong>${e.nombre.toUpperCase()}</strong><br>
-      ${e.id ? "ID: " + e.id : "Sin ID"}<br>
       ${e.modelo.toUpperCase()}<br>
       Corriente: ${e.sens_corriente} A<br>
       Flujo: ${e.sens_flujo ? "Sí" : "No"}<br>
@@ -81,6 +80,7 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
 
     card.innerHTML = `
       <div class="nombre">${e.nombre.toUpperCase()}</div>
+      <div class="idCard">${e.id ? "ID: " + e.id : "Sin ID"}</div>
       <div class="estado">${formatearEstado(e.estado)} ${formatearSignal(
       e.lora_signal
     )}</div>
