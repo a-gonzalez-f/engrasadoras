@@ -57,4 +57,58 @@ const EngrasadoraSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("engrasadora", EngrasadoraSchema);
+const SnapshotHoraSchema = new mongoose.Schema(
+  {
+    id: { type: Number, required: true },
+    linea: { type: String },
+    fecha: { type: Date }, // UTC
+    estado: { type: String },
+
+    set_tiempodosif: { type: Number },
+    set_ejes: { type: Number },
+    on_off: { type: Boolean },
+
+    sens_corriente: { type: Number },
+    sens_flujo: { type: Boolean },
+    sens_power: { type: Boolean },
+    lora_signal: { type: Number },
+
+    delta_accionam: { type: Number },
+    conteo_fallas: { type: Number },
+  },
+
+  { timestamps: true }
+);
+
+SnapshotHoraSchema.index({ id: 1, hora: 1 }, { unique: true });
+
+const ResumenDiaSchema = new mongoose.Schema(
+  {
+    engrasadora_id: { type: Number, required: true, unique: true },
+    fecha: { type: Date, required: true, unique: true },
+    resumen_estado: {
+      type: Map,
+      of: Number,
+    },
+    promedio_corriente: Number,
+    resumen_flujo: {
+      type: Map,
+      of: Number,
+    },
+    promedio_power: Number,
+    delta_accionam: Number,
+    resumen_falla: {
+      type: Map,
+      of: Number,
+    },
+    cantidad_falla: Number,
+    promedio_signal: Number,
+  },
+  { timestamps: true }
+);
+
+const Engrasadora = mongoose.model("engrasadora", EngrasadoraSchema);
+const SnapshotHora = mongoose.model("SnapshotHora", SnapshotHoraSchema);
+const ResumenDia = mongoose.model("ResumenDia", ResumenDiaSchema);
+
+module.exports = { Engrasadora, SnapshotHora, ResumenDia };

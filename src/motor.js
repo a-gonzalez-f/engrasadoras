@@ -3,7 +3,7 @@
 require("dotenv").config({ path: "../.env" });
 const WebSocket = require("ws");
 const conectarDB = require("./db");
-const Engrasadora = require("./models/engrasadora");
+const { Engrasadora } = require("./models/engrasadora");
 const Gateway = require("./models/gateway");
 
 const readline = require("readline");

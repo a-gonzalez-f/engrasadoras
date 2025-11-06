@@ -1,6 +1,6 @@
 // controllers/engrasadorasController.js
 
-const Engrasadora = require("../models/engrasadora");
+const { Engrasadora } = require("../models/engrasadora");
 const motor = require("../motor");
 
 const resumenDashboard = async (req, res) => {
