@@ -74,7 +74,8 @@ const SnapshotHoraSchema = new mongoose.Schema(
     lora_signal: { type: Number },
 
     delta_accionam: { type: Number },
-    conteo_fallas: { type: Number },
+    conteo_alertas: { type: Number },
+    conteo_func: { type: Number },
   },
 
   { timestamps: true }

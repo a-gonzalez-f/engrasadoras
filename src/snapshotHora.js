@@ -4,8 +4,7 @@ const conectarDB = require("./db");
 const mongoose = require("mongoose");
 const { Engrasadora, SnapshotHora } = require("./models/engrasadora");
 
-// --- PARÁMETROS ---
-// Uso: node snapshotHora [YYYY-MM-DDTHH] (UTC)
+// Uso: node snapshotHora [YYYY-MM-DDTHH:MM:SS] (UTC)
 const arg = process.argv[2];
 const baseHoraUTC = arg ? new Date(arg + "Z") : new Date();
 
@@ -22,7 +21,6 @@ const horaInicio = new Date(
   )
 );
 const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
-const horaSnapshot = baseHoraUTC.getUTCHours();
 
 async function generarSnapshotHora() {
   await conectarDB();
@@ -37,7 +35,6 @@ async function generarSnapshotHora() {
     if (!eng.id || !Array.isArray(eng.historial) || eng.historial.length === 0)
       continue;
 
-    // Buscar el último evento dentro de la ventana [horaInicio, horaFin)
     const eventosEnVentana = eng.historial.filter((e) => {
       const fecha = new Date(e.fecha);
       return fecha >= horaInicio && fecha < horaFin;
@@ -56,6 +53,18 @@ async function generarSnapshotHora() {
     const delta_accionam =
       (ultimoEvento.cont_accionam ?? 0) - (primerEvento.cont_accionam ?? 0) + 1;
 
+    const eventosNoRepetidos = Array.from(
+      new Map(eventosEnVentana.map((e) => [e.cont_accionam, e])).values()
+    );
+
+    const conteo_alertas = eventosNoRepetidos.filter(
+      (e) => e.estado === "alerta"
+    ).length;
+
+    const conteo_func = eventosNoRepetidos.filter(
+      (e) => e.estado === "funcionando"
+    ).length;
+
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
       {
@@ -69,6 +78,8 @@ async function generarSnapshotHora() {
         lora_signal: ultimoEvento.lora_signal,
 
         delta_accionam: delta_accionam,
+        conteo_alertas: conteo_alertas,
+        conteo_func: conteo_func,
       },
       { upsert: true, new: true }
     );
