@@ -51,8 +51,10 @@ mongoose
     );
 
     ejecutarSnapshotHora();
+    ejecutarResumenDia();
 
     setInterval(ejecutarSnapshotHora, 60 * 60 * 1000);
+    setInterval(ejecutarResumenDia, 24 * 60 * 60 * 1000);
 
     // server.listen(process.env.PORT, "0.0.0.0", () =>
     //   console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
@@ -67,6 +69,20 @@ function ejecutarSnapshotHora() {
   exec(comando, (error, stdout, stderr) => {
     if (error) {
       console.error("❌ Error ejecutando snapshot hora:", error.message);
+      return;
+    }
+    if (stderr) console.error("⚠️", stderr);
+    if (stdout) console.log(stdout.trim());
+  });
+}
+
+function ejecutarResumenDia() {
+  const comando = `node ${path.join(__dirname, "resumenDia.js")}`;
+  console.log(`⏱ Ejecutando resumenDia: ${new Date().toISOString()}`);
+
+  exec(comando, (error, stdout, stderr) => {
+    if (error) {
+      console.error("❌ Error ejecutando resumenDia:", error.message);
       return;
     }
     if (stderr) console.error("⚠️", stderr);
