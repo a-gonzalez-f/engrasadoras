@@ -31,7 +31,6 @@ async function main() {
   await generarResumenPorLinea(inicioDia, finDia);
   await generarResumenTotal(inicioDia, finDia);
 
-  console.log("✅ Resúmenes diarios generados correctamente.");
   mongoose.connection.close();
 }
 
@@ -44,7 +43,10 @@ async function generarResumenPorMaquina(inicioDia, finDia) {
       fecha: { $gte: inicioDia, $lt: finDia },
     });
 
-    if (snapshots.length === 0) continue;
+    if (snapshots.length === 0) {
+      console.log("Sin snapshots para generar resumen para la máquina", id);
+      continue;
+    }
 
     const linea = snapshots[0].linea || "N/A";
     const resumen = calcularEstadisticas(snapshots);
@@ -68,7 +70,10 @@ async function generarResumenPorLinea(inicioDia, finDia) {
       fecha: { $gte: inicioDia, $lt: finDia },
     });
 
-    if (snapshots.length === 0) continue;
+    if (snapshots.length === 0) {
+      console.log("Sin snapshots para generar resumen para la Linea", linea);
+      continue;
+    }
 
     const resumen = calcularEstadisticas(snapshots);
 
@@ -87,7 +92,10 @@ async function generarResumenTotal(inicioDia, finDia) {
     fecha: { $gte: inicioDia, $lt: finDia },
   });
 
-  if (snapshots.length === 0) return;
+  if (snapshots.length === 0) {
+    console.log("Sin snapshots para generar resumen global");
+    return;
+  }
 
   const resumen = calcularEstadisticas(snapshots);
 
