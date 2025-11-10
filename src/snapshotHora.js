@@ -61,6 +61,14 @@ async function generarSnapshotHora() {
       (e) => e.estado === "alerta"
     ).length;
 
+    const conteo_desc = eventosNoRepetidos.filter(
+      (e) => e.estado === "desconectada"
+    ).length;
+
+    const conteo_fs = eventosNoRepetidos.filter(
+      (e) => e.estado === "fs"
+    ).length;
+
     const conteo_func = eventosNoRepetidos.filter(
       (e) => e.estado === "funcionando"
     ).length;
@@ -77,9 +85,11 @@ async function generarSnapshotHora() {
         sens_power: ultimoEvento.sens_power,
         lora_signal: ultimoEvento.lora_signal,
 
-        delta_accionam: delta_accionam,
-        conteo_alertas: conteo_alertas,
-        conteo_func: conteo_func,
+        delta_accionam,
+        conteo_alertas,
+        conteo_desc,
+        conteo_fs,
+        conteo_func,
       },
       { upsert: true, new: true }
     );
