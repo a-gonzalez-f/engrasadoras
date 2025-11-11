@@ -351,10 +351,15 @@
           </div>
         </div>
       </section>
-      <!-- <section class="analytics">
+      <section class="analytics">
         <h3>ANALYTICS</h3>
-        <canvas id="analytics-global"></canvas>
-      </section> -->
+        <div id="analytics-container">
+          <div
+            id="grafico-semanal"
+            style="width: 45vw; height: 45vh; border: 1px solid whitesmoke"
+          ></div>
+        </div>
+      </section>
       <section class="buscador">
         <h3>BUSCADOR</h3>
         <div class="filters">
@@ -416,6 +421,7 @@
     </main>
     <script src="/app.js"></script>
     <script type="module" src="/dashboard/dashboard.js"></script>
-    <!-- <script type="module" src="/dashboard/analytics.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
+    <script type="module" src="/dashboard/analytics.js"></script>
   </body>
 </html>
