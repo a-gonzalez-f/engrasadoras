@@ -1,6 +1,6 @@
 // controllers/engrasadorasController.js
 
-const { Engrasadora } = require("../models/engrasadora");
+const { Engrasadora, ResumenDia } = require("../models/engrasadora");
 const motor = require("../motor");
 
 const resumenDashboard = async (req, res) => {
@@ -544,6 +544,51 @@ const ultimaVersionAll = async (req, res) => {
   }
 };
 
+// Por máquina
+const resumenPorMaquina = async (req, res) => {
+  const { id } = req.params;
+  const { fecha, desde, hasta } = req.query;
+
+  const filtro = { tipo: "maquina", id: Number(id) };
+
+  if (fecha) filtro.fecha = new Date(fecha);
+  if (desde && hasta) {
+    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+  }
+
+  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
+  res.json(data);
+};
+
+// Por línea
+const resumenPorLinea = async (req, res) => {
+  const { fecha, desde, hasta } = req.query;
+
+  const filtro = { tipo: "linea", linea };
+
+  if (fecha) filtro.fecha = new Date(fecha);
+  if (desde && hasta) {
+    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+  }
+
+  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
+  res.json(data);
+};
+
+// Total
+const resumenTotal = async (req, res) => {
+  const { fecha, desde, hasta } = req.query;
+  const filtro = { tipo: "total" };
+
+  if (fecha) filtro.fecha = new Date(fecha);
+  if (desde && hasta) {
+    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+  }
+
+  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
+  res.json(data);
+};
+
 module.exports = {
   resumenDashboard,
   setear,
@@ -565,4 +610,7 @@ module.exports = {
   consultaExterna,
   getHistorialPaginado,
   ultimaVersionAll,
+  resumenPorMaquina,
+  resumenPorLinea,
+  resumenTotal,
 };
