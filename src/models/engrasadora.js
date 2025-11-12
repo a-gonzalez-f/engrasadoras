@@ -59,9 +59,12 @@ const EngrasadoraSchema = new mongoose.Schema(
 
 const SnapshotHoraSchema = new mongoose.Schema(
   {
-    id: { type: Number, required: true },
+    id: { type: Number },
     linea: { type: String },
+    tipo: { type: String }, // resumen: por id, por linea o total
+
     fecha: { type: Date }, // UTC
+
     estado: { type: String },
 
     set_tiempodosif: { type: Number },
@@ -74,20 +77,21 @@ const SnapshotHoraSchema = new mongoose.Schema(
     lora_signal: { type: Number },
 
     delta_accionam: { type: Number },
-    conteo_alertas: { type: Number },
-    conteo_desc: { type: Number },
-    conteo_fs: { type: Number },
-    conteo_func: { type: Number },
+
+    conteo_eventos_alertas: { type: Number },
+    conteo_eventos_desc: { type: Number },
+    conteo_eventos_fs: { type: Number },
+    conteo_eventos_func: { type: Number },
   },
 
   { timestamps: true }
 );
 
-SnapshotHoraSchema.index({ id: 1, fecha: 1 }, { unique: true });
+SnapshotHoraSchema.index({ tipo: 1, id: 1, fecha: 1 }, { unique: true });
 
 const ResumenDiaSchema = new mongoose.Schema(
   {
-    id: { type: Number, required: true }, // solo para resumen por máquina
+    id: { type: Number }, // solo para resumen por máquina
     linea: { type: String }, // solo para resumen por linea
     tipo: { type: String }, // resumen: por id, por linea o total
 
