@@ -153,10 +153,10 @@ const ResumenDiaSchema = new mongoose.Schema(
     prom_conteo_func: Number,
 
     // totales
-    total_conteo_alertas: Number,
-    total_conteo_desc: Number,
-    total_conteo_fs: Number,
-    total_conteo_func: Number,
+    total_maq_alertas: Number,
+    total_maq_desc: Number,
+    total_maq_fs: Number,
+    total_maq_func: Number,
     total_delta_accionam: Number,
   },
   { timestamps: true }

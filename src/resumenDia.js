@@ -127,19 +127,17 @@ function calcularEstadisticas(snapshots) {
   const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
   const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
   const prom_conteo_alertas = promedio(
-    snapshots.map((s) => s.total_conteo_alertas)
+    snapshots.map((s) => s.total_maq_alertas)
   );
-  const prom_conteo_desc = promedio(snapshots.map((s) => s.total_conteo_desc));
-  const prom_conteo_fs = promedio(snapshots.map((s) => s.total_conteo_fs));
-  const prom_conteo_func = promedio(snapshots.map((s) => s.total_conteo_func));
+  const prom_conteo_desc = promedio(snapshots.map((s) => s.total_maq_desc));
+  const prom_conteo_fs = promedio(snapshots.map((s) => s.total_maq_fs));
+  const prom_conteo_func = promedio(snapshots.map((s) => s.total_maq_func));
 
   // Totales
-  const total_conteo_alertas = suma(
-    snapshots.map((s) => s.total_conteo_alertas)
-  );
-  const total_conteo_desc = suma(snapshots.map((s) => s.total_conteo_desc));
-  const total_conteo_fs = suma(snapshots.map((s) => s.total_conteo_fs));
-  const total_conteo_func = suma(snapshots.map((s) => s.total_conteo_func));
+  const total_maq_alertas = suma(snapshots.map((s) => s.total_maq_alertas));
+  const total_maq_desc = suma(snapshots.map((s) => s.total_maq_desc));
+  const total_maq_fs = suma(snapshots.map((s) => s.total_maq_fs));
+  const total_maq_func = suma(snapshots.map((s) => s.total_maq_func));
   const total_delta_accionam = suma(
     snapshots.map((s) => s.total_delta_accionam)
   );
@@ -157,10 +155,10 @@ function calcularEstadisticas(snapshots) {
     prom_conteo_fs,
     prom_conteo_func,
 
-    total_conteo_alertas,
-    total_conteo_desc,
-    total_conteo_fs,
-    total_conteo_func,
+    total_maq_alertas,
+    total_maq_desc,
+    total_maq_fs,
+    total_maq_func,
     total_delta_accionam,
   };
 }
