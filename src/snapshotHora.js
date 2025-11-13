@@ -57,40 +57,27 @@ async function generarSnapshotHora() {
       new Map(eventosEnVentana.map((e) => [e.cont_accionam, e])).values()
     );
 
-    const conteo_eventos_alertas = eventosNoRepetidos.filter(
-      (e) => e.estado === "alerta"
-    ).length;
-
-    const conteo_eventos_desc = eventosNoRepetidos.filter(
-      (e) => e.estado === "desconectada"
-    ).length;
-
-    const conteo_eventos_fs = eventosNoRepetidos.filter(
-      (e) => e.estado === "fs"
-    ).length;
-
-    const conteo_eventos_func = eventosNoRepetidos.filter(
-      (e) => e.estado === "funcionando"
-    ).length;
-
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
       {
         tipo: "maquina",
         id: eng.id,
         linea: eng.linea,
+
         fecha: horaInicio,
+
         estado: ultimoEvento.estado,
+
+        set_tiempodosif: ultimoEvento.set_tiempodosif,
+        set_ejes: ultimoEvento.set_ejes,
+        on_off: ultimoEvento.on_off,
+
         sens_corriente: ultimoEvento.sens_corriente,
         sens_flujo: ultimoEvento.sens_flujo,
         sens_power: ultimoEvento.sens_power,
         lora_signal: ultimoEvento.lora_signal,
 
         delta_accionam,
-        conteo_eventos_alertas,
-        conteo_eventos_desc,
-        conteo_eventos_fs,
-        conteo_eventos_func,
       },
       { upsert: true, new: true }
     );

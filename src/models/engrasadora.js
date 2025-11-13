@@ -59,9 +59,10 @@ const EngrasadoraSchema = new mongoose.Schema(
 
 const SnapshotHoraSchema = new mongoose.Schema(
   {
+    tipo: { type: String }, // resumen: por id, por linea o total
+
     id: { type: Number },
     linea: { type: String },
-    tipo: { type: String }, // resumen: por id, por linea o total
 
     fecha: { type: Date }, // UTC
 
@@ -77,17 +78,54 @@ const SnapshotHoraSchema = new mongoose.Schema(
     lora_signal: { type: Number },
 
     delta_accionam: { type: Number },
-
-    conteo_eventos_alertas: { type: Number },
-    conteo_eventos_desc: { type: Number },
-    conteo_eventos_fs: { type: Number },
-    conteo_eventos_func: { type: Number },
   },
 
   { timestamps: true }
 );
 
 SnapshotHoraSchema.index({ tipo: 1, id: 1, fecha: 1 }, { unique: true });
+
+const ResumenHoraSchema = new mongoose.Schema(
+  {
+    linea: { type: String }, // solo para resumen por linea
+    tipo: { type: String }, // resumen: por linea o total
+
+    fecha: { type: Date, required: true },
+
+    // porcentajes
+    porc_estado: {
+      type: Map,
+      of: Number,
+    },
+    porc_flujo: {
+      type: Map,
+      of: Number,
+    },
+    porc_power: {
+      type: Map,
+      of: Number,
+    },
+
+    // promedios
+    prom_signal: Number,
+    prom_corriente: Number,
+    prom_delta_accionam: Number,
+    prom_conteo_alertas: Number,
+    prom_conteo_desc: Number,
+    prom_conteo_fs: Number,
+    prom_conteo_func: Number,
+
+    // totales
+    total_conteo_alertas: Number,
+    total_conteo_desc: Number,
+    total_conteo_fs: Number,
+    total_conteo_func: Number,
+    total_delta_accionam: Number,
+  },
+  { timestamps: true }
+);
+
+ResumenHoraSchema.index({ tipo: 1, linea: 1, fecha: 1 }, { unique: true });
 
 const ResumenDiaSchema = new mongoose.Schema(
   {
@@ -137,6 +175,7 @@ ResumenDiaSchema.index(
 
 const Engrasadora = mongoose.model("engrasadora", EngrasadoraSchema);
 const SnapshotHora = mongoose.model("SnapshotHora", SnapshotHoraSchema);
+const ResumenHora = mongoose.model("ResumenHora", ResumenHoraSchema);
 const ResumenDia = mongoose.model("ResumenDia", ResumenDiaSchema);
 
-module.exports = { Engrasadora, SnapshotHora, ResumenDia };
+module.exports = { Engrasadora, SnapshotHora, ResumenHora, ResumenDia };
