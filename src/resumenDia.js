@@ -31,38 +31,10 @@ async function main() {
     `📊 Generando resumen diario UTC: ${inicioDia.toISOString()} → ${finDia.toISOString()}`
   );
 
-  await generarResumenPorMaquina(inicioDia, finDia);
   await generarResumenPorLinea(inicioDia, finDia);
   await generarResumenTotal(inicioDia, finDia);
 
   mongoose.connection.close();
-}
-
-async function generarResumenPorMaquina(inicioDia, finDia) {
-  const ids = await SnapshotHora.distinct("id");
-
-  for (const id of ids) {
-    const snapshots = await SnapshotHora.find({
-      id,
-      fecha: { $gte: inicioDia, $lt: finDia },
-    });
-
-    if (snapshots.length === 0) {
-      console.log("Sin snapshots para generar resumen para la máquina", id);
-      continue;
-    }
-
-    const linea = snapshots[0].linea || "N/A";
-    const resumen = calcularEstadisticas(snapshots);
-
-    await ResumenDia.findOneAndUpdate(
-      { id, fecha: inicioDia },
-      { id, linea, tipo: "maquina", fecha: inicioDia, ...resumen },
-      { upsert: true, new: true }
-    );
-
-    console.log(`🧩 Resumen diario generado para máquina ${id}`);
-  }
 }
 
 async function generarResumenPorLinea(inicioDia, finDia) {
@@ -115,23 +87,21 @@ async function generarResumenTotal(inicioDia, finDia) {
 function calcularEstadisticas(snapshots) {
   const n = snapshots.length;
 
-  const estados = ["desconectada", "funcionando", "alerta", "fs"];
-  const conteoEstados = contarValores(snapshots, "estado", estados);
+  // Promediar los mapas de porcentaje
+  const porc_estado = promedioMapas(snapshots.map((s) => s.porc_estado));
+  const porc_flujo = promedioMapas(snapshots.map((s) => s.porc_flujo));
+  const porc_power = promedioMapas(snapshots.map((s) => s.porc_power));
 
-  const conteoFlujo = contarValores(snapshots, "sens_flujo", [true, false]);
-
-  const conteoPower = contarValores(snapshots, "sens_power", [true, false]);
-
-  // Promedios
-  const prom_signal = promedio(snapshots.map((s) => s.lora_signal));
-  const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
-  const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
-  const prom_conteo_alertas = promedio(
-    snapshots.map((s) => s.total_maq_alertas)
+  // Promedios numéricos
+  const prom_signal = promedio(snapshots.map((s) => s.prom_signal));
+  const prom_corriente = promedio(snapshots.map((s) => s.prom_corriente));
+  const prom_delta_accionam = promedio(
+    snapshots.map((s) => s.prom_delta_accionam)
   );
-  const prom_conteo_desc = promedio(snapshots.map((s) => s.total_maq_desc));
-  const prom_conteo_fs = promedio(snapshots.map((s) => s.total_maq_fs));
-  const prom_conteo_func = promedio(snapshots.map((s) => s.total_maq_func));
+  const prom_maq_alertas = promedio(snapshots.map((s) => s.total_maq_alertas));
+  const prom_maq_desc = promedio(snapshots.map((s) => s.total_maq_desc));
+  const prom_maq_fs = promedio(snapshots.map((s) => s.total_maq_fs));
+  const prom_maq_func = promedio(snapshots.map((s) => s.total_maq_func));
 
   // Totales
   const total_maq_alertas = suma(snapshots.map((s) => s.total_maq_alertas));
@@ -143,18 +113,16 @@ function calcularEstadisticas(snapshots) {
   );
 
   return {
-    porc_estado: porcentaje(conteoEstados, n),
-    porc_flujo: porcentaje(conteoFlujo, n),
-    porc_power: porcentaje(conteoPower, n),
-
+    porc_estado,
+    porc_flujo,
+    porc_power,
     prom_signal,
     prom_corriente,
     prom_delta_accionam,
-    prom_conteo_alertas,
-    prom_conteo_desc,
-    prom_conteo_fs,
-    prom_conteo_func,
-
+    prom_maq_alertas,
+    prom_maq_desc,
+    prom_maq_fs,
+    prom_maq_func,
     total_maq_alertas,
     total_maq_desc,
     total_maq_fs,
@@ -163,21 +131,30 @@ function calcularEstadisticas(snapshots) {
   };
 }
 
-function contarValores(arr, campo, posiblesValores) {
+function promedioMapas(listaDeMapas) {
+  const acumulado = {};
   const conteo = {};
-  for (const v of posiblesValores) conteo[v] = 0;
-  for (const item of arr) {
-    const valor = item[campo];
-    if (conteo.hasOwnProperty(valor)) conteo[valor]++;
-  }
-  return conteo;
-}
 
-function porcentaje(conteo, total) {
-  const res = {};
-  for (const [clave, valor] of Object.entries(conteo))
-    res[clave] = total > 0 ? (valor / total) * 100 : 0;
-  return res;
+  for (let mapa of listaDeMapas) {
+    if (!mapa) continue;
+
+    if (mapa instanceof Map) mapa = Object.fromEntries(mapa);
+    else if (typeof mapa.toObject === "function") mapa = mapa.toObject();
+
+    for (const [k, v] of Object.entries(mapa)) {
+      const valorNum = Number(v);
+      if (!isNaN(valorNum)) {
+        acumulado[k] = (acumulado[k] || 0) + valorNum;
+        conteo[k] = (conteo[k] || 0) + 1;
+      }
+    }
+  }
+
+  const resultado = {};
+  for (const k of Object.keys(acumulado)) {
+    resultado[k] = acumulado[k] / conteo[k];
+  }
+  return resultado;
 }
 
 function promedio(valores) {

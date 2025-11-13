@@ -21,10 +21,10 @@ async function graficarSensados() {
   const data = resumenGlobal;
 
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const alertas = data.map((d) => d.total_conteo_alertas);
-  const funcs = data.map((d) => d.total_conteo_func);
-  const fs = data.map((d) => d.total_conteo_fs);
-  const desc = data.map((d) => d.total_conteo_desc);
+  const alertas = data.map((d) => d.total_maq_alertas);
+  const funcs = data.map((d) => d.total_maq_func);
+  const fs = data.map((d) => d.total_maq_fs);
+  const desc = data.map((d) => d.total_maq_desc);
 
   const chart = echarts.init(document.getElementById("conteo"), "dark");
   chart.setOption({
