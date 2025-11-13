@@ -50,8 +50,12 @@ async function generarSnapshotHora() {
     const primerEvento = eventosEnVentana[0];
     const ultimoEvento = eventosEnVentana[eventosEnVentana.length - 1];
 
-    const delta_accionam =
+    let delta_accionam =
       (ultimoEvento.cont_accionam ?? 0) - (primerEvento.cont_accionam ?? 0) + 1;
+
+    if (delta_accionam < 0) {
+      delta_accionam = 0;
+    }
 
     const eventosNoRepetidos = Array.from(
       new Map(eventosEnVentana.map((e) => [e.cont_accionam, e])).values()
@@ -60,7 +64,6 @@ async function generarSnapshotHora() {
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
       {
-        tipo: "maquina",
         id: eng.id,
         linea: eng.linea,
 

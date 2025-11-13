@@ -2,7 +2,11 @@
 require("dotenv").config({ path: "../.env" });
 const mongoose = require("mongoose");
 const conectarDB = require("./db");
-const { SnapshotHora, ResumenDia } = require("./models/engrasadora");
+const {
+  SnapshotHora,
+  ResumenHora,
+  ResumenDia,
+} = require("./models/engrasadora");
 
 // Uso: node resumenDia [YYYY-MM-DD]
 const arg = process.argv[2];
@@ -62,10 +66,10 @@ async function generarResumenPorMaquina(inicioDia, finDia) {
 }
 
 async function generarResumenPorLinea(inicioDia, finDia) {
-  const lineas = await SnapshotHora.distinct("linea");
+  const lineas = await ResumenHora.distinct("linea");
 
   for (const linea of lineas) {
-    const snapshots = await SnapshotHora.find({
+    const snapshots = await ResumenHora.find({
       linea,
       fecha: { $gte: inicioDia, $lt: finDia },
     });
@@ -88,7 +92,7 @@ async function generarResumenPorLinea(inicioDia, finDia) {
 }
 
 async function generarResumenTotal(inicioDia, finDia) {
-  const snapshots = await SnapshotHora.find({
+  const snapshots = await ResumenHora.find({
     fecha: { $gte: inicioDia, $lt: finDia },
   });
 
@@ -111,31 +115,34 @@ async function generarResumenTotal(inicioDia, finDia) {
 function calcularEstadisticas(snapshots) {
   const n = snapshots.length;
 
-  // Estado
   const estados = ["desconectada", "funcionando", "alerta", "fs"];
   const conteoEstados = contarValores(snapshots, "estado", estados);
 
-  // Flujo
   const conteoFlujo = contarValores(snapshots, "sens_flujo", [true, false]);
 
-  // Power
   const conteoPower = contarValores(snapshots, "sens_power", [true, false]);
 
   // Promedios
   const prom_signal = promedio(snapshots.map((s) => s.lora_signal));
   const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
   const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
-  const prom_conteo_alertas = promedio(snapshots.map((s) => s.conteo_alertas));
-  const prom_conteo_desc = promedio(snapshots.map((s) => s.conteo_desc));
-  const prom_conteo_fs = promedio(snapshots.map((s) => s.conteo_fs));
-  const prom_conteo_func = promedio(snapshots.map((s) => s.conteo_func));
+  const prom_conteo_alertas = promedio(
+    snapshots.map((s) => s.total_conteo_alertas)
+  );
+  const prom_conteo_desc = promedio(snapshots.map((s) => s.total_conteo_desc));
+  const prom_conteo_fs = promedio(snapshots.map((s) => s.total_conteo_fs));
+  const prom_conteo_func = promedio(snapshots.map((s) => s.total_conteo_func));
 
   // Totales
-  const total_conteo_alertas = suma(snapshots.map((s) => s.conteo_alertas));
-  const total_conteo_desc = suma(snapshots.map((s) => s.conteo_desc));
-  const total_conteo_fs = suma(snapshots.map((s) => s.conteo_fs));
-  const total_conteo_func = suma(snapshots.map((s) => s.conteo_func));
-  const total_delta_accionam = suma(snapshots.map((s) => s.delta_accionam));
+  const total_conteo_alertas = suma(
+    snapshots.map((s) => s.total_conteo_alertas)
+  );
+  const total_conteo_desc = suma(snapshots.map((s) => s.total_conteo_desc));
+  const total_conteo_fs = suma(snapshots.map((s) => s.total_conteo_fs));
+  const total_conteo_func = suma(snapshots.map((s) => s.total_conteo_func));
+  const total_delta_accionam = suma(
+    snapshots.map((s) => s.total_delta_accionam)
+  );
 
   return {
     porc_estado: porcentaje(conteoEstados, n),

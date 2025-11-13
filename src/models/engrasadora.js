@@ -59,8 +59,6 @@ const EngrasadoraSchema = new mongoose.Schema(
 
 const SnapshotHoraSchema = new mongoose.Schema(
   {
-    tipo: { type: String }, // resumen: por id, por linea o total
-
     id: { type: Number },
     linea: { type: String },
 
@@ -83,7 +81,7 @@ const SnapshotHoraSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-SnapshotHoraSchema.index({ tipo: 1, id: 1, fecha: 1 }, { unique: true });
+SnapshotHoraSchema.index({ id: 1, fecha: 1 }, { unique: true });
 
 const ResumenHoraSchema = new mongoose.Schema(
   {

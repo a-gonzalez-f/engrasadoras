@@ -29,19 +29,18 @@ async function main() {
   );
 
   await generarResumenPorLinea(horaInicio, horaFin);
+  await generarResumenGlobal(horaInicio, horaFin);
 
   mongoose.connection.close();
 }
 
 async function generarResumenPorLinea(horaInicio, horaFin) {
   const lineas = await SnapshotHora.distinct("linea", {
-    tipo: "maquina",
     fecha: { $gte: horaInicio, $lt: horaFin },
   });
 
   for (const linea of lineas) {
     const snapshots = await SnapshotHora.find({
-      tipo: "maquina",
       linea,
       fecha: { $gte: horaInicio, $lt: horaFin },
     });
@@ -61,6 +60,27 @@ async function generarResumenPorLinea(horaInicio, horaFin) {
 
     console.log(`📈 Resumen horario generado para línea ${linea}`);
   }
+}
+
+async function generarResumenGlobal(inicioDia, finDia) {
+  const snapshots = await SnapshotHora.find({
+    fecha: { $gte: horaInicio, $lt: horaFin },
+  });
+
+  if (snapshots.length === 0) {
+    console.log("Sin snapshots para generar resumen global");
+    return;
+  }
+
+  const resumen = calcularEstadisticas(snapshots);
+
+  await ResumenHora.findOneAndUpdate(
+    { tipo: "total", fecha: inicioDia },
+    { tipo: "total", fecha: inicioDia, ...resumen },
+    { upsert: true, new: true }
+  );
+
+  console.log("🌍 Resumen horario global generado");
 }
 
 function calcularEstadisticas(snapshots) {
