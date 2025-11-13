@@ -94,10 +94,10 @@ function calcularEstadisticas(snapshots) {
   const conteoFlujo = contarValores(snapshots, "sens_flujo", [true, false]);
   const conteoPower = contarValores(snapshots, "sens_power", [true, false]);
 
-  const total_conteo_func = conteoEstados["funcionando"] || 0;
-  const total_conteo_alertas = conteoEstados["alerta"] || 0;
-  const total_conteo_desc = conteoEstados["desconectada"] || 0;
-  const total_conteo_fs = conteoEstados["fs"] || 0;
+  const total_maq_func = conteoEstados["funcionando"] || 0;
+  const total_maq_alertas = conteoEstados["alerta"] || 0;
+  const total_maq_desc = conteoEstados["desconectada"] || 0;
+  const total_maq_fs = conteoEstados["fs"] || 0;
 
   const total_delta_accionam = suma(snapshots.map((s) => s.delta_accionam));
 
@@ -105,11 +105,6 @@ function calcularEstadisticas(snapshots) {
   const prom_signal = promedio(snapshots.map((s) => s.lora_signal));
   const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
   const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
-
-  const prom_conteo_func = total_conteo_func / n;
-  const prom_conteo_alertas = total_conteo_alertas / n;
-  const prom_conteo_desc = total_conteo_desc / n;
-  const prom_conteo_fs = total_conteo_fs / n;
 
   return {
     // porcentajes
@@ -121,16 +116,12 @@ function calcularEstadisticas(snapshots) {
     prom_signal,
     prom_corriente,
     prom_delta_accionam,
-    prom_conteo_alertas,
-    prom_conteo_desc,
-    prom_conteo_fs,
-    prom_conteo_func,
 
     // totales
-    total_conteo_alertas,
-    total_conteo_desc,
-    total_conteo_fs,
-    total_conteo_func,
+    total_maq_alertas,
+    total_maq_desc,
+    total_maq_fs,
+    total_maq_func,
     total_delta_accionam,
   };
 }
