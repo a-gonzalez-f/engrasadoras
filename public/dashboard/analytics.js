@@ -8,6 +8,15 @@ let resumenLineaD = [];
 let resumenLineaE = [];
 let resumenLineaH = [];
 
+const coloresLineas = {
+  A: "#1b93c2",
+  B: "#cf1222",
+  C: "#015a9b",
+  D: "#05735f",
+  E: "#661371",
+  H: "#f0cd1f",
+};
+
 async function cargarResumenGlobal() {
   const hoy = new Date();
   const hace7dias = new Date();
@@ -232,38 +241,57 @@ async function graficarAccionamGlobal() {
 }
 
 async function graficarAccionamPorLinea() {
-  const data = resumenGlobal;
+  const lineas = {
+    A: resumenLineaA,
+    B: resumenLineaB,
+    C: resumenLineaC,
+    D: resumenLineaD,
+    E: resumenLineaE,
+    H: resumenLineaH,
+  };
 
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const prom_accionam = data.map((d) => d.prom_delta_accionam);
+  // Fechas: tomo las de cualquiera que tenga datos
+  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
+  if (!algunaLinea) return;
+
+  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+
+  const series = [];
+
+  for (const [linea, data] of Object.entries(lineas)) {
+    if (!data || data.length === 0) continue;
+
+    const total_accionam = data.map((d) =>
+      redondearNumero(d.total_delta_accionam)
+    );
+
+    series.push({
+      name: `Línea ${linea}`,
+      type: "line",
+      smooth: true,
+      data: total_accionam,
+      color: coloresLineas[linea],
+    });
+  }
 
   const chart = echarts.init(
     document.getElementById("accionam-lineas"),
     "dark"
   );
+
   chart.setOption({
-    title: { text: "Promedio de accionamientos por máquina" },
+    title: { text: "Accionamientos por línea" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
       axisPointer: { type: "shadow" },
     },
     legend: {
-      data: ["Accionamientos"],
+      data: series.map((s) => s.name),
     },
     xAxis: { type: "category", data: fechas },
-    yAxis: {
-      type: "value",
-    },
-    series: [
-      {
-        name: "Accionamientos",
-        type: "line",
-        data: prom_accionam,
-        color: "#fff",
-        smooth: true,
-      },
-    ],
+    yAxis: { type: "value" },
+    series,
   });
 }
 
@@ -275,3 +303,17 @@ async function graficarAccionamPorLinea() {
   graficarAccionamGlobal();
   graficarAccionamPorLinea();
 })();
+
+// swiper -------------------------------------------------
+const swiper = new Swiper(".mySwiper", {
+  loop: false,
+  spaceBetween: 30,
+  navigation: {
+    nextEl: ".swiper-button-next",
+    prevEl: ".swiper-button-prev",
+  },
+  pagination: {
+    el: ".swiper-pagination",
+    clickable: true,
+  },
+});
