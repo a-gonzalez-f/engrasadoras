@@ -334,7 +334,7 @@ async function graficarAlertasPorLinea() {
   );
 
   chart.setOption({
-    title: { text: "Promedio diario Alerta" },
+    title: { text: "Promedio diario 'Alerta'" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -386,7 +386,7 @@ async function graficarFuncionandoPorLinea() {
   );
 
   chart.setOption({
-    title: { text: "Promedio diario Funcionando" },
+    title: { text: "Promedio diario 'Funcionando'" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -435,7 +435,7 @@ async function graficarDescPorLinea() {
   const chart = echarts.init(document.getElementById("descPorLinea"), "dark");
 
   chart.setOption({
-    title: { text: "Promedio diario Desconectadas" },
+    title: { text: "Promedio diario 'Desconectadas'" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -484,7 +484,7 @@ async function graficarFSPorLinea() {
   const chart = echarts.init(document.getElementById("fsPorLinea"), "dark");
 
   chart.setOption({
-    title: { text: "Promedio diario en 'Fuera de Servicio'" },
+    title: { text: "Promedio diario 'Fuera de Servicio'" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
