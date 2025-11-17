@@ -295,6 +295,210 @@ async function graficarAccionamPorLinea() {
   });
 }
 
+async function graficarAlertasPorLinea() {
+  const lineas = {
+    A: resumenLineaA,
+    B: resumenLineaB,
+    C: resumenLineaC,
+    D: resumenLineaD,
+    E: resumenLineaE,
+    H: resumenLineaH,
+  };
+
+  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
+  if (!algunaLinea) return;
+
+  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+
+  const series = [];
+
+  for (const [linea, data] of Object.entries(lineas)) {
+    if (!data || data.length === 0) continue;
+
+    const prom_maq_alertas = data.map((d) =>
+      redondearNumero(d.prom_maq_alertas)
+    );
+
+    series.push({
+      name: `Línea ${linea}`,
+      type: "line",
+      smooth: true,
+      data: prom_maq_alertas,
+      color: coloresLineas[linea],
+    });
+  }
+
+  const chart = echarts.init(
+    document.getElementById("alertasPorLinea"),
+    "dark"
+  );
+
+  chart.setOption({
+    title: { text: "Promedio diario Alerta" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+    },
+    legend: {
+      data: series.map((s) => s.name),
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: { type: "value" },
+    series,
+  });
+}
+
+async function graficarFuncionandoPorLinea() {
+  const lineas = {
+    A: resumenLineaA,
+    B: resumenLineaB,
+    C: resumenLineaC,
+    D: resumenLineaD,
+    E: resumenLineaE,
+    H: resumenLineaH,
+  };
+
+  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
+  if (!algunaLinea) return;
+
+  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+
+  const series = [];
+
+  for (const [linea, data] of Object.entries(lineas)) {
+    if (!data || data.length === 0) continue;
+
+    const prom_maq_func = data.map((d) => redondearNumero(d.prom_maq_func));
+
+    series.push({
+      name: `Línea ${linea}`,
+      type: "line",
+      smooth: true,
+      data: prom_maq_func,
+      color: coloresLineas[linea],
+    });
+  }
+
+  const chart = echarts.init(
+    document.getElementById("funcionandoPorLinea"),
+    "dark"
+  );
+
+  chart.setOption({
+    title: { text: "Promedio diario Funcionando" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+    },
+    legend: {
+      data: series.map((s) => s.name),
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: { type: "value" },
+    series,
+  });
+}
+
+async function graficarDescPorLinea() {
+  const lineas = {
+    A: resumenLineaA,
+    B: resumenLineaB,
+    C: resumenLineaC,
+    D: resumenLineaD,
+    E: resumenLineaE,
+    H: resumenLineaH,
+  };
+
+  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
+  if (!algunaLinea) return;
+
+  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+
+  const series = [];
+
+  for (const [linea, data] of Object.entries(lineas)) {
+    if (!data || data.length === 0) continue;
+
+    const prom_maq_desc = data.map((d) => redondearNumero(d.prom_maq_desc));
+
+    series.push({
+      name: `Línea ${linea}`,
+      type: "line",
+      smooth: true,
+      data: prom_maq_desc,
+      color: coloresLineas[linea],
+    });
+  }
+
+  const chart = echarts.init(document.getElementById("descPorLinea"), "dark");
+
+  chart.setOption({
+    title: { text: "Promedio diario Desconectadas" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+    },
+    legend: {
+      data: series.map((s) => s.name),
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: { type: "value" },
+    series,
+  });
+}
+
+async function graficarFSPorLinea() {
+  const lineas = {
+    A: resumenLineaA,
+    B: resumenLineaB,
+    C: resumenLineaC,
+    D: resumenLineaD,
+    E: resumenLineaE,
+    H: resumenLineaH,
+  };
+
+  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
+  if (!algunaLinea) return;
+
+  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+
+  const series = [];
+
+  for (const [linea, data] of Object.entries(lineas)) {
+    if (!data || data.length === 0) continue;
+
+    const prom_maq_fs = data.map((d) => redondearNumero(d.prom_maq_fs));
+
+    series.push({
+      name: `Línea ${linea}`,
+      type: "line",
+      smooth: true,
+      data: prom_maq_fs,
+      color: coloresLineas[linea],
+    });
+  }
+
+  const chart = echarts.init(document.getElementById("fsPorLinea"), "dark");
+
+  chart.setOption({
+    title: { text: "Promedio diario en 'Fuera de Servicio'" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+    },
+    legend: {
+      data: series.map((s) => s.name),
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: { type: "value" },
+    series,
+  });
+}
+
 (async () => {
   await cargarResumenGlobal();
   await cargarResumenPorLinea();
@@ -302,6 +506,10 @@ async function graficarAccionamPorLinea() {
   graficarPorcentajesGlobal();
   graficarAccionamGlobal();
   graficarAccionamPorLinea();
+  graficarAlertasPorLinea();
+  graficarFuncionandoPorLinea();
+  graficarDescPorLinea();
+  graficarFSPorLinea();
 })();
 
 // swiper -------------------------------------------------
@@ -312,8 +520,6 @@ const swiper = new Swiper(".mySwiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
-  pagination: {
-    el: ".swiper-pagination",
-    clickable: true,
-  },
+  allowTouchMove: true,
+  touchStartPreventDefault: false,
 });
