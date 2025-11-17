@@ -32,8 +32,7 @@ async function generarSnapshotHora() {
   const engrasadoras = await Engrasadora.find();
 
   for (const eng of engrasadoras) {
-    if (!eng.id || !Array.isArray(eng.historial) || eng.historial.length === 0)
-      continue;
+    if (!eng.id) continue;
 
     const eventosEnVentana = eng.historial.filter((e) => {
       const fecha = new Date(e.fecha);
@@ -41,7 +40,33 @@ async function generarSnapshotHora() {
     });
 
     if (eventosEnVentana.length === 0) {
-      console.log(`⚪ Sin eventos en la ventana para ID:${eng.id}`);
+      await SnapshotHora.findOneAndUpdate(
+        { id: eng.id, fecha: horaInicio },
+        {
+          id: eng.id,
+          linea: eng.linea,
+
+          fecha: horaInicio,
+
+          estado:
+            eng.estado !== "funcionando" && eng.estado !== "alerta"
+              ? eng.estado
+              : "desconectada",
+
+          set_tiempodosif: null,
+          set_ejes: null,
+          on_off: null,
+
+          sens_corriente: null,
+          sens_flujo: null,
+          sens_power: null,
+          lora_signal: null,
+
+          delta_accionam: 0,
+        },
+        { upsert: true, new: true }
+      );
+
       continue;
     }
 

@@ -1,6 +1,12 @@
 // analytics.js
 
 let resumenGlobal = [];
+let resumenLineaA = [];
+let resumenLineaB = [];
+let resumenLineaC = [];
+let resumenLineaD = [];
+let resumenLineaE = [];
+let resumenLineaH = [];
 
 async function cargarResumenGlobal() {
   const hoy = new Date();
@@ -17,18 +23,60 @@ async function cargarResumenGlobal() {
   resumenGlobal = await res.json();
 }
 
-async function graficarSensados() {
+async function cargarResumenPorLinea() {
+  const hoy = new Date();
+  const hace7dias = new Date();
+  hace7dias.setDate(hoy.getDate() - 7);
+
+  const desde = hace7dias.toISOString().split("T")[0];
+  const hasta = hoy.toISOString().split("T")[0];
+
+  const resA = await fetch(
+    `/api/engrasadoras/resumen/linea/A?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaA = await resA.json();
+
+  const resB = await fetch(
+    `/api/engrasadoras/resumen/linea/B?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaB = await resB.json();
+
+  const resC = await fetch(
+    `/api/engrasadoras/resumen/linea/C?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaC = await resC.json();
+
+  const resD = await fetch(
+    `/api/engrasadoras/resumen/linea/D?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaD = await resD.json();
+
+  const resE = await fetch(
+    `/api/engrasadoras/resumen/linea/D?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaE = await resE.json();
+
+  const resH = await fetch(
+    `/api/engrasadoras/resumen/linea/H?desde=${desde}&hasta=${hasta}`
+  );
+  resumenLineaH = await resH.json();
+}
+
+const redondearPorcentaje = (n) => Math.round(n * 100 * 100) / 100;
+const redondearNumero = (n) => Math.round(n * 100) / 100;
+
+async function graficarEstadosGlobal() {
   const data = resumenGlobal;
 
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const alertas = data.map((d) => d.total_maq_alertas);
-  const funcs = data.map((d) => d.total_maq_func);
-  const fs = data.map((d) => d.total_maq_fs);
-  const desc = data.map((d) => d.total_maq_desc);
+  const alertas = data.map((d) => redondearNumero(d.prom_maq_alertas));
+  const funcs = data.map((d) => redondearNumero(d.prom_maq_func));
+  const fs = data.map((d) => redondearNumero(d.prom_maq_fs));
+  const desc = data.map((d) => redondearNumero(d.prom_maq_desc));
 
   const chart = echarts.init(document.getElementById("conteo"), "dark");
   chart.setOption({
-    title: { text: "Sensados por estado" },
+    title: { text: "Promedios de estados" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -72,18 +120,19 @@ async function graficarSensados() {
   });
 }
 
-async function graficarPorcentajes() {
+async function graficarPorcentajesGlobal() {
   const data = resumenGlobal;
 
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const alertas = data.map((d) => d.porc_estado.alerta);
-  const funcs = data.map((d) => d.porc_estado.funcionando);
-  const fs = data.map((d) => d.porc_estado.fs);
-  const desc = data.map((d) => d.porc_estado.desconectada);
+
+  const alertas = data.map((d) => redondearPorcentaje(d.porc_estado.alerta));
+  const funcs = data.map((d) => redondearPorcentaje(d.porc_estado.funcionando));
+  const fs = data.map((d) => redondearPorcentaje(d.porc_estado.fs));
+  const desc = data.map((d) => redondearPorcentaje(d.porc_estado.desconectada));
 
   const chart = echarts.init(document.getElementById("porcentaje"), "dark");
   chart.setOption({
-    title: { text: "Porcentajes de sensados" },
+    title: { text: "Porcentajes de estados" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -136,22 +185,28 @@ async function graficarPorcentajes() {
   });
 }
 
-async function graficarAccionamTotales() {
+async function graficarAccionamGlobal() {
   const data = resumenGlobal;
 
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const total_accionam = data.map((d) => d.total_delta_accionam);
+  const total_accionam = data.map((d) =>
+    redondearNumero(d.total_delta_accionam)
+  );
+  const prom_accionam = data.map((d) => redondearNumero(d.prom_delta_accionam));
 
-  const chart = echarts.init(document.getElementById("accionam-total"), "dark");
+  const chart = echarts.init(
+    document.getElementById("accionam-global"),
+    "dark"
+  );
   chart.setOption({
-    title: { text: "Total accionamientos" },
+    title: { text: "Accionamientos globales" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
       axisPointer: { type: "shadow" },
     },
     legend: {
-      data: ["Accionamientos"],
+      data: ["Total Accionamientos", "Promedio Accionamientos"],
     },
     xAxis: { type: "category", data: fechas },
     yAxis: {
@@ -159,23 +214,33 @@ async function graficarAccionamTotales() {
     },
     series: [
       {
-        name: "Accionamientos",
+        name: "Total Accionamientos",
         type: "line",
         data: total_accionam,
-        color: "#fff",
+        color: "#2f5671",
+        smooth: true,
+      },
+      {
+        name: "Promedio Accionamientos",
+        type: "line",
+        data: prom_accionam,
+        color: "#4a8a8c",
         smooth: true,
       },
     ],
   });
 }
 
-async function graficarAccionamPromedio() {
+async function graficarAccionamPorLinea() {
   const data = resumenGlobal;
 
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
   const prom_accionam = data.map((d) => d.prom_delta_accionam);
 
-  const chart = echarts.init(document.getElementById("accionam-prom"), "dark");
+  const chart = echarts.init(
+    document.getElementById("accionam-lineas"),
+    "dark"
+  );
   chart.setOption({
     title: { text: "Promedio de accionamientos por máquina" },
     backgroundColor: "transparent",
@@ -204,8 +269,9 @@ async function graficarAccionamPromedio() {
 
 (async () => {
   await cargarResumenGlobal();
-  graficarSensados();
-  graficarPorcentajes();
-  graficarAccionamTotales();
-  graficarAccionamPromedio();
+  await cargarResumenPorLinea();
+  graficarEstadosGlobal();
+  graficarPorcentajesGlobal();
+  graficarAccionamGlobal();
+  graficarAccionamPorLinea();
 })();

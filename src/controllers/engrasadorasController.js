@@ -563,8 +563,10 @@ const resumenPorMaquina = async (req, res) => {
 // Por línea
 const resumenPorLinea = async (req, res) => {
   const { fecha, desde, hasta } = req.query;
+  const { linea } = req.params;
 
-  const filtro = { tipo: "linea", linea };
+  const filtro = { tipo: "linea" };
+  if (linea) filtro.linea = linea; // solo si se especifica
 
   if (fecha) filtro.fecha = new Date(fecha);
   if (desde && hasta) {

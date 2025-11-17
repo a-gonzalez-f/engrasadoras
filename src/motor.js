@@ -872,8 +872,8 @@ async function verificarUltimoSensado() {
       if (!maquina.on_off) continue;
       if (["desconectada", "fs"].includes(maquina.estado)) continue;
 
-      const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
-      if (!gateway || gateway.bypass) continue;
+      //       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
+      // if (!gateway || gateway.bypass) continue;
 
       const diferencia = ahora - maquina.date.getTime();
       const umbral = tiempoSolicitud * 5 * 1000;

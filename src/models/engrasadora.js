@@ -147,16 +147,12 @@ const ResumenDiaSchema = new mongoose.Schema(
     prom_signal: Number,
     prom_corriente: Number,
     prom_delta_accionam: Number,
-    prom_conteo_alertas: Number,
-    prom_conteo_desc: Number,
-    prom_conteo_fs: Number,
-    prom_conteo_func: Number,
 
-    // totales
-    total_maq_alertas: Number,
-    total_maq_desc: Number,
-    total_maq_fs: Number,
-    total_maq_func: Number,
+    prom_maq_alertas: Number,
+    prom_maq_desc: Number,
+    prom_maq_fs: Number,
+    prom_maq_func: Number,
+
     total_delta_accionam: Number,
   },
   { timestamps: true }

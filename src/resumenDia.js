@@ -66,6 +66,7 @@ async function generarResumenPorLinea(inicioDia, finDia) {
 async function generarResumenTotal(inicioDia, finDia) {
   const snapshots = await ResumenHora.find({
     fecha: { $gte: inicioDia, $lt: finDia },
+    tipo: "total",
   });
 
   if (snapshots.length === 0) {
@@ -104,10 +105,6 @@ function calcularEstadisticas(snapshots) {
   const prom_maq_func = promedio(snapshots.map((s) => s.total_maq_func));
 
   // Totales
-  const total_maq_alertas = suma(snapshots.map((s) => s.total_maq_alertas));
-  const total_maq_desc = suma(snapshots.map((s) => s.total_maq_desc));
-  const total_maq_fs = suma(snapshots.map((s) => s.total_maq_fs));
-  const total_maq_func = suma(snapshots.map((s) => s.total_maq_func));
   const total_delta_accionam = suma(
     snapshots.map((s) => s.total_delta_accionam)
   );
@@ -123,10 +120,6 @@ function calcularEstadisticas(snapshots) {
     prom_maq_desc,
     prom_maq_fs,
     prom_maq_func,
-    total_maq_alertas,
-    total_maq_desc,
-    total_maq_fs,
-    total_maq_func,
     total_delta_accionam,
   };
 }

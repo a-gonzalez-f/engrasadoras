@@ -54,6 +54,7 @@ router.get("/:id", verificarId);
 router.get("/historial/:id", getHistorialPaginado);
 
 router.get("/resumen/maquina/:id", resumenPorMaquina);
+router.get("/resumen/linea", resumenPorLinea);
 router.get("/resumen/linea/:linea", resumenPorLinea);
 router.get("/resumen/total", resumenTotal);
 
