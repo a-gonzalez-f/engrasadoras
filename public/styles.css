@@ -504,3 +504,12 @@ tr:hover {
   color: var(--color-texto);
   background-color: transparent;
 }
+
+footer {
+  opacity: 0.2;
+  display: flex;
+  font-size: 12px;
+  justify-content: center;
+  gap: 1rem;
+  padding: 5px;
+}
