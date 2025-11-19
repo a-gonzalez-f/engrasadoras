@@ -1,0 +1,160 @@
+// resumenHoraLinea.js
+require("dotenv").config({ path: "../.env" });
+const mongoose = require("mongoose");
+const conectarDB = require("./db");
+const { SnapshotHora, ResumenHora } = require("./models/engrasadora");
+
+// Uso: node resumenHoraLinea [YYYY-MM-DDTHH:MM:SS] (UTC)
+const arg = process.argv[2];
+const baseHoraUTC = arg ? new Date(arg + "Z") : new Date();
+
+const horaInicio = new Date(
+  Date.UTC(
+    baseHoraUTC.getUTCFullYear(),
+    baseHoraUTC.getUTCMonth(),
+    baseHoraUTC.getUTCDate(),
+    baseHoraUTC.getUTCHours(),
+    0,
+    0,
+    0
+  )
+);
+const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
+
+async function main() {
+  await conectarDB();
+  console.log("🟢 Conectado a MongoDB");
+  console.log(
+    `📊 Generando resumen horario por línea UTC: ${horaInicio.toISOString()} → ${horaFin.toISOString()}`
+  );
+
+  await generarResumenPorLinea(horaInicio, horaFin);
+  await generarResumenGlobal(horaInicio, horaFin);
+
+  mongoose.connection.close();
+}
+
+async function generarResumenPorLinea(horaInicio, horaFin) {
+  const lineas = await SnapshotHora.distinct("linea", {
+    fecha: { $gte: horaInicio, $lt: horaFin },
+  });
+
+  for (const linea of lineas) {
+    const snapshots = await SnapshotHora.find({
+      linea,
+      fecha: { $gte: horaInicio, $lt: horaFin },
+    });
+
+    if (snapshots.length === 0) {
+      console.log(`⚪ Sin snapshots de máquina para la línea ${linea}`);
+      continue;
+    }
+
+    const resumen = calcularEstadisticas(snapshots);
+
+    await ResumenHora.findOneAndUpdate(
+      { tipo: "linea", linea, fecha: horaInicio },
+      { tipo: "linea", linea, fecha: horaInicio, ...resumen },
+      { upsert: true, new: true }
+    );
+
+    console.log(`📈 Resumen horario generado para línea ${linea}`);
+  }
+}
+
+async function generarResumenGlobal(inicioDia, finDia) {
+  const snapshots = await SnapshotHora.find({
+    fecha: { $gte: horaInicio, $lt: horaFin },
+  });
+
+  if (snapshots.length === 0) {
+    console.log("Sin snapshots para generar resumen global");
+    return;
+  }
+
+  const resumen = calcularEstadisticas(snapshots);
+
+  await ResumenHora.findOneAndUpdate(
+    { tipo: "total", fecha: inicioDia },
+    { tipo: "total", fecha: inicioDia, ...resumen },
+    { upsert: true, new: true }
+  );
+
+  console.log("🌍 Resumen horario global generado");
+}
+
+function calcularEstadisticas(snapshots) {
+  const n = snapshots.length;
+
+  // Estado
+  const estados = ["desconectada", "funcionando", "alerta", "fs"];
+  const conteoEstados = contarValores(snapshots, "estado", estados);
+
+  // totales
+  const conteoFlujo = contarValores(snapshots, "sens_flujo", [true, false]);
+  const conteoPower = contarValores(snapshots, "sens_power", [true, false]);
+
+  const total_maq_func = conteoEstados["funcionando"] || 0;
+  const total_maq_alertas = conteoEstados["alerta"] || 0;
+  const total_maq_desc = conteoEstados["desconectada"] || 0;
+  const total_maq_fs = conteoEstados["fs"] || 0;
+
+  const total_delta_accionam = suma(snapshots.map((s) => s.delta_accionam));
+
+  // promedios
+  const prom_signal = promedio(snapshots.map((s) => s.lora_signal));
+  const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
+  const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
+
+  return {
+    // porcentajes
+    porc_estado: porcentaje(conteoEstados, n),
+    porc_flujo: porcentaje(conteoFlujo, n),
+    porc_power: porcentaje(conteoPower, n),
+
+    // promedios
+    prom_signal,
+    prom_corriente,
+    prom_delta_accionam,
+
+    // totales
+    total_maq_alertas,
+    total_maq_desc,
+    total_maq_fs,
+    total_maq_func,
+    total_delta_accionam,
+  };
+}
+
+function contarValores(arr, campo, posiblesValores) {
+  const conteo = {};
+  for (const v of posiblesValores) conteo[v] = 0;
+  for (const item of arr) {
+    const valor = item[campo];
+    if (conteo.hasOwnProperty(valor)) conteo[valor]++;
+  }
+  return conteo;
+}
+
+function porcentaje(conteo, total) {
+  const res = {};
+  for (const [clave, valor] of Object.entries(conteo))
+    res[clave] = total > 0 ? valor / total : 0;
+  return res;
+}
+
+function promedio(valores) {
+  const filtrados = valores.filter((v) => typeof v === "number" && !isNaN(v));
+  if (filtrados.length === 0) return 0;
+  return filtrados.reduce((a, b) => a + b, 0) / filtrados.length;
+}
+
+function suma(valores) {
+  return valores
+    .filter((v) => typeof v === "number")
+    .reduce((a, b) => a + b, 0);
+}
+
+main().catch((err) =>
+  console.error("❌ Error generando resumen horario:", err)
+);

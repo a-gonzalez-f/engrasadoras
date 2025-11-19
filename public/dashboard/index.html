@@ -7,10 +7,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="/img/emv/favicon-emova.png" sizes="32x32" />
     <link rel="stylesheet" href="/styles.css" />
-    <!-- <link
+    <link
       rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0"
-    /> -->
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <link rel="stylesheet" href="/dashboard/analytics.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title>Engrasadoras Site</title>
   </head>
@@ -351,10 +352,35 @@
           </div>
         </div>
       </section>
-      <!-- <section class="analytics">
-        <h3>ANALYTICS</h3>
-        <canvas id="analytics-global"></canvas>
-      </section> -->
+      <section class="analytics">
+        <!-- Slider -->
+        <div class="swiper mySwiper">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="analytics-container">
+                <div id="conteo" class="chart"></div>
+                <div id="porcentaje" class="chart"></div>
+                <div id="accionam-global" class="chart"></div>
+                <div id="accionam-lineas" class="chart"></div>
+              </div>
+            </div>
+
+            <div class="swiper-slide">
+              <div class="analytics-container">
+                <div class="chart" id="funcionandoPorLinea"></div>
+                <div class="chart" id="alertasPorLinea"></div>
+                <div class="chart" id="descPorLinea"></div>
+                <div class="chart" id="fsPorLinea"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controles -->
+          <div class="swiper-pagination"></div>
+          <div class="swiper-button-prev"></div>
+          <div class="swiper-button-next"></div>
+        </div>
+      </section>
       <section class="buscador">
         <h3>BUSCADOR</h3>
         <div class="filters">
@@ -413,9 +439,16 @@
           </div>
         </div>
       </section>
+      <footer>
+        <p>Tecnología Operativa</p>
+        <p>nov 2025</p>
+        <p>v1.6</p>
+      </footer>
     </main>
     <script src="/app.js"></script>
     <script type="module" src="/dashboard/dashboard.js"></script>
-    <!-- <script type="module" src="/dashboard/analytics.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
+    <script type="module" src="/dashboard/analytics.js"></script>
   </body>
 </html>

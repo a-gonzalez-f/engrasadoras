@@ -10,6 +10,7 @@ const {
   borrarGateway,
   actualizarEstadoGW,
   toggleBypass,
+  buscarPorEngrasadora,
 } = require("../controllers/gatewaysController");
 
 router.get("/", listarGateways);
@@ -21,5 +22,7 @@ router.delete("/:id", borrarGateway);
 router.put("/nombre/:nombre", actualizarEstadoGW);
 
 router.patch("/:id/bypass", toggleBypass);
+
+router.get("/buscar/:idEngrasadora", buscarPorEngrasadora);
 
 module.exports = router;

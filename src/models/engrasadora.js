@@ -57,4 +57,115 @@ const EngrasadoraSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model("engrasadora", EngrasadoraSchema);
+const SnapshotHoraSchema = new mongoose.Schema(
+  {
+    id: { type: Number },
+    linea: { type: String },
+
+    fecha: { type: Date }, // UTC
+
+    estado: { type: String },
+
+    set_tiempodosif: { type: Number },
+    set_ejes: { type: Number },
+    on_off: { type: Boolean },
+
+    sens_corriente: { type: Number },
+    sens_flujo: { type: Boolean },
+    sens_power: { type: Boolean },
+    lora_signal: { type: Number },
+
+    delta_accionam: { type: Number },
+  },
+
+  { timestamps: true }
+);
+
+SnapshotHoraSchema.index({ id: 1, fecha: 1 }, { unique: true });
+
+const ResumenHoraSchema = new mongoose.Schema(
+  {
+    linea: { type: String }, // solo para resumen por linea
+    tipo: { type: String }, // resumen: por linea o total
+
+    fecha: { type: Date, required: true },
+
+    // porcentajes
+    porc_estado: {
+      type: Map,
+      of: Number,
+    },
+    porc_flujo: {
+      type: Map,
+      of: Number,
+    },
+    porc_power: {
+      type: Map,
+      of: Number,
+    },
+
+    // promedios
+    prom_signal: Number,
+    prom_corriente: Number,
+    prom_delta_accionam: Number,
+
+    // totales
+    total_maq_alertas: Number,
+    total_maq_desc: Number,
+    total_maq_fs: Number,
+    total_maq_func: Number,
+    total_delta_accionam: Number,
+  },
+  { timestamps: true }
+);
+
+ResumenHoraSchema.index({ tipo: 1, linea: 1, fecha: 1 }, { unique: true });
+
+const ResumenDiaSchema = new mongoose.Schema(
+  {
+    id: { type: Number }, // solo para resumen por máquina
+    linea: { type: String }, // solo para resumen por linea
+    tipo: { type: String }, // resumen: por id, por linea o total
+
+    fecha: { type: Date, required: true },
+
+    // porcentajes
+    porc_estado: {
+      type: Map,
+      of: Number,
+    },
+    porc_flujo: {
+      type: Map,
+      of: Number,
+    },
+    porc_power: {
+      type: Map,
+      of: Number,
+    },
+
+    // promedios
+    prom_signal: Number,
+    prom_corriente: Number,
+    prom_delta_accionam: Number,
+
+    prom_maq_alertas: Number,
+    prom_maq_desc: Number,
+    prom_maq_fs: Number,
+    prom_maq_func: Number,
+
+    total_delta_accionam: Number,
+  },
+  { timestamps: true }
+);
+
+ResumenDiaSchema.index(
+  { tipo: 1, id: 1, linea: 1, fecha: 1 },
+  { unique: true }
+);
+
+const Engrasadora = mongoose.model("engrasadora", EngrasadoraSchema);
+const SnapshotHora = mongoose.model("SnapshotHora", SnapshotHoraSchema);
+const ResumenHora = mongoose.model("ResumenHora", ResumenHoraSchema);
+const ResumenDia = mongoose.model("ResumenDia", ResumenDiaSchema);
+
+module.exports = { Engrasadora, SnapshotHora, ResumenHora, ResumenDia };

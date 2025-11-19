@@ -1,0 +1,29 @@
+.analytics-container {
+  height: 100%;
+  width: 100%;
+  align-content: center;
+  justify-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.chart {
+  width: 45vw;
+  height: 45vh;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  color: var(--color-texto);
+}

@@ -3,7 +3,7 @@
 require("dotenv").config({ path: "../.env" });
 const WebSocket = require("ws");
 const conectarDB = require("./db");
-const Engrasadora = require("./models/engrasadora");
+const { Engrasadora } = require("./models/engrasadora");
 const Gateway = require("./models/gateway");
 
 const readline = require("readline");
@@ -466,10 +466,10 @@ async function solicitarEstados() {
         continue;
       }
 
-      if (maquina.id == 11) {
-        console.log("maquina 11 bypasseada harcodeada");
-        continue;
-      }
+      // if (maquina.id == 11) {
+      //   console.log("maquina 11 bypasseada harcodeada");
+      //   continue;
+      // }
 
       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
       if (!gateway || gateway.bypass) {
@@ -872,8 +872,8 @@ async function verificarUltimoSensado() {
       if (!maquina.on_off) continue;
       if (["desconectada", "fs"].includes(maquina.estado)) continue;
 
-      const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
-      if (!gateway || gateway.bypass) continue;
+      //       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
+      // if (!gateway || gateway.bypass) continue;
 
       const diferencia = ahora - maquina.date.getTime();
       const umbral = tiempoSolicitud * 5 * 1000;

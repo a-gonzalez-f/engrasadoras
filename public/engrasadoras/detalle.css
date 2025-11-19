@@ -69,6 +69,7 @@
   align-content: space-around;
   padding: 2rem;
   justify-content: space-evenly;
+  align-items: center;
 }
 
 .card-maquina {
@@ -609,4 +610,8 @@ span.delete:hover {
 }
 #modalEdit.visible {
   display: flex;
+}
+
+.card-maquina.sinVincular {
+  border: 2px solid black;
 }

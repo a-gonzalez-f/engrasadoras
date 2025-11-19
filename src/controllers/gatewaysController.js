@@ -133,3 +133,33 @@ exports.toggleBypass = async (req, res) => {
     res.status(500).json({ mensaje: "Error al cambiar bypass" });
   }
 };
+
+exports.buscarPorEngrasadora = async (req, res) => {
+  try {
+    const { idEngrasadora } = req.params;
+
+    if (!idEngrasadora) {
+      return res
+        .status(400)
+        .json({ mensaje: "Debe especificar un ID de engrasadora" });
+    }
+
+    const gateway = await Gateway.findOne(
+      { engrasadoras: idEngrasadora },
+      { id: 1, nombre: 1 }
+    ).lean();
+
+    if (!gateway) {
+      return res.json({ vinculada: false });
+    }
+
+    res.json({
+      vinculada: true,
+      gatewayId: gateway.id,
+      gatewayNombre: gateway.nombre,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensaje: "Error buscando vinculación" });
+  }
+};

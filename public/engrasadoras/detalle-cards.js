@@ -9,10 +9,16 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
   contenedor.innerHTML = "";
   document.querySelectorAll(".detalle-hover").forEach((d) => d.remove());
 
-  data.forEach((e) => {
+  data.forEach(async (e) => {
     const card = document.createElement("div");
     card.classList.add("card-maquina");
     card.dataset.id = e._id;
+
+    const gatewayId = await chequearVinculacion(e.id);
+
+    if (!gatewayId) {
+      card.classList.add("sinVincular");
+    }
 
     card.addEventListener("contextmenu", (event) => {
       handleRightClick(event, e);
@@ -22,12 +28,12 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
     detalle.classList.add("detalle-hover");
     detalle.innerHTML = `
       <strong>${e.nombre.toUpperCase()}</strong><br>
-      ${e.id ? "ID: " + e.id : "Sin ID"}<br>
       ${e.modelo.toUpperCase()}<br>
       Corriente: ${e.sens_corriente} A<br>
       Flujo: ${e.sens_flujo ? "Sí" : "No"}<br>
       Power: ${e.sens_power ? "Sí" : "No"}<br>
       Accionamientos: ${e.cont_accionam}<br>
+      ${gatewayId ? `Vinculada a GW ${gatewayId}` : "NO VINCULADA"}
     `;
 
     let hoverTimeout;
@@ -74,6 +80,7 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
 
     card.innerHTML = `
       <div class="nombre">${e.nombre.toUpperCase()}</div>
+      <div class="idCard">${e.id ? "ID: " + e.id : "Sin ID"}</div>
       <div class="estado">${formatearEstado(e.estado)} ${formatearSignal(
       e.lora_signal
     )}</div>
@@ -81,4 +88,26 @@ export function renderCardsMaquinas(data, contenedor, setMaquinaSeleccionada) {
 
     contenedor.appendChild(card);
   });
+}
+
+async function chequearVinculacion(id) {
+  if (!id) return null;
+
+  try {
+    const res = await fetch(`/api/gateways/buscar/${id}`);
+    if (!res.ok) return null;
+
+    const data = await res.json();
+
+    if (data.vinculada) {
+      // console.log(`✅ Engrasadora ${id} vinculada a ${data.gatewayId}`);
+      return data.gatewayId;
+    } else {
+      // console.log(`❌ Engrasadora ${id} no vinculada`);
+      return null;
+    }
+  } catch (err) {
+    console.error("Error al chequear vinculación", err);
+    return null;
+  }
 }
