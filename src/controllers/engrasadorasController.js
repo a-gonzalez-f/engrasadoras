@@ -1,6 +1,10 @@
 // controllers/engrasadorasController.js
 
-const { Engrasadora, ResumenDia } = require("../models/engrasadora");
+const {
+  Engrasadora,
+  ResumenDia,
+  SnapshotHora,
+} = require("../models/engrasadora");
 const motor = require("../motor");
 
 const resumenDashboard = async (req, res) => {
@@ -544,20 +548,43 @@ const ultimaVersionAll = async (req, res) => {
   }
 };
 
-// Por máquina
-const resumenPorMaquina = async (req, res) => {
-  const { id } = req.params;
-  const { fecha, desde, hasta } = req.query;
+// Por máquina: snapshots solo con delta_accionam
+const accionamSnapshots = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { desde, hasta } = req.query;
 
-  const filtro = { tipo: "maquina", id: Number(id) };
+    const filtro = { id: Number(id) };
+    let query;
 
-  if (fecha) filtro.fecha = new Date(fecha);
-  if (desde && hasta) {
-    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+    // Si hay rango de fechas
+    if (desde && hasta) {
+      filtro.fecha = {
+        $gte: new Date(desde),
+        $lte: new Date(hasta),
+      };
+
+      query = SnapshotHora.find(filtro)
+        .select("delta_accionam fecha -_id")
+        .sort({ fecha: 1 });
+    } else {
+      query = SnapshotHora.find(filtro)
+        .select("delta_accionam fecha -_id")
+        .sort({ fecha: -1 })
+        .limit(168); // Últimos 168 snapshots (7*24hs)
+    }
+
+    let data = await query;
+
+    if (!desde || !hasta) {
+      data = data.reverse();
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo snapshots" });
   }
-
-  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
-  res.json(data);
 };
 
 // Por línea
@@ -612,7 +639,7 @@ module.exports = {
   consultaExterna,
   getHistorialPaginado,
   ultimaVersionAll,
-  resumenPorMaquina,
+  accionamSnapshots,
   resumenPorLinea,
   resumenTotal,
 };
