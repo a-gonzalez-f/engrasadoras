@@ -28,6 +28,7 @@ async function fetchMaq(idMaq) {
     const data = await res.json();
 
     renderAnalytics(data);
+    console.log(data);
 
     message.style.display = "none";
   } catch (err) {
@@ -36,8 +37,49 @@ async function fetchMaq(idMaq) {
   }
 }
 
-function renderAnalytics(data) {
-  console.log("datos a renderizar: ", data);
+async function renderAnalytics(data) {
+  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+  const delta_accionam = data.map((d) => d.delta_accionam);
+  const accionam_hora_estimados = data.map((d) =>
+    d.set_ejes ? 480 / d.set_ejes : 0
+  );
+  // 20 trenesporhora x 24 ejesportren / seteo_ejes
+
+  const chart = echarts.init(document.getElementById("delta-accionam"), "dark");
+  chart.setOption({
+    title: { text: "Accionamientos" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "line" },
+    },
+    legend: {
+      data: ["Accionamientos", "Accionamientos esperados"],
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: {
+      type: "value",
+    },
+    series: [
+      {
+        name: "Accionamientos",
+        type: "line",
+        data: delta_accionam,
+        color: "#4786b3",
+        smooth: true,
+      },
+      {
+        name: "Accionamientos esperados",
+        type: "line",
+        data: accionam_hora_estimados,
+        color: "#aaa",
+        smooth: true,
+        lineStyle: {
+          type: "dashed",
+        },
+      },
+    ],
+  });
 }
 
 // swiper -------------------------------------------------------

@@ -53,9 +53,9 @@ async function generarSnapshotHora() {
               ? eng.estado
               : "desconectada",
 
-          set_tiempodosif: null,
-          set_ejes: null,
-          on_off: null,
+          set_tiempodosif: eng.set_tiempodosif,
+          set_ejes: eng.set_ejes,
+          on_off: eng.on_off,
 
           sens_corriente: null,
           sens_flujo: null,

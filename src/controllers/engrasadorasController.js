@@ -565,11 +565,11 @@ const accionamSnapshots = async (req, res) => {
       };
 
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam fecha -_id")
+        .select("delta_accionam set_ejes fecha -_id")
         .sort({ fecha: 1 });
     } else {
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam fecha -_id")
+        .select("delta_accionam set_ejes fecha -_id")
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }
