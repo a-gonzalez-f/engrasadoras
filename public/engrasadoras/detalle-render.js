@@ -5,6 +5,7 @@ import { formatearEstado } from "./detalles-tools.js";
 import { listarComentarios } from "./comentarios.js";
 import { inicializarSeteos } from "./detalle-seteos.js";
 import { abrirHistorialCompleto } from "./historial-completo.js";
+import { abrirAnalyticsMaq } from "./analytics-maq.js";
 
 export function renderDetalleMaquina(maquina) {
   let e = maquina;
@@ -99,13 +100,13 @@ export function renderDetalleMaquina(maquina) {
               </div>
             </div>
             <div>  
-              <div id="resetAccionam" class="reset">
+              <div id="resetAccionam" class="actionButton reset">
                 <p>Reset Accionamientos</p>
                 <div>
                   <span class="material-symbols-outlined icono-reset">restart_alt</span>
                 </div>
               </div>
-              <div id="apagarEquipo" class="reset">
+              <div id="apagarEquipo" class="actionButton reset">
                 <div>
                   <span class="material-symbols-outlined icono-reset">pause</span>
                 </div>
@@ -160,16 +161,22 @@ export function renderDetalleMaquina(maquina) {
           <div class="subCont historial">
             <h6>HISTORIAL</h6>
             ${historialHtml}
-            <div class="actionButtons">
-              <div id="resetHistorial" class="reset">
+            <div class="actionButtons">     
+              <div id="mostrarAnalytics" class="actionButton">
+                <p>Mostrar Analytics</p>
+                <div>
+                  <span class="material-symbols-outlined">bar_chart_4_bars</span>
+                </div>
+              </div>
+              <div id="historialCompleto" class="actionButton">
+                <p>Historial Completo</p>
+                <span class="material-symbols-outlined">list</span>
+              </div>
+              <div id="resetHistorial" class="actionButton reset">
                 <p>Reset Historial</p>
                 <div>
                   <span class="material-symbols-outlined icono-reset">restart_alt</span>
                 </div>
-              </div>
-              <div id="historialCompleto" class="reset">
-                <p>Historial Completo</p>
-                <span class="material-symbols-outlined">list</span>
               </div>
             </div>
           </div>
@@ -342,6 +349,10 @@ export function renderDetalleMaquina(maquina) {
 
   document.getElementById("historialCompleto").addEventListener("click", () => {
     abrirHistorialCompleto(e);
+  });
+
+  document.getElementById("mostrarAnalytics").addEventListener("click", () => {
+    abrirAnalyticsMaq(e.id);
   });
 
   inicializarSeteos(e);

@@ -340,7 +340,7 @@ hr {
   padding-right: 1rem;
 }
 
-.reset {
+.actionButton {
   cursor: pointer;
   background-color: var(--color-fondo-hover);
   border-radius: 5px;
@@ -354,7 +354,7 @@ hr {
   height: 40px;
 }
 
-#historialCompleto:hover {
+.actionButton:hover {
   background-color: var(--color-fondo);
 }
 
