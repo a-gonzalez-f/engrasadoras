@@ -12,7 +12,7 @@ let tiempoSolicitud = 60;
 let timeOut = 2;
 let intervaloSolicitudes = null;
 
-let max_eventos = 100000;
+let max_eventos = 10000;
 
 const confirmacionesPendientes = new Map();
 

@@ -330,10 +330,10 @@
       </form>
     </div>
 
-    <div id="modalAnalyticsMaq" class="modal">
+    <div id="modalAnalytics" class="modal">
       <div class="modal-contenido">
         <span
-          id="cerrarAnalyticsMaq"
+          id="cerrarAnalytics"
           class="material-symbols-outlined cerrar-modal"
           >close</span
         >
@@ -341,7 +341,7 @@
           <h3>Analytics | <span id="analytics-de"></span></h3>
         </div>
         <div class="modal-body">
-          <div id="message-analyticsMaq"></div>
+          <div id="message-analytics"></div>
           <!-- Slider -->
           <div class="swiper mySwiper">
             <div class="swiper-wrapper">
@@ -372,10 +372,20 @@
       </div>
     </div>
 
+    <div id="barraInferior">
+      <div id="abrirAnalyticsLinea">
+        <p>Analytics</p>
+        <div>
+          <span class="material-symbols-outlined">bar_chart_4_bars</span>
+        </div>
+      </div>
+    </div>
+
     <script src="/app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
     <script type="module" src="/engrasadoras/detalle.js"></script>
     <script type="module" src="/engrasadoras/ingresoMaq/ingresoMaq.js"></script>
+    <script type="module" src="/engrasadoras/analytics-linea.js"></script>
   </body>
 </html>

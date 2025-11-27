@@ -63,6 +63,7 @@ async function generarSnapshotHora() {
           lora_signal: null,
 
           delta_accionam: 0,
+          accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
         },
         { upsert: true, new: true }
       );
@@ -106,6 +107,7 @@ async function generarSnapshotHora() {
         lora_signal: ultimoEvento.lora_signal,
 
         delta_accionam,
+        accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
       },
       { upsert: true, new: true }
     );

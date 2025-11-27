@@ -202,6 +202,7 @@ async function graficarAccionamGlobal() {
     redondearNumero(d.total_delta_accionam)
   );
   const prom_accionam = data.map((d) => redondearNumero(d.prom_delta_accionam));
+  const accionam_estimados = data.map((d) => d.accionam_estimados);
 
   const chart = echarts.init(
     document.getElementById("accionam-global"),
@@ -215,7 +216,7 @@ async function graficarAccionamGlobal() {
       axisPointer: { type: "shadow" },
     },
     legend: {
-      data: ["Total Accionamientos", "Promedio Accionamientos"],
+      data: ["Total", "Promedio por máquina", "Estimados"],
     },
     xAxis: { type: "category", data: fechas },
     yAxis: {
@@ -223,18 +224,28 @@ async function graficarAccionamGlobal() {
     },
     series: [
       {
-        name: "Total Accionamientos",
+        name: "Total",
         type: "line",
         data: total_accionam,
         color: "#2f5671",
         smooth: true,
       },
       {
-        name: "Promedio Accionamientos",
+        name: "Promedio por máquina",
         type: "line",
         data: prom_accionam,
         color: "#4a8a8c",
         smooth: true,
+      },
+      {
+        name: "Estimados",
+        type: "line",
+        data: accionam_estimados,
+        color: "grey",
+        smooth: true,
+        lineStyle: {
+          type: "dashed",
+        },
       },
     ],
   });

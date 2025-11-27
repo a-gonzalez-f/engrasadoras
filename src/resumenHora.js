@@ -100,6 +100,7 @@ function calcularEstadisticas(snapshots) {
   const total_maq_fs = conteoEstados["fs"] || 0;
 
   const total_delta_accionam = suma(snapshots.map((s) => s.delta_accionam));
+  const accionam_estimados = suma(snapshots.map((s) => s.accionam_estimados));
 
   // promedios
   const prom_signal = promedio(snapshots.map((s) => s.lora_signal));
@@ -123,6 +124,7 @@ function calcularEstadisticas(snapshots) {
     total_maq_fs,
     total_maq_func,
     total_delta_accionam,
+    accionam_estimados,
   };
 }
 

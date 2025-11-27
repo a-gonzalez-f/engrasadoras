@@ -108,6 +108,7 @@ function calcularEstadisticas(snapshots) {
   const total_delta_accionam = suma(
     snapshots.map((s) => s.total_delta_accionam)
   );
+  const accionam_estimados = suma(snapshots.map((s) => s.accionam_estimados));
 
   return {
     porc_estado,
@@ -121,6 +122,7 @@ function calcularEstadisticas(snapshots) {
     prom_maq_fs,
     prom_maq_func,
     total_delta_accionam,
+    accionam_estimados,
   };
 }
 

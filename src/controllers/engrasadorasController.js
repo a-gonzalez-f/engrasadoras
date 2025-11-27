@@ -4,6 +4,7 @@ const {
   Engrasadora,
   ResumenDia,
   SnapshotHora,
+  ResumenHora,
 } = require("../models/engrasadora");
 const motor = require("../motor");
 
@@ -548,7 +549,7 @@ const ultimaVersionAll = async (req, res) => {
   }
 };
 
-// Por máquina: snapshots solo con delta_accionam
+// Analytics -------------------------------------------
 const accionamSnapshots = async (req, res) => {
   try {
     const { id } = req.params;
@@ -565,11 +566,11 @@ const accionamSnapshots = async (req, res) => {
       };
 
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes fecha -_id")
+        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
         .sort({ fecha: 1 });
     } else {
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes fecha -_id")
+        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }
@@ -584,6 +585,44 @@ const accionamSnapshots = async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Error obteniendo snapshots" });
+  }
+};
+
+const accionamHora = async (req, res) => {
+  try {
+    const { linea } = req.params;
+    const { desde, hasta } = req.query;
+
+    const filtro = { linea: linea, tipo: "linea" };
+    let query;
+
+    // Si hay rango de fechas
+    if (desde && hasta) {
+      filtro.fecha = {
+        $gte: new Date(desde),
+        $lte: new Date(hasta),
+      };
+
+      query = ResumenHora.find(filtro)
+        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .sort({ fecha: 1 });
+    } else {
+      query = ResumenHora.find(filtro)
+        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .sort({ fecha: -1 })
+        .limit(168); // Últimos 168 snapshots (7*24hs)
+    }
+
+    let data = await query;
+
+    if (!desde || !hasta) {
+      data = data.reverse();
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo resumenHora" });
   }
 };
 
@@ -640,6 +679,7 @@ module.exports = {
   getHistorialPaginado,
   ultimaVersionAll,
   accionamSnapshots,
+  accionamHora,
   resumenPorLinea,
   resumenTotal,
 };

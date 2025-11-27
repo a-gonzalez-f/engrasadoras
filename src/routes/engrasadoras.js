@@ -26,6 +26,7 @@ const {
   accionamSnapshots,
   resumenPorLinea,
   resumenTotal,
+  accionamHora,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
@@ -53,9 +54,11 @@ router.get("/:id", verificarId);
 
 router.get("/historial/:id", getHistorialPaginado);
 
+// analytics ----------------------------------------------
 router.get("/snapshots/accionam/:id", accionamSnapshots);
 router.get("/resumen/linea", resumenPorLinea);
 router.get("/resumen/linea/:linea", resumenPorLinea);
 router.get("/resumen/total", resumenTotal);
+router.get("/resumenHora/accionam/:linea", accionamHora);
 
 module.exports = router;
