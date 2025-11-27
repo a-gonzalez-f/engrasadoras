@@ -45,7 +45,16 @@ async function fetchMaq(idMaq) {
 }
 
 async function renderAnalytics(data) {
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = data.map((d) => {
+    const fecha = new Date(d.fecha);
+    return fecha.toLocaleString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  });
   const delta_accionam = data.map((d) => d.delta_accionam);
   const accionam_estimados = data.map((d) => d.accionam_estimados);
 
