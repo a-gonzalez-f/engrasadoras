@@ -1,36 +1,26 @@
-// analytics-maq.js
+const params = new URLSearchParams(window.location.search);
+const linea = params.get("linea");
 
+const abrirModalBtn = document.getElementById("abrirAnalyticsLinea");
 const modal = document.getElementById("modalAnalytics");
-const cerrarBtn = document.getElementById("cerrarAnalytics");
-const message = document.getElementById("message-analytics");
 const titulo = document.getElementById("analytics-de");
+const message = document.getElementById("message-analytics");
+const cerrarBtn = document.getElementById("cerrarAnalytics");
 
-cerrarBtn.addEventListener("click", () => {
-  modal.style.display = "none";
+// abrir
+abrirModalBtn.addEventListener("click", () => {
+  modal.style.display = "flex";
+  titulo.innerText = linea ? `Linea: ${linea}` : "";
 
-  document.querySelectorAll(".chart").forEach((div) => {
-    const instance = echarts.getInstanceByDom(div);
-    if (instance) instance.dispose();
-  });
-
-  titulo.innerText = "";
-  message.innerText = "";
-});
-
-export function abrirAnalyticsMaq(idMaq) {
   message.innerText = "Cargando...";
   message.style.display = "flex";
 
-  titulo.innerText = idMaq ? `ID: ${idMaq}` : "Sin ID";
+  fetchLinea(linea);
+});
 
-  modal.style.display = "flex";
-
-  fetchMaq(idMaq);
-}
-
-async function fetchMaq(idMaq) {
+async function fetchLinea(linea) {
   try {
-    const res = await fetch(`/api/engrasadoras/snapshots/accionam/${idMaq}`);
+    const res = await fetch(`/api/engrasadoras/resumenHora/accionam/${linea}`);
     if (!res.ok) throw new Error("Error en servidor");
 
     const data = await res.json();
@@ -46,11 +36,9 @@ async function fetchMaq(idMaq) {
 
 async function renderAnalytics(data) {
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-  const delta_accionam = data.map((d) => d.delta_accionam);
-  const accionam_hora_estimados = data.map((d) =>
-    d.set_ejes ? 480 / d.set_ejes : 0
-  );
-  // 20 trenesporhora x 24 ejesportren / seteo_ejes
+  const delta_accionam = data.map((d) => d.total_delta_accionam);
+  const accionam_hora_estimados = data.map((d) => (20 * 24) / 24);
+  //!!!!!!!!!!!!!!!!!!!!!!! 20 trenesporhora x 24 ejesportren / seteo_ejes
 
   const chart = echarts.init(document.getElementById("delta-accionam"), "dark");
   chart.setOption({
