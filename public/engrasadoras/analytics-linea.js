@@ -43,6 +43,19 @@ async function renderAnalytics(data) {
   chart.setOption({
     title: { text: "Accionamientos" },
     backgroundColor: "transparent",
+    dataZoom: [
+      {
+        type: "slider",
+        show: false,
+        start: 0,
+        end: 100,
+      },
+      {
+        type: "inside",
+        start: 0,
+        end: 100,
+      },
+    ],
     tooltip: {
       trigger: "axis",
       axisPointer: { type: "line" },
@@ -84,6 +97,6 @@ const swiper = new Swiper(".mySwiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
-  allowTouchMove: true,
+  allowTouchMove: false,
   touchStartPreventDefault: false,
 });
