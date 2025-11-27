@@ -76,6 +76,7 @@ const SnapshotHoraSchema = new mongoose.Schema(
     lora_signal: { type: Number },
 
     delta_accionam: { type: Number },
+    accionam_estimados: { type: Number },
   },
 
   { timestamps: true }
@@ -115,6 +116,7 @@ const ResumenHoraSchema = new mongoose.Schema(
     total_maq_fs: Number,
     total_maq_func: Number,
     total_delta_accionam: Number,
+    accionam_estimados: Number,
   },
   { timestamps: true }
 );
@@ -154,6 +156,7 @@ const ResumenDiaSchema = new mongoose.Schema(
     prom_maq_func: Number,
 
     total_delta_accionam: Number,
+    accionam_estimados: Number,
   },
   { timestamps: true }
 );
