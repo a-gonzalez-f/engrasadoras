@@ -566,11 +566,11 @@ const accionamSnapshots = async (req, res) => {
       };
 
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes fecha -_id")
+        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
         .sort({ fecha: 1 });
     } else {
       query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes fecha -_id")
+        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }
@@ -604,11 +604,11 @@ const accionamHora = async (req, res) => {
       };
 
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam fecha -_id")
+        .select("total_delta_accionam accionam_estimados fecha -_id")
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam fecha -_id")
+        .select("total_delta_accionam accionam_estimados fecha -_id")
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }

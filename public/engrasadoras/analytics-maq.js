@@ -47,10 +47,7 @@ async function fetchMaq(idMaq) {
 async function renderAnalytics(data) {
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
   const delta_accionam = data.map((d) => d.delta_accionam);
-  const accionam_hora_estimados = data.map((d) =>
-    d.set_ejes ? 480 / d.set_ejes : 0
-  );
-  // 20 trenesporhora x 24 ejesportren / seteo_ejes
+  const accionam_estimados = data.map((d) => d.accionam_estimados);
 
   const chart = echarts.init(document.getElementById("delta-accionam"), "dark");
   chart.setOption({
@@ -60,6 +57,19 @@ async function renderAnalytics(data) {
       trigger: "axis",
       axisPointer: { type: "line" },
     },
+    dataZoom: [
+      {
+        type: "slider",
+        show: false,
+        start: 0,
+        end: 100,
+      },
+      {
+        type: "inside",
+        start: 0,
+        end: 100,
+      },
+    ],
     legend: {
       data: ["Accionamientos", "Accionamientos esperados"],
     },
@@ -78,7 +88,7 @@ async function renderAnalytics(data) {
       {
         name: "Accionamientos esperados",
         type: "line",
-        data: accionam_hora_estimados,
+        data: accionam_estimados,
         color: "#aaa",
         smooth: true,
         lineStyle: {

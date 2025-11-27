@@ -37,8 +37,7 @@ async function fetchLinea(linea) {
 async function renderAnalytics(data) {
   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
   const delta_accionam = data.map((d) => d.total_delta_accionam);
-  const accionam_hora_estimados = data.map((d) => (20 * 24) / 24);
-  //!!!!!!!!!!!!!!!!!!!!!!! 20 trenesporhora x 24 ejesportren / seteo_ejes
+  const accionam_estimados = data.map((d) => d.accionam_estimados);
 
   const chart = echarts.init(document.getElementById("delta-accionam"), "dark");
   chart.setOption({
@@ -66,7 +65,7 @@ async function renderAnalytics(data) {
       {
         name: "Accionamientos esperados",
         type: "line",
-        data: accionam_hora_estimados,
+        data: accionam_estimados,
         color: "#aaa",
         smooth: true,
         lineStyle: {
