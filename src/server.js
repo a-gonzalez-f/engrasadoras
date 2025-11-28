@@ -7,6 +7,7 @@ const dotenv = require("dotenv");
 const path = require("path");
 const http = require("http");
 const { exec } = require("child_process");
+const cron = require("node-cron");
 
 const engrasadorasRoutes = require("./routes/engrasadoras");
 const gatewaysRoutes = require("./routes/gateways");
@@ -52,13 +53,9 @@ mongoose
     //   console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
     // );
 
-    ejecutarSnapshotHora();
-    ejecutarResumenHora();
-    ejecutarResumenDia();
-
-    setInterval(ejecutarSnapshotHora, 60 * 60 * 1000);
-    setInterval(ejecutarResumenHora, 60 * 60 * 1000);
-    setInterval(ejecutarResumenDia, 24 * 60 * 60 * 1000);
+    cron.schedule("0 * * * *", ejecutarSnapshotHora); // cada hora minuto 0
+    cron.schedule("2 * * * *", ejecutarResumenHora); // cada hora minuto 2
+    cron.schedule("4 0 * * *", ejecutarResumenDia); // todos los días 00:04
 
     server.listen(process.env.PORT, "0.0.0.0", () =>
       console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
