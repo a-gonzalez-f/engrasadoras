@@ -35,7 +35,8 @@ async function fetchMaq(idMaq) {
 
     const data = await res.json();
 
-    renderAnalytics(data);
+    renderAccionam(data);
+    // renderEstados(data);
 
     message.style.display = "none";
   } catch (err) {
@@ -44,7 +45,7 @@ async function fetchMaq(idMaq) {
   }
 }
 
-async function renderAnalytics(data) {
+async function renderAccionam(data) {
   const fechas = data.map((d) => {
     const fecha = new Date(d.fecha);
     return fecha.toLocaleString("es-AR", {
@@ -107,6 +108,59 @@ async function renderAnalytics(data) {
     ],
   });
 }
+
+// async function renderEstados(data) {
+//   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+//   const alertas = data.map((d) => redondearNumero(d.prom_maq_alertas));
+//   const funcs = data.map((d) => redondearNumero(d.prom_maq_func));
+//   const fs = data.map((d) => redondearNumero(d.prom_maq_fs));
+//   const desc = data.map((d) => redondearNumero(d.prom_maq_desc));
+
+//   const chart = echarts.init(document.getElementById("conteo"), "dark");
+//   chart.setOption({
+//     title: { text: "Promedios de estados" },
+//     backgroundColor: "transparent",
+//     tooltip: {
+//       trigger: "axis",
+//       axisPointer: { type: "shadow" },
+//     },
+//     legend: {
+//       data: ["Alertas", "Funcionando", "Fuera de Servicio", "Desconectadas"],
+//     },
+//     xAxis: { type: "category", data: fechas },
+//     yAxis: { type: "value" },
+//     series: [
+//       {
+//         name: "Alertas",
+//         type: "line",
+//         smooth: true,
+//         data: alertas,
+//         color: "#fca311",
+//       },
+//       {
+//         name: "Funcionando",
+//         type: "line",
+//         smooth: true,
+//         data: funcs,
+//         color: "#0dae1a",
+//       },
+//       {
+//         name: "Fuera de Servicio",
+//         type: "line",
+//         smooth: true,
+//         data: fs,
+//         color: "#d90429",
+//       },
+//       {
+//         name: "Desconectadas",
+//         type: "line",
+//         smooth: true,
+//         data: desc,
+//         color: "#888",
+//       },
+//     ],
+//   });
+// }
 
 // swiper -------------------------------------------------------
 const swiper = new Swiper(".mySwiper", {

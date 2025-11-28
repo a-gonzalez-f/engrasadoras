@@ -55,10 +55,10 @@ router.get("/:id", verificarId);
 router.get("/historial/:id", getHistorialPaginado);
 
 // analytics ----------------------------------------------
-router.get("/snapshots/accionam/:id", accionamSnapshots);
 router.get("/resumen/linea", resumenPorLinea);
 router.get("/resumen/linea/:linea", resumenPorLinea);
 router.get("/resumen/total", resumenTotal);
 router.get("/resumenHora/accionam/:linea", accionamHora);
+router.get("/snapshots/accionam/:id", accionamSnapshots);
 
 module.exports = router;
