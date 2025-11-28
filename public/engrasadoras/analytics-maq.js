@@ -30,13 +30,13 @@ export function abrirAnalyticsMaq(idMaq) {
 
 async function fetchMaq(idMaq) {
   try {
-    const res = await fetch(`/api/engrasadoras/snapshots/accionam/${idMaq}`);
+    const res = await fetch(`/api/engrasadoras/snapshots/${idMaq}`);
     if (!res.ok) throw new Error("Error en servidor");
 
     const data = await res.json();
 
     renderAccionam(data);
-    // renderEstados(data);
+    renderEstados(data);
 
     message.style.display = "none";
   } catch (err) {
@@ -109,58 +109,93 @@ async function renderAccionam(data) {
   });
 }
 
-// async function renderEstados(data) {
-//   const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
-//   const alertas = data.map((d) => redondearNumero(d.prom_maq_alertas));
-//   const funcs = data.map((d) => redondearNumero(d.prom_maq_func));
-//   const fs = data.map((d) => redondearNumero(d.prom_maq_fs));
-//   const desc = data.map((d) => redondearNumero(d.prom_maq_desc));
+async function renderEstados(data) {
+  const chart = echarts.init(document.getElementById("estado-chart"), "dark");
 
-//   const chart = echarts.init(document.getElementById("conteo"), "dark");
-//   chart.setOption({
-//     title: { text: "Promedios de estados" },
-//     backgroundColor: "transparent",
-//     tooltip: {
-//       trigger: "axis",
-//       axisPointer: { type: "shadow" },
-//     },
-//     legend: {
-//       data: ["Alertas", "Funcionando", "Fuera de Servicio", "Desconectadas"],
-//     },
-//     xAxis: { type: "category", data: fechas },
-//     yAxis: { type: "value" },
-//     series: [
-//       {
-//         name: "Alertas",
-//         type: "line",
-//         smooth: true,
-//         data: alertas,
-//         color: "#fca311",
-//       },
-//       {
-//         name: "Funcionando",
-//         type: "line",
-//         smooth: true,
-//         data: funcs,
-//         color: "#0dae1a",
-//       },
-//       {
-//         name: "Fuera de Servicio",
-//         type: "line",
-//         smooth: true,
-//         data: fs,
-//         color: "#d90429",
-//       },
-//       {
-//         name: "Desconectadas",
-//         type: "line",
-//         smooth: true,
-//         data: desc,
-//         color: "#888",
-//       },
-//     ],
-//   });
-// }
+  const mapaEstados = {
+    funcionando: 4,
+    alerta: 3,
+    desconectada: 2,
+    fs: 1,
+  };
+
+  const colores = {
+    funcionando: "#0dae1a",
+    alerta: "#fca311",
+    desconectada: "#888",
+    fs: "#d90429",
+  };
+
+  const estadosColores = data.map((d) => colores[d.estado] || "#ffffff");
+
+  const fechas = data.map((d) => {
+    const fecha = new Date(d.fecha);
+    return fecha.toLocaleString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  });
+
+  const estadosNumericos = data.map((d) => mapaEstados[d.estado] || 0);
+
+  chart.setOption({
+    title: { text: "Estado" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      formatter: function (params) {
+        const p = params[0];
+        const valor = p.value;
+
+        const texto =
+          Object.keys(mapaEstados).find((key) => mapaEstados[key] === valor) ||
+          "desconocido";
+
+        return `${p.axisValue}<br>Estado: <b>${texto}</b>`;
+      },
+    },
+    xAxis: {
+      type: "category",
+      data: fechas,
+    },
+    yAxis: {
+      type: "value",
+      min: 0,
+      max: 4,
+      interval: 1,
+      axisLabel: {
+        formatter: (v) => {
+          const entry = Object.entries(mapaEstados).find(([, n]) => n === v);
+          return entry ? entry[0] : "";
+        },
+      },
+    },
+    dataZoom: [
+      { type: "slider", show: false, start: 0, end: 100 },
+      { type: "inside", start: 0, end: 100 },
+    ],
+    series: [
+      {
+        name: "Estado",
+        type: "line",
+        data: estadosNumericos,
+        step: "middle",
+        smooth: false,
+        symbol: "roundRect",
+        lineStyle: {
+          width: 1,
+          color: "#666",
+        },
+        itemStyle: {
+          color: (params) => estadosColores[params.dataIndex],
+        },
+      },
+    ],
+  });
+}
 
 // swiper -------------------------------------------------------
 const swiper = new Swiper(".mySwiper", {
