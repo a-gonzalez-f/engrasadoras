@@ -550,42 +550,35 @@ const ultimaVersionAll = async (req, res) => {
 };
 
 // Analytics -------------------------------------------
-const accionamSnapshots = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { desde, hasta } = req.query;
+// Por línea
+const resumenPorLinea = async (req, res) => {
+  const { fecha, desde, hasta } = req.query;
+  const { linea } = req.params;
 
-    const filtro = { id: Number(id) };
-    let query;
+  const filtro = { tipo: "linea" };
+  if (linea) filtro.linea = linea; // solo si se especifica
 
-    // Si hay rango de fechas
-    if (desde && hasta) {
-      filtro.fecha = {
-        $gte: new Date(desde),
-        $lte: new Date(hasta),
-      };
-
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
-        .sort({ fecha: 1 });
-    } else {
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados fecha -_id")
-        .sort({ fecha: -1 })
-        .limit(168); // Últimos 168 snapshots (7*24hs)
-    }
-
-    let data = await query;
-
-    if (!desde || !hasta) {
-      data = data.reverse();
-    }
-
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error obteniendo snapshots" });
+  if (fecha) filtro.fecha = new Date(fecha);
+  if (desde && hasta) {
+    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
   }
+
+  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
+  res.json(data);
+};
+
+// Total
+const resumenTotal = async (req, res) => {
+  const { fecha, desde, hasta } = req.query;
+  const filtro = { tipo: "total" };
+
+  if (fecha) filtro.fecha = new Date(fecha);
+  if (desde && hasta) {
+    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+  }
+
+  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
+  res.json(data);
 };
 
 const accionamHora = async (req, res) => {
@@ -626,35 +619,42 @@ const accionamHora = async (req, res) => {
   }
 };
 
-// Por línea
-const resumenPorLinea = async (req, res) => {
-  const { fecha, desde, hasta } = req.query;
-  const { linea } = req.params;
+const snapshotId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { desde, hasta } = req.query;
 
-  const filtro = { tipo: "linea" };
-  if (linea) filtro.linea = linea; // solo si se especifica
+    const filtro = { id: Number(id) };
+    let query;
 
-  if (fecha) filtro.fecha = new Date(fecha);
-  if (desde && hasta) {
-    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
+    // Si hay rango de fechas
+    if (desde && hasta) {
+      filtro.fecha = {
+        $gte: new Date(desde),
+        $lte: new Date(hasta),
+      };
+
+      query = SnapshotHora.find(filtro)
+        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
+        .sort({ fecha: 1 });
+    } else {
+      query = SnapshotHora.find(filtro)
+        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
+        .sort({ fecha: -1 })
+        .limit(168); // Últimos 168 snapshots (7*24hs)
+    }
+
+    let data = await query;
+
+    if (!desde || !hasta) {
+      data = data.reverse();
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo snapshots" });
   }
-
-  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
-  res.json(data);
-};
-
-// Total
-const resumenTotal = async (req, res) => {
-  const { fecha, desde, hasta } = req.query;
-  const filtro = { tipo: "total" };
-
-  if (fecha) filtro.fecha = new Date(fecha);
-  if (desde && hasta) {
-    filtro.fecha = { $gte: new Date(desde), $lte: new Date(hasta) };
-  }
-
-  const data = await ResumenDia.find(filtro).sort({ fecha: 1 });
-  res.json(data);
 };
 
 module.exports = {
@@ -678,8 +678,8 @@ module.exports = {
   consultaExterna,
   getHistorialPaginado,
   ultimaVersionAll,
-  accionamSnapshots,
   accionamHora,
   resumenPorLinea,
   resumenTotal,
+  snapshotId,
 };
