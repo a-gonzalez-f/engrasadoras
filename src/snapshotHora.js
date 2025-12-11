@@ -2,7 +2,11 @@
 require("dotenv").config({ path: "../.env" });
 const conectarDB = require("./db");
 const mongoose = require("mongoose");
-const { Engrasadora, SnapshotHora } = require("./models/engrasadora");
+const {
+  Engrasadora,
+  SnapshotHora,
+  Historial,
+} = require("./models/engrasadora");
 
 // Uso: node snapshotHora [YYYY-MM-DDTHH:MM:SS] (UTC)
 const arg = process.argv[2];
@@ -34,10 +38,10 @@ async function generarSnapshotHora() {
   for (const eng of engrasadoras) {
     if (!eng.id) continue;
 
-    const eventosEnVentana = eng.historial.filter((e) => {
-      const fecha = new Date(e.fecha);
-      return fecha >= horaInicio && fecha < horaFin;
-    });
+    const eventosEnVentana = await Historial.find({
+      engrasadora: eng.id,
+      fecha: { $gte: horaInicio, $lt: horaFin },
+    }).lean();
 
     if (eventosEnVentana.length === 0) {
       await SnapshotHora.findOneAndUpdate(
