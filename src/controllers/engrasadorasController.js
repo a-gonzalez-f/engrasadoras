@@ -2,6 +2,7 @@
 
 const {
   Engrasadora,
+  Historial,
   ResumenDia,
   SnapshotHora,
   ResumenHora,
@@ -130,9 +131,15 @@ const actualizarSeteo = async (req, res) => {
     const actualizoUbicacionSolo =
       Object.keys(update).length === 1 && update.ubicacion !== undefined;
 
+    const ultimo = await Historial.findOne({
+      engrasadora: engrasadora.id,
+    }).sort({ nro_evento: -1 });
+
+    const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
     if (!actualizoUbicacionSolo) {
       const snapshot = {
-        nro_evento: engrasadora.historial.length + 1,
+        nro_evento: nro_evento,
         tipo_evento: "Seteo",
         fecha: new Date(),
         estado: engrasadora.estado,
@@ -148,7 +155,7 @@ const actualizarSeteo = async (req, res) => {
         date: engrasadora.date,
       };
 
-      engrasadora.historial.push(snapshot);
+      await Historial.create(snapshot);
     }
 
     const result = await engrasadora.save();
@@ -213,11 +220,9 @@ const resetHistorial = async (req, res) => {
     const engrasadora = await Engrasadora.findById(id);
     if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
 
-    engrasadora.historial = [];
+    await Historial.deleteMany({ engrasadora: id });
 
-    const result = await engrasadora.save();
-
-    res.json({ historial: result.historial });
+    res.json({ ok: true });
   } catch (err) {
     console.error(err);
     res.status(500).send("Error al resetear el historial");
@@ -261,14 +266,21 @@ const verificarId = async (req, res) => {
 
 const getUnaEngrasadora = async (req, res) => {
   try {
-    const engrasadora = await Engrasadora.findById(req.params.id).lean();
+    const id = req.params.id;
+
+    const engrasadora = await Engrasadora.findById(id).lean();
     if (!engrasadora) return res.status(404).json({ error: "No encontrada" });
+
+    const eventos = await Historial.find({ engrasadora: engrasadora.id })
+      .sort({ fecha: -1 })
+      .limit(500)
+      .lean();
 
     const vistos = new Set();
     const filtrado = [];
 
-    for (let i = engrasadora.historial.length - 1; i >= 0; i--) {
-      const h = engrasadora.historial[i];
+    for (let i = 0; i < eventos.length; i++) {
+      const h = eventos[i];
 
       if (h.tipo_evento === "Sensado") {
         if (!vistos.has(h.cont_accionam)) {
@@ -474,15 +486,15 @@ const getHistorialPaginado = async (req, res) => {
 
     const { tipo, estado, fecha, flujo, power, onoff, repetidos } = req.query;
 
-    const engrasadora = await Engrasadora.findById(id).select("historial");
-
-    if (!engrasadora) {
+    const existe = await Engrasadora.findById(id).lean();
+    if (!existe) {
       return res.status(404).json({ error: "Engrasadora no encontrada" });
     }
 
-    let historial = engrasadora.historial.slice().reverse();
+    let historial = await Historial.find({ engrasadora: existe.id })
+      .sort({ fecha: -1 })
+      .lean();
 
-    // Aplicar filtros
     if (tipo && tipo !== "todos") {
       historial = historial.filter((h) => h.tipo_evento === tipo);
     }
@@ -514,9 +526,7 @@ const getHistorialPaginado = async (req, res) => {
     if (repetidos === "false") {
       const vistos = new Set();
       historial = historial.filter((h) => {
-        if (vistos.has(h.cont_accionam)) {
-          return false;
-        }
+        if (vistos.has(h.cont_accionam)) return false;
         vistos.add(h.cont_accionam);
         return true;
       });

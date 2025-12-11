@@ -3,7 +3,7 @@
 require("dotenv").config({ path: "../.env" });
 const WebSocket = require("ws");
 const conectarDB = require("./db");
-const { Engrasadora } = require("./models/engrasadora");
+const { Engrasadora, Historial } = require("./models/engrasadora");
 const Gateway = require("./models/gateway");
 
 const readline = require("readline");
@@ -311,8 +311,17 @@ async function procesarSensado(maquina, datos, nombre) {
   maquina.estado = datos.falla ? "alerta" : "funcionando";
   maquina.lora_signal = datos.lora_signal * -1;
 
-  maquina.historial.push({
-    nro_evento: maquina.historial.length + 1,
+  await maquina.save();
+
+  const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
+    nro_evento: -1,
+  });
+
+  const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+  await Historial.create({
+    engrasadora: maquina.id,
+    nro_evento: nro_evento,
     tipo_evento: "Sensado",
     fecha: new Date(),
     estado: maquina.estado,
@@ -327,11 +336,6 @@ async function procesarSensado(maquina, datos, nombre) {
     user: "gateway_" + nombre,
   });
 
-  if (maquina.historial.length > max_eventos) {
-    maquina.historial = maquina.historial.slice(-max_eventos);
-  }
-
-  await maquina.save();
   console.log(
     `Motor: → Engrasadora ${maquina.id} actualizada con evento de sensado`
   );
@@ -342,18 +346,21 @@ async function procesarSeteo(maquina, datos, nombre) {
   maquina.set_tiempodosif = datos.tiempo_dosif;
   maquina.set_ejes = datos.cant_ejes;
 
-  maquina.historial.push({
-    nro_evento: maquina.historial.length + 1,
+  const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
+    nro_evento: -1,
+  });
+
+  const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+  await Historial.create({
+    engrasadora: maquina.id,
+    nro_evento: nro_evento,
     tipo_evento: "Seteo",
     fecha: maquina.date,
     set_tiempodosif: datos.tiempo_dosif,
     set_ejes: datos.cant_ejes,
     user: "gateway_" + nombre,
   });
-
-  if (maquina.historial.length > max_eventos) {
-    maquina.historial = maquina.historial.slice(-max_eventos);
-  }
 
   await maquina.save();
   console.log(`Motor: ✅ Seteo actualizado para máquina ${maquina.id}`);
@@ -363,8 +370,15 @@ async function procesarResetAccionamientos(maquina, datos, nombre) {
   maquina.date = new Date();
   maquina.cont_accionam = 0;
 
-  maquina.historial.push({
-    nro_evento: maquina.historial.length + 1,
+  const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
+    nro_evento: -1,
+  });
+
+  const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+  await Historial.create({
+    engrasadora: maquina.id,
+    nro_evento: nro_evento,
     tipo_evento: "Reset Accionam.",
     fecha: maquina.date,
     set_tiempodosif: datos.tiempo_dosif,
@@ -372,10 +386,6 @@ async function procesarResetAccionamientos(maquina, datos, nombre) {
     cont_accionam: 0,
     user: "gateway_" + nombre,
   });
-
-  if (maquina.historial.length > max_eventos) {
-    maquina.historial = maquina.historial.slice(-max_eventos);
-  }
 
   await maquina.save();
   console.log(
@@ -396,8 +406,15 @@ async function procesarSwitchOnOff(maquina, datos, nombre) {
   maquina.cont_accionam = datos.total_accionam;
   maquina.lora_signal = datos.lora_signal;
 
-  maquina.historial.push({
-    nro_evento: maquina.historial.length + 1,
+  const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
+    nro_evento: -1,
+  });
+
+  const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+  await Historial.create({
+    engrasadora: maquina.id,
+    nro_evento: nro_evento,
     tipo_evento: "Switch ON/OFF",
     fecha: new Date(),
     estado: maquina.estado,
@@ -411,10 +428,6 @@ async function procesarSwitchOnOff(maquina, datos, nombre) {
     lora_signal: datos.lora_signal.toString(),
     user: "gateway_" + nombre,
   });
-
-  if (maquina.historial.length > max_eventos) {
-    maquina.historial = maquina.historial.slice(-max_eventos);
-  }
 
   await maquina.save();
   console.log(`Motor: ✅ Switch on_off actualizado para máquina ${maquina.id}`);
@@ -507,7 +520,17 @@ async function solicitarEstados() {
             }
 
             if (m.perdidos === max_fallos) {
-              m.historial.push({
+              const ultimo = await Historial.findOne({
+                engrasadora: maquina.id,
+              }).sort({
+                nro_evento: -1,
+              });
+
+              const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+              await Historial.create({
+                engrasadora: m.id,
+                nro_evento: nro_evento,
                 nro_evento: m.historial.length + 1,
                 tipo_evento: "Falla de comunicación",
                 fecha: new Date(),
@@ -881,8 +904,17 @@ async function verificarUltimoSensado() {
       if (diferencia > umbral) {
         maquina.estado = "desconectada";
 
-        maquina.historial.push({
-          nro_evento: maquina.historial.length + 1,
+        const ultimo = await Historial.findOne({
+          engrasadora: maquina.id,
+        }).sort({
+          nro_evento: -1,
+        });
+
+        const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+        await Historial.create({
+          engrasadora: maquina.id,
+          nro_evento: nro_evento,
           tipo_evento: `No se detectan sensados`,
           fecha: new Date(),
           estado: "desconectada",
@@ -896,10 +928,6 @@ async function verificarUltimoSensado() {
           lora_signal: maquina.lora_signal,
           user: "motor",
         });
-
-        if (maquina.historial.length > max_eventos) {
-          maquina.historial = maquina.historial.slice(-max_eventos);
-        }
 
         await maquina.save();
 
