@@ -296,13 +296,16 @@ async function procesarSensado(maquina, datos, nombre) {
     solicitudesPendientes.delete(maquina.id);
   }
 
+  const nuevoEstado = datos.falla ? "alerta" : "funcionando";
+  const ahora = new Date();
+
   await Engrasadora.updateOne(
     { id: maquina.id },
     {
       $set: {
         perdidos: 0,
-        estado: datos.falla ? "alerta" : "funcionando",
-        date: new Date(),
+        estado: nuevoEstado,
+        date: ahora,
         modelo: datos.modelo,
         set_tiempodosif: datos.tiempo_dosif,
         set_ejes: datos.cant_ejes,
@@ -325,10 +328,10 @@ async function procesarSensado(maquina, datos, nombre) {
 
   await Historial.create({
     engrasadora: maquina.id,
-    nro_evento: nro_evento,
+    nro_evento,
     tipo_evento: "Sensado",
-    fecha: new Date(),
-    estado: maquina.estado,
+    fecha: ahora,
+    estado: nuevoEstado,
     set_tiempodosif: datos.tiempo_dosif,
     set_ejes: datos.cant_ejes,
     sens_corriente: datos.corriente,
@@ -346,82 +349,104 @@ async function procesarSensado(maquina, datos, nombre) {
 }
 
 async function procesarSeteo(maquina, datos, nombre) {
-  maquina.date = new Date();
-  maquina.set_tiempodosif = datos.tiempo_dosif;
-  maquina.set_ejes = datos.cant_ejes;
+  const ahora = new Date();
+
+  await Engrasadora.updateOne(
+    { id: maquina.id },
+    {
+      $set: {
+        date: ahora,
+        set_tiempodosif: datos.tiempo_dosif,
+        set_ejes: datos.cant_ejes,
+      },
+      $inc: { revision: 1 },
+    }
+  );
 
   const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
     nro_evento: -1,
   });
-
   const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
 
   await Historial.create({
     engrasadora: maquina.id,
-    nro_evento: nro_evento,
+    nro_evento,
     tipo_evento: "Seteo",
-    fecha: maquina.date,
+    fecha: ahora,
     set_tiempodosif: datos.tiempo_dosif,
     set_ejes: datos.cant_ejes,
     user: "gateway_" + nombre,
   });
 
-  await maquina.save();
   console.log(`Motor: ✅ Seteo actualizado para máquina ${maquina.id}`);
 }
 
 async function procesarResetAccionamientos(maquina, datos, nombre) {
-  maquina.date = new Date();
-  maquina.cont_accionam = 0;
+  const ahora = new Date();
+
+  await Engrasadora.updateOne(
+    { id: maquina.id },
+    {
+      $set: { date: ahora, cont_accionam: 0 },
+      $inc: { revision: 1 },
+    }
+  );
 
   const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
     nro_evento: -1,
   });
-
   const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
 
   await Historial.create({
     engrasadora: maquina.id,
-    nro_evento: nro_evento,
+    nro_evento,
     tipo_evento: "Reset Accionam.",
-    fecha: maquina.date,
+    fecha: ahora,
     set_tiempodosif: datos.tiempo_dosif,
     set_ejes: datos.cant_ejes,
     cont_accionam: 0,
     user: "gateway_" + nombre,
   });
 
-  await maquina.save();
   console.log(
     `Motor: ✅ Reseteo accionamientos actualizado para máquina ${maquina.id}`
   );
 }
 
 async function procesarSwitchOnOff(maquina, datos, nombre) {
-  maquina.date = new Date();
-  const on_offDig = datos.on_off ? "1" : "0";
-  maquina.on_off = on_offDig;
-  maquina.estado = datos.on_off ? "funcionando" : "pm";
-  maquina.set_tiempodosif = datos.tiempo_dosif;
-  maquina.set_ejes = datos.cant_ejes;
-  maquina.sens_corriente = datos.corriente;
-  maquina.sens_flujo = datos.flujo;
-  maquina.sens_power = datos.power;
-  maquina.cont_accionam = datos.total_accionam;
-  maquina.lora_signal = datos.lora_signal;
+  const ahora = new Date();
+  const nuevoEstado = datos.on_off ? "funcionando" : "pm";
+
+  await Engrasadora.updateOne(
+    { id: maquina.id },
+    {
+      $set: {
+        date: ahora,
+        on_off: datos.on_off,
+        estado: nuevoEstado,
+        set_tiempodosif: datos.tiempo_dosif,
+        set_ejes: datos.cant_ejes,
+        sens_corriente: datos.corriente,
+        sens_flujo: datos.flujo,
+        sens_power: datos.power,
+        cont_accionam: datos.total_accionam,
+        lora_signal: datos.lora_signal * -1,
+      },
+      $inc: { revision: 1 },
+    }
+  );
 
   const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
     nro_evento: -1,
   });
-
   const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
 
   await Historial.create({
     engrasadora: maquina.id,
-    nro_evento: nro_evento,
+    nro_evento,
     tipo_evento: "Switch ON/OFF",
-    fecha: new Date(),
-    estado: maquina.estado,
+    fecha: ahora,
+    estado: nuevoEstado,
     set_tiempodosif: datos.tiempo_dosif,
     set_ejes: datos.cant_ejes,
     sens_corriente: datos.corriente,
@@ -429,11 +454,10 @@ async function procesarSwitchOnOff(maquina, datos, nombre) {
     on_off: datos.on_off,
     sens_power: datos.power,
     cont_accionam: datos.total_accionam,
-    lora_signal: datos.lora_signal.toString(),
+    lora_signal: datos.lora_signal * -1,
     user: "gateway_" + nombre,
   });
 
-  await maquina.save();
   console.log(`Motor: ✅ Switch on_off actualizado para máquina ${maquina.id}`);
 }
 
@@ -478,20 +502,10 @@ async function solicitarEstados() {
     const maquinas = await Engrasadora.find({}, "id");
 
     for (const maquina of maquinas) {
-      if (maquina.id == null) {
-        // console.warn(`Engrasadora sin ID:`, maquina);
-        continue;
-      }
-
-      // if (maquina.id == 11) {
-      //   console.log("maquina 11 bypasseada harcodeada");
-      //   continue;
-      // }
+      if (maquina.id == null) continue;
 
       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
-      if (!gateway || gateway.bypass) {
-        continue;
-      }
+      if (!gateway || gateway.bypass) continue;
 
       const idStr = maquina.id.toString().padStart(3, "0");
       const mensaje = `&e0${idStr}#`;
@@ -500,9 +514,7 @@ async function solicitarEstados() {
         idEngrasadora: maquina.id,
         mensaje,
       });
-      if (!mensajeFueEnviado) {
-        continue;
-      }
+      if (!mensajeFueEnviado) continue;
 
       // arrancar timer de respuesta
       if (solicitudesPendientes.has(maquina.id)) {
@@ -513,59 +525,73 @@ async function solicitarEstados() {
 
       const timer = setTimeout(async () => {
         try {
-          const m = await Engrasadora.findOne({ id: maquina.id });
-          if (m) {
-            if (m.perdidos < 999 && m.estado !== "fs" && m.on_off) {
-              m.perdidos = (m.perdidos || 0) + 1;
-            }
+          const m = await Engrasadora.findOne({ id: maquina.id }).lean();
+          if (!m) return;
 
-            if (m.perdidos >= max_fallos && m.estado !== "fs" && m.on_off) {
-              m.estado = "desconectada";
-            }
+          let nuevoEstado = m.estado;
+          let nuevosPerdidos = m.perdidos;
 
-            if (m.perdidos === max_fallos) {
-              const ultimo = await Historial.findOne({
-                engrasadora: maquina.id,
-              }).sort({
-                nro_evento: -1,
-              });
-
-              const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
-
-              await Historial.create({
-                engrasadora: m.id,
-                nro_evento: nro_evento,
-                nro_evento: m.historial.length + 1,
-                tipo_evento: "Falla de comunicación",
-                fecha: new Date(),
-                estado: "desconectada",
-                set_tiempodosif: m.set_tiempodosif,
-                set_ejes: m.set_ejes,
-                sens_corriente: m.corriente,
-                sens_flujo: m.flujo,
-                on_off: m.on_off,
-                sens_power: m.power,
-                cont_accionam: m.cont_accionam,
-                lora_signal: m.lora_signal,
-              });
-            }
-            await m.save();
-            let message = `❌ Engrasadora ${maquina.id} no respondió (fallos: ${m.perdidos}) (${gateway.nombre})`;
-            console.log(message);
-            await guardarLog(message);
+          if (m.perdidos < 999 && m.estado !== "fs" && m.on_off) {
+            nuevosPerdidos = (m.perdidos || 0) + 1;
           }
+
+          if (nuevosPerdidos >= max_fallos && m.estado !== "fs" && m.on_off) {
+            nuevoEstado = "desconectada";
+          }
+
+          await Engrasadora.updateOne(
+            { id: m.id },
+            {
+              $set: {
+                perdidos: nuevosPerdidos,
+                estado: nuevoEstado,
+                date: new Date(),
+              },
+              $inc: { revision: 1 },
+            }
+          );
+
+          // generar historial si acaba de llegar al límite
+          if (nuevosPerdidos === max_fallos) {
+            const ultimo = await Historial.findOne({
+              engrasadora: m.id,
+            }).sort({ nro_evento: -1 });
+
+            const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
+
+            await Historial.create({
+              engrasadora: m.id,
+              nro_evento,
+              tipo_evento: "Falla de comunicación",
+              fecha: new Date(),
+              estado: "desconectada",
+              set_tiempodosif: m.set_tiempodosif,
+              set_ejes: m.set_ejes,
+              sens_corriente: m.corriente,
+              sens_flujo: m.flujo,
+              on_off: m.on_off,
+              sens_power: m.power,
+              cont_accionam: m.cont_accionam,
+              lora_signal: m.lora_signal,
+            });
+          }
+
+          const message = `❌ Engrasadora ${maquina.id} no respondió (fallos: ${nuevosPerdidos}) (${gateway.nombre})`;
+          console.log(message);
+          await guardarLog(message);
         } catch (err) {
-          let message = `Error incrementando perdidos: ${err.message}`;
+          const message = `Error incrementando perdidos: ${err.message}`;
           console.error(message);
           await guardarLog(message);
         }
+
         solicitudesPendientes.delete(maquina.id);
       }, timeOut * 1000);
 
       solicitudesPendientes.set(maquina.id, timer);
     }
   } catch (err) {
-    let message = `Error al solicitar estados:", ${err.message}`;
+    const message = `Error al solicitar estados: ${err.message}`;
     console.error(message);
     await guardarLog(message);
   }
@@ -888,7 +914,10 @@ async function verificarConexionesActivas() {
 
 async function verificarUltimoSensado() {
   try {
-    const maquinas = await Engrasadora.find({});
+    const maquinas = await Engrasadora.find(
+      {},
+      "id date on_off estado set_tiempodosif set_ejes sens_corriente sens_flujo sens_power cont_accionam lora_signal"
+    );
 
     console.log("🕒 Verificando último sensado...");
 
@@ -899,27 +928,31 @@ async function verificarUltimoSensado() {
       if (!maquina.on_off) continue;
       if (["desconectada", "fs"].includes(maquina.estado)) continue;
 
-      //       const gateway = await Gateway.findOne({ engrasadoras: maquina.id });
-      // if (!gateway || gateway.bypass) continue;
-
       const diferencia = ahora - maquina.date.getTime();
       const umbral = tiempoSolicitud * 5 * 1000;
 
       if (diferencia > umbral) {
-        maquina.estado = "desconectada";
+        await Engrasadora.updateOne(
+          { id: maquina.id },
+          {
+            $set: {
+              estado: "desconectada",
+              date: new Date(),
+            },
+            $inc: { revision: 1 },
+          }
+        );
 
         const ultimo = await Historial.findOne({
           engrasadora: maquina.id,
-        }).sort({
-          nro_evento: -1,
-        });
+        }).sort({ nro_evento: -1 });
 
         const nro_evento = ultimo ? ultimo.nro_evento + 1 : 1;
 
         await Historial.create({
           engrasadora: maquina.id,
-          nro_evento: nro_evento,
-          tipo_evento: `No se detectan sensados`,
+          nro_evento,
+          tipo_evento: "No se detectan sensados",
           fecha: new Date(),
           estado: "desconectada",
           set_tiempodosif: maquina.set_tiempodosif,
@@ -932,8 +965,6 @@ async function verificarUltimoSensado() {
           lora_signal: maquina.lora_signal,
           user: "motor",
         });
-
-        await maquina.save();
 
         const message = `⚠️ Engrasadora ${
           maquina.id
