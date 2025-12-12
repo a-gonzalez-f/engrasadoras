@@ -59,6 +59,6 @@ function updateCircles() {
   );
 }
 
-setInterval(checkStatus, 1000);
-setInterval(updateCircles, 500);
+setInterval(checkStatus, 2000);
+setInterval(updateCircles, 1000);
 checkStatus();

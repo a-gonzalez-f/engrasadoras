@@ -98,7 +98,7 @@ setInterval(() => {
   fetch(`/api/engrasadoras/ultimaVersion?linea=${linea}`)
     .then((res) => res.json())
     .then((data) => {
-      // detecto si hay cambios en version
+      // detecto si hay cambios en revision
       const hayCambios = hayCambiosEnVersion(data, ultimaVersion_All);
 
       if (!hayCambios) {
@@ -153,9 +153,9 @@ function hayCambiosEnVersion(nuevo, anterior) {
 
   for (let i = 0; i < nuevo.length; i++) {
     const actual = nuevo[i];
-    const previo = anterior.find((a) => a._id === actual._id);
+    const previo = anterior.find((a) => a.id === actual.id);
 
-    if (!previo || Number(actual.__v) !== Number(previo.__v)) {
+    if (!previo || Number(actual.revision) !== Number(previo.revision)) {
       return true;
     }
   }

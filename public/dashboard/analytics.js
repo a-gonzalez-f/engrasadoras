@@ -19,10 +19,10 @@ const coloresLineas = {
 
 async function cargarResumenGlobal() {
   const hoy = new Date();
-  const hace7dias = new Date();
-  hace7dias.setDate(hoy.getDate() - 7);
+  const hace100dias = new Date();
+  hace100dias.setDate(hoy.getDate() - 100);
 
-  const desde = hace7dias.toISOString().split("T")[0];
+  const desde = hace100dias.toISOString().split("T")[0];
   const hasta = hoy.toISOString().split("T")[0];
 
   const res = await fetch(
@@ -30,14 +30,16 @@ async function cargarResumenGlobal() {
   );
 
   resumenGlobal = await res.json();
+
+  console.log(resumenGlobal);
 }
 
 async function cargarResumenPorLinea() {
   const hoy = new Date();
-  const hace7dias = new Date();
-  hace7dias.setDate(hoy.getDate() - 7);
+  const hace100dias = new Date();
+  hace100dias.setDate(hoy.getDate() - 100);
 
-  const desde = hace7dias.toISOString().split("T")[0];
+  const desde = hace100dias.toISOString().split("T")[0];
   const hasta = hoy.toISOString().split("T")[0];
 
   const resA = await fetch(
@@ -61,7 +63,7 @@ async function cargarResumenPorLinea() {
   resumenLineaD = await resD.json();
 
   const resE = await fetch(
-    `/api/engrasadoras/resumen/linea/D?desde=${desde}&hasta=${hasta}`
+    `/api/engrasadoras/resumen/linea/E?desde=${desde}&hasta=${hasta}`
   );
   resumenLineaE = await resE.json();
 
@@ -77,7 +79,7 @@ const redondearNumero = (n) => Math.round(n * 100) / 100;
 async function graficarEstadosGlobal() {
   const data = resumenGlobal;
 
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
   const alertas = data.map((d) => redondearNumero(d.prom_maq_alertas));
   const funcs = data.map((d) => redondearNumero(d.prom_maq_func));
   const fs = data.map((d) => redondearNumero(d.prom_maq_fs));
@@ -94,6 +96,20 @@ async function graficarEstadosGlobal() {
     legend: {
       data: ["Alertas", "Funcionando", "Fuera de Servicio", "Desconectadas"],
     },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
     series: [
@@ -132,7 +148,7 @@ async function graficarEstadosGlobal() {
 async function graficarPorcentajesGlobal() {
   const data = resumenGlobal;
 
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
 
   const alertas = data.map((d) => redondearPorcentaje(d.porc_estado.alerta));
   const funcs = data.map((d) => redondearPorcentaje(d.porc_estado.funcionando));
@@ -157,6 +173,20 @@ async function graficarPorcentajesGlobal() {
       max: 100,
       axisLabel: { formatter: "{value}%" },
     },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series: [
       {
         name: "Alertas",
@@ -197,7 +227,7 @@ async function graficarPorcentajesGlobal() {
 async function graficarAccionamGlobal() {
   const data = resumenGlobal;
 
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
   const total_accionam = data.map((d) =>
     redondearNumero(d.total_delta_accionam)
   );
@@ -222,6 +252,20 @@ async function graficarAccionamGlobal() {
     yAxis: {
       type: "value",
     },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series: [
       {
         name: "Total",
@@ -265,7 +309,9 @@ async function graficarAccionamPorLinea() {
   const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
   if (!algunaLinea) return;
 
-  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = algunaLinea.map((d) =>
+    new Date(d.fecha).toLocaleDateString("es-AR")
+  );
 
   const series = [];
 
@@ -302,6 +348,20 @@ async function graficarAccionamPorLinea() {
     },
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series,
   });
 }
@@ -319,7 +379,9 @@ async function graficarAlertasPorLinea() {
   const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
   if (!algunaLinea) return;
 
-  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = algunaLinea.map((d) =>
+    new Date(d.fecha).toLocaleDateString("es-AR")
+  );
 
   const series = [];
 
@@ -356,6 +418,20 @@ async function graficarAlertasPorLinea() {
     },
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series,
   });
 }
@@ -373,7 +449,9 @@ async function graficarFuncionandoPorLinea() {
   const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
   if (!algunaLinea) return;
 
-  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = algunaLinea.map((d) =>
+    new Date(d.fecha).toLocaleDateString("es-AR")
+  );
 
   const series = [];
 
@@ -408,6 +486,20 @@ async function graficarFuncionandoPorLinea() {
     },
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series,
   });
 }
@@ -425,7 +517,9 @@ async function graficarDescPorLinea() {
   const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
   if (!algunaLinea) return;
 
-  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = algunaLinea.map((d) =>
+    new Date(d.fecha).toLocaleDateString("es-AR")
+  );
 
   const series = [];
 
@@ -457,6 +551,20 @@ async function graficarDescPorLinea() {
     },
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series,
   });
 }
@@ -474,7 +582,9 @@ async function graficarFSPorLinea() {
   const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
   if (!algunaLinea) return;
 
-  const fechas = algunaLinea.map((d) => new Date(d.fecha).toLocaleDateString());
+  const fechas = algunaLinea.map((d) =>
+    new Date(d.fecha).toLocaleDateString("es-AR")
+  );
 
   const series = [];
 
@@ -506,6 +616,20 @@ async function graficarFSPorLinea() {
     },
     xAxis: { type: "category", data: fechas },
     yAxis: { type: "value" },
+    dataZoom: [
+      {
+        type: "inside",
+        start: 93,
+        end: 100,
+      },
+      {
+        type: "slider",
+        show: false,
+        start: 93,
+        end: 100,
+      },
+    ],
+
     series,
   });
 }
@@ -531,6 +655,6 @@ const swiper = new Swiper(".mySwiper", {
     nextEl: ".swiper-button-next",
     prevEl: ".swiper-button-prev",
   },
-  allowTouchMove: true,
+  allowTouchMove: false,
   touchStartPreventDefault: false,
 });

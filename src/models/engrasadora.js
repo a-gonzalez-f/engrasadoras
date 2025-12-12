@@ -2,22 +2,34 @@
 
 const mongoose = require("mongoose");
 
-const historialSchema = new mongoose.Schema({
-  nro_evento: Number,
-  tipo_evento: String,
-  fecha: { type: Date, default: Date.now },
-  estado: String,
-  set_tiempodosif: Number,
-  set_ejes: Number,
-  on_off: Boolean,
-  sens_corriente: Number,
-  sens_flujo: Boolean,
-  sens_power: Boolean,
-  cont_accionam: Number,
-  user: String,
-  lora_signal: Number,
-  falla: Boolean,
-});
+const HistorialSchema = new mongoose.Schema(
+  {
+    engrasadora: {
+      type: Number,
+      ref: "engrasadora",
+      required: true,
+      index: true,
+    },
+    nro_evento: Number,
+    tipo_evento: String,
+    fecha: { type: Date, default: Date.now },
+    estado: String,
+    set_tiempodosif: Number,
+    set_ejes: Number,
+    on_off: Boolean,
+    sens_corriente: Number,
+    sens_flujo: Boolean,
+    sens_power: Boolean,
+    cont_accionam: Number,
+    user: String,
+    lora_signal: Number,
+    falla: Boolean,
+  },
+  { timestamps: true }
+);
+
+HistorialSchema.index({ engrasadora: 1, nro_evento: 1 }, { unique: true });
+HistorialSchema.index({ fecha: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 365 });
 
 const comentariosschema = new mongoose.Schema({
   date: Date,
@@ -49,10 +61,10 @@ const EngrasadoraSchema = new mongoose.Schema(
 
     estado: { type: String, default: "desconectada" },
 
-    historial: [historialSchema],
     comentarios: [comentariosschema],
 
     perdidos: { type: Number, default: 0 },
+    revision: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
@@ -167,8 +179,15 @@ ResumenDiaSchema.index(
 );
 
 const Engrasadora = mongoose.model("engrasadora", EngrasadoraSchema);
+const Historial = mongoose.model("Historial", HistorialSchema);
 const SnapshotHora = mongoose.model("SnapshotHora", SnapshotHoraSchema);
 const ResumenHora = mongoose.model("ResumenHora", ResumenHoraSchema);
 const ResumenDia = mongoose.model("ResumenDia", ResumenDiaSchema);
 
-module.exports = { Engrasadora, SnapshotHora, ResumenHora, ResumenDia };
+module.exports = {
+  Engrasadora,
+  Historial,
+  SnapshotHora,
+  ResumenHora,
+  ResumenDia,
+};
