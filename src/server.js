@@ -53,54 +53,8 @@ mongoose
       console.log(`Servidor corriendo en http://localhost:${process.env.PORT}`)
     );
 
-    cron.schedule("0 * * * *", ejecutarSnapshotHora); // cada hora minuto 0
-    cron.schedule("2 * * * *", ejecutarResumenHora); // cada hora minuto 2
-    cron.schedule("4 0 * * *", ejecutarResumenDia); // todos los días 00:04
-
     // server.listen(process.env.PORT, "0.0.0.0", () =>
     //   console.log(`Servidor corriendo en el puerto ${process.env.PORT}`)
     // );
   })
   .catch((err) => console.error("Error al conectar a MongoDB:", err));
-
-function ejecutarSnapshotHora() {
-  const comando = `node ${path.join(__dirname, "snapshotHora.js")}`;
-  console.log(`⏱ Ejecutando snapshot hora: ${new Date().toISOString()}`);
-
-  exec(comando, (error, stdout, stderr) => {
-    if (error) {
-      console.error("❌ Error ejecutando snapshot hora:", error.message);
-      return;
-    }
-    if (stderr) console.error("⚠️", stderr);
-    if (stdout) console.log(stdout.trim());
-  });
-}
-
-function ejecutarResumenHora() {
-  const comando = `node ${path.join(__dirname, "resumenHora.js")}`;
-  console.log(`⏱ Ejecutando resumenHora: ${new Date().toISOString()}`);
-
-  exec(comando, (error, stdout, stderr) => {
-    if (error) {
-      console.error("❌ Error ejecutando resumenHora:", error.message);
-      return;
-    }
-    if (stderr) console.error("⚠️", stderr);
-    if (stdout) console.log(stdout.trim());
-  });
-}
-
-function ejecutarResumenDia() {
-  const comando = `node ${path.join(__dirname, "resumenDia.js")}`;
-  console.log(`⏱ Ejecutando resumenDia: ${new Date().toISOString()}`);
-
-  exec(comando, (error, stdout, stderr) => {
-    if (error) {
-      console.error("❌ Error ejecutando resumenDia:", error.message);
-      return;
-    }
-    if (stderr) console.error("⚠️", stderr);
-    if (stdout) console.log(stdout.trim());
-  });
-}
