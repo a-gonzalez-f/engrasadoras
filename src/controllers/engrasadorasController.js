@@ -549,7 +549,7 @@ const ultimaVersionAll = async (req, res) => {
     const engrasadoras = await Engrasadora.find(
       req.query.linea ? { linea: req.query.linea } : {}
     )
-      .select("_id __v")
+      .select("id revision")
       .lean();
 
     res.json(engrasadoras);

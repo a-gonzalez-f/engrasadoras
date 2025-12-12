@@ -63,6 +63,7 @@ const EngrasadoraSchema = new mongoose.Schema(
     comentarios: [comentariosschema],
 
     perdidos: { type: Number, default: 0 },
+    revision: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

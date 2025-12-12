@@ -296,22 +296,26 @@ async function procesarSensado(maquina, datos, nombre) {
     solicitudesPendientes.delete(maquina.id);
   }
 
-  maquina.perdidos = 0;
-  maquina.estado = datos.falla ? "alerta" : "funcionando";
-
-  maquina.date = new Date();
-  maquina.modelo = datos.modelo;
-  maquina.set_tiempodosif = datos.tiempo_dosif;
-  maquina.set_ejes = datos.cant_ejes;
-  maquina.sens_corriente = datos.corriente;
-  maquina.sens_flujo = datos.flujo;
-  maquina.on_off = datos.on_off;
-  maquina.sens_power = datos.power;
-  maquina.cont_accionam = datos.total_accionam;
-  maquina.estado = datos.falla ? "alerta" : "funcionando";
-  maquina.lora_signal = datos.lora_signal * -1;
-
-  await maquina.save();
+  await Engrasadora.updateOne(
+    { id: maquina.id },
+    {
+      $set: {
+        perdidos: 0,
+        estado: datos.falla ? "alerta" : "funcionando",
+        date: new Date(),
+        modelo: datos.modelo,
+        set_tiempodosif: datos.tiempo_dosif,
+        set_ejes: datos.cant_ejes,
+        sens_corriente: datos.corriente,
+        sens_flujo: datos.flujo,
+        on_off: datos.on_off,
+        sens_power: datos.power,
+        cont_accionam: datos.total_accionam,
+        lora_signal: datos.lora_signal * -1,
+      },
+      $inc: { revision: 1 },
+    }
+  );
 
   const ultimo = await Historial.findOne({ engrasadora: maquina.id }).sort({
     nro_evento: -1,
