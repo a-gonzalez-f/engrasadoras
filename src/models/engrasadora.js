@@ -29,6 +29,7 @@ const HistorialSchema = new mongoose.Schema(
 );
 
 HistorialSchema.index({ engrasadora: 1, nro_evento: 1 }, { unique: true });
+HistorialSchema.index({ fecha: 1 }, { expireAfterSeconds: 60 * 60 * 24 * 365 });
 
 const comentariosschema = new mongoose.Schema({
   date: Date,
