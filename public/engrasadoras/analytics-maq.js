@@ -174,7 +174,7 @@ async function renderEstados(data) {
       },
     },
     dataZoom: [
-      { type: "slider", show: false, start: 0, end: 100 },
+      { type: "slider", show: false },
       { type: "inside", start: 0, end: 100 },
     ],
     series: [
