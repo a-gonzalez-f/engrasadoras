@@ -1,5 +1,5 @@
 // resumenHoraLinea.js
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: "/usr/src/app/.env" });
 const mongoose = require("mongoose");
 const conectarDB = require("./db");
 const { SnapshotHora, ResumenHora } = require("./models/engrasadora");

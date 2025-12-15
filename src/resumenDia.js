@@ -1,5 +1,5 @@
 // src/resumenDia.js
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: "/usr/src/app/.env" });
 const mongoose = require("mongoose");
 const conectarDB = require("./db");
 const {

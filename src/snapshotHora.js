@@ -1,5 +1,5 @@
 // snapshotHora.js
-require("dotenv").config({ path: "../.env" });
+require("dotenv").config({ path: "/usr/src/app/.env" });
 const conectarDB = require("./db");
 const mongoose = require("mongoose");
 const {
