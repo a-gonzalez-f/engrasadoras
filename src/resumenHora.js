@@ -8,12 +8,15 @@ const { SnapshotHora, ResumenHora } = require("./models/engrasadora");
 const arg = process.argv[2];
 const baseHoraUTC = arg ? new Date(arg + "Z") : new Date();
 
+// hora anterior
+const horaBase = new Date(baseHoraUTC.getTime() - 60 * 60 * 1000);
+
 const horaInicio = new Date(
   Date.UTC(
-    baseHoraUTC.getUTCFullYear(),
-    baseHoraUTC.getUTCMonth(),
-    baseHoraUTC.getUTCDate(),
-    baseHoraUTC.getUTCHours(),
+    horaBase.getUTCFullYear(),
+    horaBase.getUTCMonth(),
+    horaBase.getUTCDate(),
+    horaBase.getUTCHours(),
     0,
     0,
     0

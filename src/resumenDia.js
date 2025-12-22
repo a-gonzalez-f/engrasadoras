@@ -12,11 +12,14 @@ const {
 const arg = process.argv[2];
 const baseFechaUTC = arg ? new Date(arg + "T00:00:00Z") : new Date();
 
+// dia anterior
+const fechaBase = new Date(baseFechaUTC.getTime() - 24 * 60 * 60 * 1000);
+
 const inicioDia = new Date(
   Date.UTC(
-    baseFechaUTC.getUTCFullYear(),
-    baseFechaUTC.getUTCMonth(),
-    baseFechaUTC.getUTCDate(),
+    fechaBase.getUTCFullYear(),
+    fechaBase.getUTCMonth(),
+    fechaBase.getUTCDate(),
     0,
     0,
     0
