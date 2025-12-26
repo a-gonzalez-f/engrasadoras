@@ -142,8 +142,12 @@ function renderDonutPorLinea(data) {
         sinMaquinas.classList.add("sinMaquinas");
         sinMaquinas.id = `sinMaquinas-${linea}`;
         sinMaquinas.innerHTML =
-          `<span class="material-symbols-outlined" id="sinMaquinasIcon">error</span>` +
-          `<p style="color:grey;">Sin máquinas</p>`;
+          `<img
+        src="../img/icons/error_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="alerta"
+        class="icon"
+        id="sinMaquinasIcon"
+      />` + `<p style="color:grey;">Sin máquinas</p>`;
 
         if (container) container.appendChild(sinMaquinas);
       }

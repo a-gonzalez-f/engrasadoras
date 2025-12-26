@@ -6,6 +6,7 @@
   display: flex;
   transition: all 0.5s;
   bottom: 1rem;
+  z-index: 2;
 }
 
 #btnIngreso {

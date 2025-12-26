@@ -198,13 +198,13 @@ async function renderEstados(data) {
 }
 
 // swiper -------------------------------------------------------
-const swiper = new Swiper(".mySwiper", {
-  loop: false,
-  spaceBetween: 30,
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-  allowTouchMove: false,
-  touchStartPreventDefault: false,
-});
+// const swiper = new Swiper(".mySwiper", {
+//   loop: false,
+//   spaceBetween: 30,
+//   navigation: {
+//     nextEl: ".swiper-button-next",
+//     prevEl: ".swiper-button-prev",
+//   },
+//   allowTouchMove: false,
+//   touchStartPreventDefault: false,
+// });

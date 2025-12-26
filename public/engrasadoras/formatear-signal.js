@@ -17,19 +17,19 @@ export function formatearSignal(signal, modo = "icono") {
   const estadosMap = {
     excelente: {
       texto: "Excelente",
-      icono: `<span title="${signal_abs}" class="material-symbols-outlined" style="color:var(--color-pstv)">signal_cellular_alt</span>`,
+      icono: `<img src="../img/icons/signal_cellular_alt_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg" title="${signal_abs}" class="icon"/>`,
     },
     buena: {
       texto: "Buena",
-      icono: `<span title="${signal_abs}" class="material-symbols-outlined" style="color:var(--color-pstv)">signal_cellular_alt_2_bar</span>`,
+      icono: `<img src="../img/icons/signal_cellular_alt_2_bar_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg" title="${signal_abs}" class="icon"/>`,
     },
     pobre: {
       texto: "Pobre",
-      icono: `<span title="${signal_abs}" class="material-symbols-outlined" style="color:var(--color-alerta)">signal_cellular_alt_1_bar</span>`,
+      icono: `<img src="../img/icons/signal_cellular_alt_1_bar_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg" title="${signal_abs}" class="icon"/>`,
     },
     sinsenal: {
       texto: "Sin señal",
-      icono: `<span title="${signal_abs}" class="material-symbols-outlined" style="color:var(--color-error)">signal_cellular_connected_no_internet_0_bar</span>`,
+      icono: `<img src="../img/icons/signal_cellular_connected_no_internet_0_bar_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg" title="${signal_abs}" class="icon"/>`,
     },
   };
 

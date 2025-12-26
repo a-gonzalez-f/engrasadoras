@@ -20,11 +20,19 @@
   <body>
     <header>
       <button onclick="location.href='/'">
-        <span class="material-symbols-outlined"> home </span>
+        <img
+          src="../img/icons/home_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="home"
+          class="icon"
+        />
       </button>
-      <h2>DETALLE LINEA <span id="tituloLinea"></span></h2>
+      <h2>LINEA <span id="tituloLinea"></span></h2>
       <button onclick="toggleMenu()">
-        <span class="material-symbols-outlined"> menu </span>
+        <img
+          src="../img/icons/menu_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="menu"
+          class="icon"
+        />
       </button>
       <nav id="menu" class="menu">
         <a href="/">Home</a>
@@ -71,33 +79,39 @@
     <div id="modalDetalle" class="modal">
       <div class="modal-contenido">
         <div class="perdidosCont">
-          <span class="material-symbols-outlined perdidos" title="Perdidos">
-            error </span
-          ><span id="perdidos">0</span>
+          <img
+            src="../img/icons/error_16dp_FFF8E94D_FILL0_wght400_GRAD0_opsz20.svg"
+            class="icon perdidos"
+            title="Perdidos"
+          /><span id="perdidos">0</span>
         </div>
-        <span id="cerrarModal" class="material-symbols-outlined cerrar"
-          >close</span
-        >
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="cerrarModal"
+          class="icon cerrar"
+        />
         <div id="contenidoModal"></div>
       </div>
     </div>
     <div id="modalComentarios" class="modal">
       <div class="modal-contenido listadoComments">
         <h6>COMENTARIOS</h6>
-        <span class="material-symbols-outlined cerrar" id="cerrarComentarios"
-          >close</span
-        >
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          class="icon cerrar"
+          id="cerrarComentarios"
+        />
         <div id="listaComentarios"></div>
       </div>
     </div>
     <!-- Modal Historial Completo -->
     <div id="modalHistorialCompleto" class="modal">
       <div class="modal-contenido">
-        <span
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
           id="cerrarHistorialCompleto"
-          class="material-symbols-outlined cerrar-modal"
-          >close</span
-        >
+          class="icon cerrar-modal"
+        />
         <div class="modal-header">
           <h3>HISTORIAL COMPLETO <span id="titleHistorial"></span></h3>
         </div>
@@ -120,13 +134,7 @@
                   <th>Accionamientos</th>
                 </tr>
                 <tr id="filtros-tabla">
-                  <th>
-                    <!-- <button type="button" id="evento-filtro" value="ascendente">
-                      <span class="material-symbols-outlined">
-                        keyboard_arrow_up
-                      </span>
-                    </button> -->
-                  </th>
+                  <th></th>
                   <th>
                     <select
                       class="filtro"
@@ -155,21 +163,9 @@
                       <option value="desconectada">Desconectada</option>
                     </select>
                   </th>
-                  <th>
-                    <!-- <button type="button" id="tiempo-filtro" value="unset">
-                      <span class="material-symbols-outlined"> remove </span>
-                    </button> -->
-                  </th>
-                  <th>
-                    <!-- <button type="button" id="ejes-filtro" value="unset">
-                      <span class="material-symbols-outlined"> remove </span>
-                    </button> -->
-                  </th>
-                  <th>
-                    <!-- <button type="button" id="corriente-filtro" value="unset">
-                      <span class="material-symbols-outlined"> remove </span>
-                    </button> -->
-                  </th>
+                  <th></th>
+                  <th></th>
+                  <th></th>
                   <th>
                     <select class="filtro" name="flujo" id="flujo-filtro">
                       <option value="todos">Todos</option>
@@ -184,11 +180,7 @@
                       <option value="false">No</option>
                     </select>
                   </th>
-                  <th>
-                    <!-- <button type="button" id="senal-filtro" value="unset">
-                      <span class="material-symbols-outlined"> remove </span>
-                    </button> -->
-                  </th>
+                  <th></th>
                   <th>
                     <select class="filtro" name="onoff" id="onoff-filtro">
                       <option value="todos">Todos</option>
@@ -217,16 +209,19 @@
     <div id="overlay">
       <div id="overlayContent">
         <p id="overlay-message">Esperando confirmación...</p>
-        <span class="material-symbols-outlined loading">
-          progress_activity
-        </span>
+        <img
+          class="icon loading"
+          src="../img/icons/progress_activity_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+        />
       </div>
     </div>
     <div id="modalEdit">
       <div id="editContent">
-        <span id="cerrarModalEdit" class="material-symbols-outlined cerrar"
-          >close</span
-        >
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="cerrarModalEdit"
+          class="icon cerrar"
+        />
         <h1>Editar Engrasadora</h1>
         <form id="editarEngrasadora">
           <div>
@@ -261,14 +256,21 @@
     </div>
     <div class="total"><span id="total_value">Total: 0</span></div>
     <button id="btnAddMaq" class="sideBtn">
-      Agregar
-      <span class="material-symbols-outlined plus">add </span>
+      <div>Agregar</div>
+      <div class="plus">
+        <img
+          src="../img/icons/add_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          class="icon"
+        />
+      </div>
     </button>
     <div id="modalIngresoMaq">
       <form id="formEngrasadora" class="formulario">
-        <span id="cerrarModalIngreso" class="material-symbols-outlined cerrar"
-          >close</span
-        >
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="cerrarModalIngreso"
+          class="icon cerrar"
+        />
         <h3>Agregar Engrasadora</h3>
 
         <label
@@ -332,42 +334,42 @@
 
     <div id="modalAnalytics" class="modal">
       <div class="modal-contenido">
-        <span
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
           id="cerrarAnalytics"
-          class="material-symbols-outlined cerrar-modal"
-          >close</span
-        >
+          class="icon cerrar-modal"
+        />
         <div class="modal-header">
           <h3>Analytics | <span id="analytics-de"></span></h3>
         </div>
         <div class="modal-body">
           <div id="message-analytics"></div>
           <!-- Slider -->
-          <div class="swiper mySwiper">
+          <!-- <div class="swiper mySwiper">
             <div class="swiper-wrapper">
-              <div class="swiper-slide">
-                <div class="analytics-container">
-                  <div id="delta-accionam" class="chart"></div>
-                  <div id="estado-chart" class="chart"></div>
-                  <div id="accionam-global" class="chart"></div>
-                  <div id="accionam-lineas" class="chart"></div>
-                </div>
-              </div>
-
-              <div class="swiper-slide">
-                <div class="analytics-container">
-                  <div class="chart" id="funcionandoPorLinea"></div>
-                  <div class="chart" id="alertasPorLinea"></div>
-                  <div class="chart" id="descPorLinea"></div>
-                  <div class="chart" id="fsPorLinea"></div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Controles -->
-            <div class="swiper-button-prev"></div>
-            <div class="swiper-button-next"></div>
+              <div class="swiper-slide"> -->
+          <div class="analytics-container">
+            <div id="delta-accionam" class="chart"></div>
+            <div id="estado-chart" class="chart"></div>
+            <div id="accionam-global" class="chart"></div>
+            <div id="accionam-lineas" class="chart"></div>
           </div>
+          <!-- </div> -->
+
+          <!-- <div class="swiper-slide"> -->
+          <!-- <div class="analytics-container">
+            <div class="chart" id="funcionandoPorLinea"></div>
+            <div class="chart" id="alertasPorLinea"></div>
+            <div class="chart" id="descPorLinea"></div>
+            <div class="chart" id="fsPorLinea"></div>
+          </div> -->
+          <!-- </div> -->
+          <!-- </div> -->
+
+          <!-- Controles -->
+          <!-- <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div> -->
+          <!-- </div> -->
         </div>
       </div>
     </div>
@@ -376,13 +378,16 @@
       <div id="abrirAnalyticsLinea">
         <p>Analytics</p>
         <div>
-          <span class="material-symbols-outlined">bar_chart_4_bars</span>
+          <img
+            class="icon"
+            src="../img/icons/bar_chart_4_bars_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          />
         </div>
       </div>
     </div>
 
     <script src="/app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.min.js"></script>
     <script type="module" src="/engrasadoras/detalle.js"></script>
     <script type="module" src="/engrasadoras/ingresoMaq/ingresoMaq.js"></script>

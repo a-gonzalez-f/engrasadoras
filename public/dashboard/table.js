@@ -46,22 +46,50 @@ function renderTabla(data) {
 
 function booleanToIcon(valor) {
   return valor
-    ? `<span class="material-symbols-outlined" style="color:var(--color-pstv)">check_circle</span>`
-    : `<span class="material-symbols-outlined" style="color:var(--color-error)">error</span>`;
+    ? `<img
+        src="../img/icons/check_circle_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="func"
+        class="icon"
+      />`
+    : `<img
+        src="../img/icons/error_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="alerta"
+        class="icon"
+      />`;
 }
 
 function formatearEstado(estado) {
   switch (estado) {
     case "funcionando":
-      return `<span class="material-symbols-outlined" style="color:var(--color-pstv)"> check_circle </span>`;
+      return `<img
+        src="../img/icons/check_circle_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="func"
+        class="icon"
+      />`;
     case "alerta":
-      return `<span class="material-symbols-outlined" style="color:var(--color-alerta)"> error </span>`;
+      return `<img
+        src="../img/icons/error_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="alerta"
+        class="icon"
+      />`;
     case "desconectada":
-      return `<span class="material-symbols-outlined" style="color:var(--color-desconectada)"> wifi_off </span>`;
+      return `<img
+        src="../img/icons/wifi_off_24dp_888_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="desc"
+        class="icon"
+      />`;
     case "fs":
-      return `<span class="material-symbols-outlined" style="color:var(--color-error)"> block </span>`;
+      return `<img
+        src="../img/icons/block_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="fs"
+        class="icon"
+      />`;
     case "pm":
-      return `<span class="material-symbols-outlined" style="color:var(--color-pstv-alt)">pause_circle</span>`;
+      return `<img
+        src="../img/icons/pause_circle_24dp_5DBE65_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="fs"
+        class="icon"
+      />`;
     default:
       return estado;
   }

@@ -35,11 +35,19 @@ export function handleRightClick(event, maquina) {
   menu.classList.add("actionsMenu");
   menu.innerHTML = `
     <div class="edit" data-maquina-id="${maquina._id}">
-    <span class="material-symbols-outlined edit">edit</span>
+    <img
+        src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="alerta"
+        class="icon edit"
+      />
     <span>Editar</span>
     </div>
     <div class="delete" data-maquina-id="${maquina._id}">
-    <span class="material-symbols-outlined delete">delete</span>
+    <img
+        src="../img/icons/delete_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="alerta"
+        class="icon delete"
+      />
     <span>Borrar</span>
     </div>
   `;

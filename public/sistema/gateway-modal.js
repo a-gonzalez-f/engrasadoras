@@ -131,7 +131,7 @@ function renderizarEngrasadoras(lista) {
         <input class="id" type="text" name="idEngrasadora" value="${id}" autocomplete="off" required />
         <div class="actionButtons flex">
           <button type="button" class="btnRemove">
-            <span class="material-symbols-outlined remove">remove</span>
+            <img src="../img/icons/remove_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" class="icon remove"/>
           </button>
         </div>
       </div>
@@ -265,7 +265,7 @@ document.getElementById("addEngrasadora").addEventListener("click", () => {
       <input class="id" type="text" name="idEngrasadora" autocomplete="off" required />
       <div class="actionButtons flex">
         <button type="button" class="btnRemove">
-          <span class="material-symbols-outlined remove">remove</span>
+          <img src="../img/icons/remove_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" class="icon remove"/>
         </button>
       </div>
     </div>

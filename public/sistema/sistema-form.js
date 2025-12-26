@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <input class="id" type="text" name="idEngrasadora" required />
             <div class="actionButtons flex">
               <button>
-                <span class="material-symbols-outlined remove"> remove </span>
+                <img src="../img/icons/remove_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" class="icon remove"/>
               </button>
             </div>
         </div>

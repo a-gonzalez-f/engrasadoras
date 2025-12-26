@@ -72,14 +72,24 @@ export function renderDetalleMaquina(maquina) {
               <p>Tiempo Dosif. (s):</p>
               <div>
                 <p id="tiempoDosif">${e.set_tiempodosif}</p>
-                <span class="material-symbols-outlined icono-editar" id="editarTiempo">edit</span>
+                <img 
+                  class="icon icono-editar"
+                  id="editarTiempo" 
+                  src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                  alt="edit"
+                />
               </div>
             </div>
             <div>
               <p>Cant. de ejes:</p>
               <div>
                 <p id="cantEjes">${e.set_ejes}</p>
-                <span class="material-symbols-outlined icono-editar" id="editarEjes">edit</span>
+                <img 
+                  class="icon icono-editar" 
+                  id="editarEjes"
+                  src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                  alt="edit"
+                />
               </div>
             </div>
             <div>
@@ -96,14 +106,23 @@ export function renderDetalleMaquina(maquina) {
             <p>Ubicación:</p>            
               <div>
               <p id="ubicacion">${e.ubicacion ? e.ubicacion : "-"}</p>
-              <span class="material-symbols-outlined icono-editar" id="editarUbi">edit</span>
+              <img 
+                class="icon icono-editar" 
+                id="editarUbi"
+                src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                alt="edit"
+              />
               </div>
             </div>
             <div>  
               <div id="resetAccionam" class="actionButton reset">
                 <p>Reset Accionamientos</p>
                 <div>
-                  <span class="material-symbols-outlined icono-reset">restart_alt</span>
+                  <img 
+                    class="icon icono-reset"
+                    src="../img/icons/restart_alt_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                    alt="edit"
+                  />
                 </div>
               </div>
               <div id="apagarEquipo" class="actionButton reset">
@@ -163,19 +182,31 @@ export function renderDetalleMaquina(maquina) {
             ${historialHtml}
             <div class="actionButtons">     
               <div id="mostrarAnalytics" class="actionButton">
-                <p>Mostrar Analytics</p>
+                <p>Analytics</p>
                 <div>
-                  <span class="material-symbols-outlined">bar_chart_4_bars</span>
+                  <img 
+                    class="icon"
+                    src="../img/icons/bar_chart_4_bars_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                    alt="chart"
+                  />
                 </div>
               </div>
               <div id="historialCompleto" class="actionButton">
                 <p>Historial Completo</p>
-                <span class="material-symbols-outlined">list</span>
+                  <img 
+                    class="icon"
+                    src="../img/icons/list_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                    alt="chart"
+                  />
               </div>
               <div id="resetHistorial" class="actionButton reset">
                 <p>Reset Historial</p>
                 <div>
-                  <span class="material-symbols-outlined icono-reset">restart_alt</span>
+                  <img 
+                    class="icon icono-reset"
+                    src="../img/icons/restart_alt_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg" 
+                    alt="chart"
+                  />
                 </div>
               </div>
             </div>

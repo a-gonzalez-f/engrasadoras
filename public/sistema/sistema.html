@@ -22,11 +22,19 @@
   <body>
     <header>
       <button onclick="location.href='/'">
-        <span class="material-symbols-outlined"> home </span>
+        <img
+          src="../img/icons/home_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="home"
+          class="icon"
+        />
       </button>
       <h2>SISTEMA</h2>
       <button onclick="toggleMenu()">
-        <span class="material-symbols-outlined"> menu </span>
+        <img
+          src="../img/icons/menu_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          alt="menu"
+          class="icon"
+        />
       </button>
       <nav id="menu" class="menu">
         <a href="/">Home</a>
@@ -55,7 +63,10 @@
       <div class="total"><span id="total_value"> Total: </span></div>
       <div id="modalIngreso">
         <section id="sectionIngreso">
-          <span class="material-symbols-outlined closeModal"> close </span>
+          <img
+            src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+            class="icon closeModal"
+          />
           <form id="formGateway" class="formulario modalBase">
             <h3>Ingreso Gateway</h3>
 
@@ -116,7 +127,10 @@
             <h3>
               Engrasadoras
               <button class="btnAdd">
-                <span class="material-symbols-outlined add"> add </span>
+                <img
+                  src="../img/icons/add_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                  class="icon add"
+                />
               </button>
             </h3>
 
@@ -132,9 +146,10 @@
                   />
                   <div class="actionButtons flex">
                     <button style="display: none">
-                      <span class="material-symbols-outlined remove">
-                        remove
-                      </span>
+                      <img
+                        src="../img/icons/remove_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                        class="icon remove"
+                      />
                     </button>
                   </div>
                 </div>
@@ -149,12 +164,11 @@
       </div>
       <div id="modalTime">
         <section id="sectionTime">
-          <span
+          <img
+            src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
             id="closeModalTime"
-            class="material-symbols-outlined closeModal"
-          >
-            close
-          </span>
+            class="icon closeModal"
+          />
           <h3>CONFIGURACIONES DEL SISTEMA</h3>
           <div class="row contConf">
             <div>
@@ -211,22 +225,31 @@
         </section>
       </div>
       <button id="btnIngreso" class="sideBtn">
-        <span class="material-symbols-outlined chevron"> add </span>
-        Ingresar Gateway
+        <div class="chevron">
+          <img
+            src="../img/icons/add_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+            class="icon"
+          />
+        </div>
+        <div>Ingresar Gateway</div>
       </button>
       <button id="btnTime" class="sideBtn">
-        Setear Tiempo
-        <span class="material-symbols-outlined chevron"> chevron_forward </span>
+        <div>Setear Tiempo</div>
+        <div class="chevron">
+          <img
+            src="../img/icons/chevron_forward_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+            class="icon"
+          />
+        </div>
       </button>
       <section id="blur"></section>
       <section id="estadosSistema" style="left: -15vw">
-        <span
-          class="material-symbols-outlined"
+        <img
+          src="../img/icons/chevron_backward_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          class="icon"
           id="closeStatus"
           style="transform: rotate(180deg)"
-        >
-          chevron_backward
-        </span>
+        />
         <h3>ESTADOS DEL SITE</h3>
         <div class="statusDiv">
           <h4>Node</h4>
@@ -283,12 +306,16 @@
     <!-- Modal Gateway -->
     <div id="gatewayModal" class="modal hidden">
       <div class="modal-content">
-        <span id="cerrarModal" class="material-symbols-outlined close">
-          close
-        </span>
-        <span id="deleteGW" class="material-symbols-outlined delete">
-          delete
-        </span>
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="cerrarModal"
+          class="icon close"
+        />
+        <img
+          src="../img/icons/delete_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="deleteGW"
+          class="icon delete"
+        />
         <form id="formEditGateway">
           <h3 id="mainTitle">
             Gateway
@@ -298,27 +325,33 @@
             <p>IP:</p>
             <div class="row gap">
               <p id="gw-ip"></p>
-              <span id="edit-ip" class="material-symbols-outlined edit"
-                >edit</span
-              >
+              <img
+                src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                id="edit-ip"
+                class="icon edit"
+              />
             </div>
           </div>
           <div class="row padding gap">
             <p>Nombre:</p>
             <div class="row gap">
               <p id="gw-nombre"></p>
-              <span id="edit-nombre" class="material-symbols-outlined edit"
-                >edit</span
-              >
+              <img
+                src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                id="edit-nombre"
+                class="icon edit"
+              />
             </div>
           </div>
           <div class="row padding gap">
             <p>ID:</p>
             <div class="row gap">
               <p id="gw-id"></p>
-              <span id="edit-id" class="material-symbols-outlined edit"
-                >edit</span
-              >
+              <img
+                src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                id="edit-id"
+                class="icon edit"
+              />
             </div>
           </div>
           <div class="row padding">
@@ -339,15 +372,20 @@
             <p>Ubicación:</p>
             <div class="row gap">
               <p id="gw-ubicacion"></p>
-              <span id="edit-ubi" class="material-symbols-outlined edit"
-                >edit</span
-              >
+              <img
+                src="../img/icons/edit_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                id="edit-ubi"
+                class="icon edit"
+              />
             </div>
           </div>
           <h3 class="titleBorder">
             Engrasadoras conectadas
             <button id="addEngrasadora" class="btnAdd" type="button">
-              <span class="material-symbols-outlined add"> add </span>
+              <img
+                src="../img/icons/add_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+                class="icon add"
+              />
             </button>
           </h3>
           <div id="sectionEngrasadoras">
@@ -378,17 +416,18 @@
     <div id="logsModal" class="modal hidden">
       <div class="modal-content" id="logsContent">
         <div id="updateDiv">
-          <span
+          <img
+            src="../img/icons/update_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
             id="updateLogs"
-            class="material-symbols-outlined"
+            class="icon"
             title="Nuevos logs"
-          >
-            update
-          </span>
+          />
         </div>
-        <span id="closeModalLogs" class="material-symbols-outlined closeModal">
-          close
-        </span>
+        <img
+          src="../img/icons/close_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+          id="closeModalLogs"
+          class="icon closeModal"
+        />
         <h3>Logs del Sistema</h3>
         <div id="logsContainer">
           <table>

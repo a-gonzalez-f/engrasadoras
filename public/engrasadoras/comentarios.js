@@ -27,7 +27,11 @@ export function listarComentarios(maquina, abrirModal = true) {
           <button class="btnEliminarComentario" data-index="${index}" data-id="${
           maquina._id
         }">
-          <span class="material-symbols-outlined deleteBtn">delete</span>
+          <img
+            src="../img/icons/delete_24dp_FFF8E9_FILL0_wght400_GRAD0_opsz24.svg"
+            alt="delete"
+            class="icon deleteBtn"
+          />
         </button>
           <hr>
         </div>

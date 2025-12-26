@@ -25,6 +25,11 @@
   font-style: normal;
 }
 
+.icon {
+  display: flex;
+  margin: auto;
+}
+
 .material-symbols-outlined {
   cursor: pointer;
   font-family: "Material Symbols Outlined";

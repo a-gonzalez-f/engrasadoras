@@ -2,23 +2,28 @@ export function formatearEstado(estado, modo = "icono") {
   const estadosMap = {
     funcionando: {
       texto: "Funcionando",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-pstv)">check_circle</span>`,
+      icono: `<img
+        src="../img/icons/check_circle_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
+        alt="func"
+        class="icon"
+        title="Funcionando"
+      />`,
     },
     alerta: {
       texto: "Alerta",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-alerta)">error</span>`,
+      icono: `<img class="icon" src="../img/icons/error_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg"/>`,
     },
     desconectada: {
       texto: "Desconectada",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-desconectada)">wifi_off</span>`,
+      icono: `<img class="icon" src="../img/icons/wifi_off_24dp_888_FILL0_wght400_GRAD0_opsz24.svg"/>`,
     },
     fs: {
       texto: "Fuera de Servicio",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-error)">block</span>`,
+      icono: `<img class="icon" src="../img/icons/block_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg"/>`,
     },
     pm: {
       texto: "Pausa Manual",
-      icono: `<span class="material-symbols-outlined" style="color:var(--color-pstv-alt)">pause_circle</span>`,
+      icono: `<img class="icon" src="../img/icons/pause_circle_24dp_5DBE65_FILL0_wght400_GRAD0_opsz24.svg"/>`,
     },
   };
 
