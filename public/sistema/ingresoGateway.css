@@ -50,3 +50,9 @@ section:hover {
 .actionButtons > button > span {
   font-size: 15px;
 }
+
+.center {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
