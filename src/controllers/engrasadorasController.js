@@ -217,10 +217,10 @@ const resetHistorial = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const engrasadora = await Engrasadora.findById(id);
-    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+    const eng = await Engrasadora.findOne({ id: Number(id) });
+    if (!eng) return res.status(404).send("Engrasadora no encontrada");
 
-    await Historial.deleteMany({ engrasadora: id });
+    await Historial.deleteMany({ engrasadora: Number(id) });
 
     res.json({ ok: true });
   } catch (err) {

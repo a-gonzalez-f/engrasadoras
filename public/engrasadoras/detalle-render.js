@@ -364,7 +364,7 @@ export function renderDetalleMaquina(maquina) {
     )
       return;
 
-    fetch(`/api/engrasadoras/${e._id}/resetHistorial`, {
+    fetch(`/api/engrasadoras/${e.id}/resetHistorial`, {
       method: "PUT",
     })
       .then((res) => {
