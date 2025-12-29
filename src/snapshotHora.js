@@ -70,7 +70,8 @@ async function generarSnapshotHora() {
           lora_signal: null,
 
           delta_accionam: 0,
-          accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
+          accionam_estimados: eng.set_ejes ? (6 * 24) / eng.set_ejes : 0,
+          // ( [cantidad de trenes x hora] * [24 ejes x tren] ) /  seteo de ejes engrasadora
         },
         { upsert: true, new: true }
       );
