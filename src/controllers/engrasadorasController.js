@@ -632,33 +632,48 @@ const accionamHora = async (req, res) => {
 const snapshotId = async (req, res) => {
   try {
     const { id } = req.params;
-    const { desde, hasta } = req.query;
+    const { desde, hasta, servicio } = req.query;
 
     const filtro = { id: Number(id) };
-    let query;
 
-    // Si hay rango de fechas
+    // Filtro horario de servicio
+    if (servicio === "true") {
+      filtro.$expr = {
+        $or: [
+          {
+            $and: [
+              { $gte: [{ $hour: "$fecha" }, 8] },
+              { $lt: [{ $hour: "$fecha" }, 24] },
+            ],
+          },
+          {
+            $and: [
+              { $gte: [{ $hour: "$fecha" }, 0] },
+              { $lt: [{ $hour: "$fecha" }, 3] },
+            ],
+          },
+        ],
+      };
+    }
+
+    // Rango de fechas
     if (desde && hasta) {
       filtro.fecha = {
         $gte: new Date(desde),
         $lte: new Date(hasta),
       };
+    }
 
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
-        .sort({ fecha: 1 });
-    } else {
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
-        .sort({ fecha: -1 })
-        .limit(168); // Últimos 168 snapshots (7*24hs)
+    let query = SnapshotHora.find(filtro)
+      .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
+      .sort({ fecha: desde && hasta ? 1 : -1 });
+
+    if (!desde || !hasta) {
+      query = query.limit(400);
     }
 
     let data = await query;
-
-    if (!desde || !hasta) {
-      data = data.reverse();
-    }
+    if (!desde || !hasta) data.reverse();
 
     res.json(data);
   } catch (err) {
