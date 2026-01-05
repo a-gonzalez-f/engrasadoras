@@ -2,7 +2,7 @@
 const WebSocket = require("ws");
 const readline = require("readline");
 
-const wss = new WebSocket.Server({ port: 80 });
+const wss = new WebSocket.Server({ port: 8080 });
 
 let conexionActual = null;
 
@@ -20,7 +20,7 @@ wss.on("connection", (ws) => {
   });
 });
 
-console.log("Gateway simulado escuchando en puerto 80");
+console.log("Gateway simulado escuchando en puerto 8080");
 
 const rl = readline.createInterface({
   input: process.stdin,
