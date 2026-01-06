@@ -1,5 +1,6 @@
 // resumenHoraLinea.js
-require("dotenv").config({ path: "/usr/src/app/.env" });
+// require("dotenv").config({ path: "/usr/src/app/.env" }); PARA PRODUCCIÓN -----------------------------------------------
+require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
 const mongoose = require("mongoose");
 const conectarDB = require("./db");
 const { SnapshotHora, ResumenHora } = require("./models/engrasadora");
@@ -24,9 +25,15 @@ const horaInicio = new Date(
 );
 const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
 
+function esHorarioServicioUTC(horaInicio) {
+  const h = horaInicio.getUTCHours();
+  return h >= 8 || h < 3;
+}
+
+const horario_servicio = esHorarioServicioUTC(horaInicio);
+
 async function main() {
   await conectarDB();
-  console.log("🟢 Conectado a MongoDB");
   console.log(
     `📊 Generando resumen horario por línea UTC: ${horaInicio.toISOString()} → ${horaFin.toISOString()}`
   );
@@ -57,7 +64,13 @@ async function generarResumenPorLinea(horaInicio, horaFin) {
 
     await ResumenHora.findOneAndUpdate(
       { tipo: "linea", linea, fecha: horaInicio },
-      { tipo: "linea", linea, fecha: horaInicio, ...resumen },
+      {
+        tipo: "linea",
+        linea,
+        fecha: horaInicio,
+        horario_servicio,
+        ...resumen,
+      },
       { upsert: true, new: true }
     );
 
@@ -65,7 +78,7 @@ async function generarResumenPorLinea(horaInicio, horaFin) {
   }
 }
 
-async function generarResumenGlobal(inicioDia, finDia) {
+async function generarResumenGlobal(inicio, fin) {
   const snapshots = await SnapshotHora.find({
     fecha: { $gte: horaInicio, $lt: horaFin },
   });
@@ -78,8 +91,13 @@ async function generarResumenGlobal(inicioDia, finDia) {
   const resumen = calcularEstadisticas(snapshots);
 
   await ResumenHora.findOneAndUpdate(
-    { tipo: "total", fecha: inicioDia },
-    { tipo: "total", fecha: inicioDia, ...resumen },
+    { tipo: "total", fecha: inicio },
+    {
+      tipo: "total",
+      fecha: inicio,
+      horario_servicio,
+      ...resumen,
+    },
     { upsert: true, new: true }
   );
 

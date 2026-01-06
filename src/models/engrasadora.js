@@ -89,6 +89,8 @@ const SnapshotHoraSchema = new mongoose.Schema(
 
     delta_accionam: { type: Number },
     accionam_estimados: { type: Number },
+
+    horario_servicio: { type: Boolean },
   },
 
   { timestamps: true }
@@ -129,6 +131,8 @@ const ResumenHoraSchema = new mongoose.Schema(
     total_maq_func: Number,
     total_delta_accionam: Number,
     accionam_estimados: Number,
+
+    horario_servicio: Boolean,
   },
   { timestamps: true }
 );
