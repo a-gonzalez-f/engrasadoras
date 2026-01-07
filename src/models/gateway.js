@@ -14,7 +14,6 @@ const HistorialSchema = new mongoose.Schema({
 const GatewaySchema = new mongoose.Schema(
   {
     ip: { type: String, required: true, unique: true },
-    puerto: { type: Number, default: 80 },
     nombre: { type: String, default: "-" },
     id: { type: Number, required: true, unique: true },
     linea: { type: String, default: "-" },

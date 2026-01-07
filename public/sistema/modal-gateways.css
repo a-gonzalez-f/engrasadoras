@@ -52,12 +52,13 @@ h3 {
 .delete {
   float: left;
   cursor: pointer;
-  font-size: 20px !important;
-  color: rgba(128, 128, 128, 0.5);
+  width: 20px !important;
+  opacity: 0.3;
+  transition: all 0.2s ease;
 }
 
 .delete:hover {
-  color: var(--color-error);
+  opacity: 1;
 }
 
 form > label > input,
@@ -96,10 +97,11 @@ label.row {
   width: 100%;
 }
 .edit {
-  color: #ffffff25;
+  opacity: 0.3;
+  transition: all 0.2s ease;
 }
 .edit:hover {
-  color: var(--color-pstv);
+  opacity: 1;
 }
 
 #sectionEngrasadoras {
@@ -125,6 +127,9 @@ input.id {
   padding-top: 0.5rem;
   margin-top: 0.5rem;
   border-top: 1px solid #ffffff5c;
+  display: flex;
+  justify-content: center;
+  gap: 5px;
 }
 
 .editableInput {

@@ -4,6 +4,11 @@ const modal = document.getElementById("modalAnalytics");
 const cerrarBtn = document.getElementById("cerrarAnalytics");
 const message = document.getElementById("message-analytics");
 const titulo = document.getElementById("analytics-de");
+const btnSwitch = document.getElementById("actionBtn");
+const iconSwitch = document.getElementById("iconSwitch");
+const titleSwitch = document.getElementById("switchTitle");
+let horarioEnServicio = true;
+let currentIdMaq = null;
 
 cerrarBtn.addEventListener("click", () => {
   modal.style.display = "none";
@@ -15,9 +20,32 @@ cerrarBtn.addEventListener("click", () => {
 
   titulo.innerText = "";
   message.innerText = "";
+
+  currentIdMaq = null;
+  horarioEnServicio = true;
+  titleSwitch.innerText = "Horario en servicio";
+  iconSwitch.src =
+    "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg";
+});
+
+btnSwitch.addEventListener("click", () => {
+  horarioEnServicio = !horarioEnServicio;
+  titleSwitch.innerText = horarioEnServicio
+    ? "Horario en servicio"
+    : "Horario completo";
+
+  iconSwitch.src = horarioEnServicio
+    ? "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
+    : "../img/icons/toggle_off_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg";
+
+  if (currentIdMaq) {
+    fetchMaq();
+  }
 });
 
 export function abrirAnalyticsMaq(idMaq) {
+  currentIdMaq = idMaq;
+
   message.innerText = "Cargando...";
   message.style.display = "flex";
 
@@ -28,12 +56,26 @@ export function abrirAnalyticsMaq(idMaq) {
   fetchMaq(idMaq);
 }
 
-async function fetchMaq(idMaq) {
+async function fetchMaq() {
   try {
-    const res = await fetch(`/api/engrasadoras/snapshots/${idMaq}`);
+    message.innerText = "Cargando...";
+    message.style.display = "flex";
+
+    const params = new URLSearchParams();
+    if (horarioEnServicio) params.append("servicio", "true");
+
+    const res = await fetch(
+      `/api/engrasadoras/snapshots/${currentIdMaq}?${params.toString()}`
+    );
+
     if (!res.ok) throw new Error("Error en servidor");
 
     const data = await res.json();
+
+    document.querySelectorAll(".chart").forEach((div) => {
+      const instance = echarts.getInstanceByDom(div);
+      if (instance) instance.dispose();
+    });
 
     renderAccionam(data);
     renderEstados(data);

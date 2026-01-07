@@ -7,10 +7,15 @@ const titulo = document.getElementById("analytics-de");
 const message = document.getElementById("message-analytics");
 const cerrarBtn = document.getElementById("cerrarAnalytics");
 
+const btnSwitch = document.getElementById("actionBtn");
+const iconSwitch = document.getElementById("iconSwitch");
+const titleSwitch = document.getElementById("switchTitle");
+let horarioEnServicio = true;
+
 // abrir
 abrirModalBtn.addEventListener("click", () => {
   modal.style.display = "flex";
-  titulo.innerText = linea ? `Linea: ${linea}` : "";
+  titulo.innerText = linea ? `Linea ${linea}` : "";
 
   message.innerText = "Cargando...";
   message.style.display = "flex";
@@ -18,12 +23,43 @@ abrirModalBtn.addEventListener("click", () => {
   fetchLinea(linea);
 });
 
+// cerrar
+cerrarBtn.addEventListener("click", () => {
+  horarioEnServicio = true;
+});
+
+// switch horario
+btnSwitch.addEventListener("click", () => {
+  horarioEnServicio = !horarioEnServicio;
+  titleSwitch.innerText = horarioEnServicio
+    ? "Horario en servicio"
+    : "Horario completo";
+
+  iconSwitch.src = horarioEnServicio
+    ? "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
+    : "../img/icons/toggle_off_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg";
+
+  if (linea) {
+    fetchLinea(linea);
+  }
+});
+
 async function fetchLinea(linea) {
   try {
-    const res = await fetch(`/api/engrasadoras/resumenHora/accionam/${linea}`);
+    message.innerText = "Cargando...";
+    message.style.display = "flex";
+
+    const params = new URLSearchParams();
+    if (horarioEnServicio) params.append("servicio", "true");
+
+    const res = await fetch(
+      `/api/engrasadoras/resumenHora/accionam/${linea}?${params.toString()}`
+    );
     if (!res.ok) throw new Error("Error en servidor");
 
     const data = await res.json();
+
+    console.log("fetch linea", linea, horarioEnServicio);
 
     renderAnalytics(data);
 

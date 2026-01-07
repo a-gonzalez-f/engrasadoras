@@ -518,3 +518,7 @@ footer {
   gap: 1rem;
   padding: 5px;
 }
+
+.pointer {
+  cursor: pointer;
+}

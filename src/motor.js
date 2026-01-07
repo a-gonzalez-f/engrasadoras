@@ -12,6 +12,8 @@ let tiempoSolicitud = 60;
 let timeOut = 2;
 let intervaloSolicitudes = null;
 
+const GATEWAY_PORT = 8080;
+
 const confirmacionesPendientes = new Map();
 
 async function obtenerTiempo() {
@@ -246,7 +248,10 @@ async function manejarMensaje(nombre, data) {
 }
 
 function conectarGateway(gateway) {
-  const ws = new WebSocket(`ws://${gateway.ip}:${gateway.puerto}/ws`);
+  const url = `ws://${gateway.ip}:${GATEWAY_PORT}/ws`;
+  const ws = new WebSocket(url);
+
+  ws.gatewayUrl = url;
 
   ws.cierrePorCambioIP = false;
 
@@ -604,7 +609,6 @@ async function iniciarGatewaysDesdeDB() {
       // console.log(message);
       continue;
     }
-    gateway.puerto = gateway.puerto || 80;
     conectarGateway(gateway);
   }
 }
@@ -806,43 +810,25 @@ async function verificarCambioIPTodas() {
     const gateways = await Gateway.find({});
 
     for (const gateway of gateways) {
-      if (gateway.bypass) {
-        let message = `⏸️ Gateway ${gateway.nombre} está en bypass, no se conecta`;
-        // console.log(message);
-        continue;
-      }
+      if (gateway.bypass) continue;
+
       const nombre = gateway.nombre;
       const conexionActiva = conexiones[nombre];
-      const ipDB = gateway.ip;
+      const nuevaUrl = `ws://${gateway.ip}:${GATEWAY_PORT}/ws`;
 
-      if (conexionActiva && conexionActiva._url !== `ws://${ipDB}/ws`) {
-        console.log(
-          `VERIFICADOR_IP: Cambio de IP detectado en ${nombre}. Reconectando...
-          Conexión vieja: ${conexionActiva._url}, Conexión nueva: ws://${ipDB}/ws`
-        );
-        try {
-          console.log("VERIFICADOR_IP: Cerrando conexión vieja");
-          conexionActiva.cierrePorCambioIP = true;
-          conexionActiva.terminate();
-        } catch (err) {
-          let message = `Error cerrando conexión vieja: ${err.message}`;
-          console.error(message);
-          await guardarLog(message);
-        }
+      if (conexionActiva && conexionActiva.gatewayUrl !== nuevaUrl) {
+        conexionActiva.cierrePorCambioIP = true;
+        conexionActiva.terminate();
         conectarGateway(gateway);
+        continue;
       }
 
       if (!conexionActiva) {
-        console.log(
-          `VERIFICADOR_IP: ${nombre} sin conexión, intentando con IP ${ipDB}`
-        );
         conectarGateway(gateway);
       }
     }
   } catch (err) {
-    let message = `Error en verificarCambioIPTodas: ${err.message}`;
-    console.error(message);
-    await guardarLog(message);
+    await guardarLog(`Error en verificarCambioIPTodas: ${err.message}`);
   }
 }
 

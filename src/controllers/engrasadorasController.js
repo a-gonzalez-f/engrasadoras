@@ -217,10 +217,10 @@ const resetHistorial = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const engrasadora = await Engrasadora.findById(id);
-    if (!engrasadora) return res.status(404).send("Engrasadora no encontrada");
+    const eng = await Engrasadora.findOne({ id: Number(id) });
+    if (!eng) return res.status(404).send("Engrasadora no encontrada");
 
-    await Historial.deleteMany({ engrasadora: id });
+    await Historial.deleteMany({ engrasadora: Number(id) });
 
     res.json({ ok: true });
   } catch (err) {
@@ -594,10 +594,15 @@ const resumenTotal = async (req, res) => {
 const accionamHora = async (req, res) => {
   try {
     const { linea } = req.params;
-    const { desde, hasta } = req.query;
+    const { desde, hasta, servicio } = req.query;
 
     const filtro = { linea: linea, tipo: "linea" };
     let query;
+
+    // Filtro horario de servicio
+    if (servicio === "true") {
+      filtro.horario_servicio = true;
+    }
 
     // Si hay rango de fechas
     if (desde && hasta) {
@@ -607,11 +612,15 @@ const accionamHora = async (req, res) => {
       };
 
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+        )
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+        )
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }
@@ -632,33 +641,37 @@ const accionamHora = async (req, res) => {
 const snapshotId = async (req, res) => {
   try {
     const { id } = req.params;
-    const { desde, hasta } = req.query;
+    const { desde, hasta, servicio } = req.query;
 
-    const filtro = { id: Number(id) };
-    let query;
+    const filtro = {
+      id: Number(id),
+    };
 
-    // Si hay rango de fechas
+    // Filtro horario de servicio
+    if (servicio === "true") {
+      filtro.horario_servicio = true;
+    }
+
+    // Rango de fechas
     if (desde && hasta) {
       filtro.fecha = {
         $gte: new Date(desde),
         $lte: new Date(hasta),
       };
+    }
 
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
-        .sort({ fecha: 1 });
-    } else {
-      query = SnapshotHora.find(filtro)
-        .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
-        .sort({ fecha: -1 })
-        .limit(168); // Últimos 168 snapshots (7*24hs)
+    let query = SnapshotHora.find(filtro)
+      .select(
+        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio -_id"
+      )
+      .sort({ fecha: desde && hasta ? 1 : -1 });
+
+    if (!desde || !hasta) {
+      query = query.limit(400);
     }
 
     let data = await query;
-
-    if (!desde || !hasta) {
-      data = data.reverse();
-    }
+    if (!desde || !hasta) data.reverse();
 
     res.json(data);
   } catch (err) {

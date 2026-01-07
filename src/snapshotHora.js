@@ -1,5 +1,6 @@
 // snapshotHora.js
-require("dotenv").config({ path: "/usr/src/app/.env" });
+require("dotenv").config({ path: "/usr/src/app/.env" }); // PARA PRODUCCIÓN -----------------------------------------------
+// require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
 const conectarDB = require("./db");
 const mongoose = require("mongoose");
 const {
@@ -28,6 +29,13 @@ const horaInicio = new Date(
   )
 );
 const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
+
+function esHorarioServicioUTC(horaInicio) {
+  const h = horaInicio.getUTCHours();
+  return h >= 8 || h < 3;
+}
+
+const horario_servicio = esHorarioServicioUTC(horaInicio);
 
 async function generarSnapshotHora() {
   await conectarDB();
@@ -70,7 +78,10 @@ async function generarSnapshotHora() {
           lora_signal: null,
 
           delta_accionam: 0,
-          accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
+          accionam_estimados: eng.set_ejes ? (6 * 24) / eng.set_ejes : 0,
+          // ( [cantidad de trenes x hora] * [24 ejes x tren] ) /  seteo de ejes engrasadora
+
+          horario_servicio,
         },
         { upsert: true, new: true }
       );
@@ -115,6 +126,8 @@ async function generarSnapshotHora() {
 
         delta_accionam,
         accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
+
+        horario_servicio,
       },
       { upsert: true, new: true }
     );
