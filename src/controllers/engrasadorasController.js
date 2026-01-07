@@ -594,10 +594,15 @@ const resumenTotal = async (req, res) => {
 const accionamHora = async (req, res) => {
   try {
     const { linea } = req.params;
-    const { desde, hasta } = req.query;
+    const { desde, hasta, servicio } = req.query;
 
     const filtro = { linea: linea, tipo: "linea" };
     let query;
+
+    // Filtro horario de servicio
+    if (servicio === "true") {
+      filtro.horario_servicio = true;
+    }
 
     // Si hay rango de fechas
     if (desde && hasta) {
@@ -607,11 +612,15 @@ const accionamHora = async (req, res) => {
       };
 
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+        )
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
-        .select("total_delta_accionam accionam_estimados fecha -_id")
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+        )
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
     }

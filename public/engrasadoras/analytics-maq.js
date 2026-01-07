@@ -20,6 +20,12 @@ cerrarBtn.addEventListener("click", () => {
 
   titulo.innerText = "";
   message.innerText = "";
+
+  currentIdMaq = null;
+  horarioEnServicio = true;
+  titleSwitch.innerText = "Horario en servicio";
+  iconSwitch.src =
+    "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg";
 });
 
 btnSwitch.addEventListener("click", () => {
