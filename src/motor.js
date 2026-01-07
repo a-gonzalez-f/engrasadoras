@@ -12,7 +12,7 @@ let tiempoSolicitud = 60;
 let timeOut = 2;
 let intervaloSolicitudes = null;
 
-const GATEWAY_PORT = 8080;
+const GATEWAY_PORT = 80;
 
 const confirmacionesPendientes = new Map();
 
