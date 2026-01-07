@@ -634,26 +634,13 @@ const snapshotId = async (req, res) => {
     const { id } = req.params;
     const { desde, hasta, servicio } = req.query;
 
-    const filtro = { id: Number(id) };
+    const filtro = {
+      id: Number(id),
+    };
 
     // Filtro horario de servicio
     if (servicio === "true") {
-      filtro.$expr = {
-        $or: [
-          {
-            $and: [
-              { $gte: [{ $hour: "$fecha" }, 8] },
-              { $lt: [{ $hour: "$fecha" }, 24] },
-            ],
-          },
-          {
-            $and: [
-              { $gte: [{ $hour: "$fecha" }, 0] },
-              { $lt: [{ $hour: "$fecha" }, 3] },
-            ],
-          },
-        ],
-      };
+      filtro.horario_servicio = true;
     }
 
     // Rango de fechas
@@ -665,7 +652,9 @@ const snapshotId = async (req, res) => {
     }
 
     let query = SnapshotHora.find(filtro)
-      .select("delta_accionam set_ejes accionam_estimados estado fecha -_id")
+      .select(
+        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio -_id"
+      )
       .sort({ fecha: desde && hasta ? 1 : -1 });
 
     if (!desde || !hasta) {
