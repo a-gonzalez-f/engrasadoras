@@ -32,7 +32,7 @@ const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
 
 function esHorarioServicioUTC(horaInicio) {
   const h = horaInicio.getUTCHours();
-  return h >= 8 || h < 3;
+  return h >= 9 || h < 3;
 }
 
 const horario_servicio = esHorarioServicioUTC(horaInicio);
