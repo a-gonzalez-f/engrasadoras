@@ -1,6 +1,6 @@
 // snapshotHora.js
-require("dotenv").config({ path: "/usr/src/app/.env" }); // PARA PRODUCCIÓN -----------------------------------------------
-// require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
+// require("dotenv").config({ path: "/usr/src/app/.env" }); // PARA PRODUCCIÓN -----------------------------------------------
+require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
 const conectarDB = require("./db");
 const mongoose = require("mongoose");
 const {
@@ -54,6 +54,18 @@ async function generarSnapshotHora() {
       fecha: { $gte: horaInicio, $lt: horaFin },
     }).lean();
 
+    const media_movil_completo = await calcularMediaMovil({
+      id: eng.id,
+      horas: 72,
+      soloServicio: false,
+    });
+
+    const media_movil_servicio = await calcularMediaMovil({
+      id: eng.id,
+      horas: 54,
+      soloServicio: true,
+    });
+
     if (eventosEnVentana.length === 0) {
       await SnapshotHora.findOneAndUpdate(
         { id: eng.id, fecha: horaInicio },
@@ -82,6 +94,9 @@ async function generarSnapshotHora() {
           // ( [cantidad de trenes x hora] * [24 ejes x tren] ) /  seteo de ejes engrasadora
 
           horario_servicio,
+
+          media_movil_completo,
+          media_movil_servicio,
         },
         { upsert: true, new: true }
       );
@@ -100,10 +115,6 @@ async function generarSnapshotHora() {
     if (delta_accionam < 0) {
       delta_accionam = 0;
     }
-
-    const eventosNoRepetidos = Array.from(
-      new Map(eventosEnVentana.map((e) => [e.cont_accionam, e])).values()
-    );
 
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
@@ -128,12 +139,31 @@ async function generarSnapshotHora() {
         accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
 
         horario_servicio,
+
+        media_movil_completo,
+        media_movil_servicio,
       },
       { upsert: true, new: true }
     );
 
     console.log(`✅ Snapshot guardado para máquina ${eng.id}`);
   }
+}
+
+async function calcularMediaMovil({ id, horas, soloServicio }) {
+  const filtro = { id };
+  if (soloServicio) filtro.horario_servicio = true;
+
+  const snaps = await SnapshotHora.find(filtro)
+    .sort({ fecha: -1 })
+    .limit(horas)
+    .select("delta_accionam")
+    .lean();
+
+  if (snaps.length === 0) return null;
+
+  const suma = snaps.reduce((acc, s) => acc + (s.delta_accionam || 0), 0);
+  return suma / snaps.length;
 }
 
 generarSnapshotHora()
