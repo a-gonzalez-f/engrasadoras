@@ -91,6 +91,9 @@ const SnapshotHoraSchema = new mongoose.Schema(
     accionam_estimados: { type: Number },
 
     horario_servicio: { type: Boolean },
+
+    media_movil_servicio: Number,
+    media_movil_completo: Number,
   },
 
   { timestamps: true }
@@ -133,6 +136,10 @@ const ResumenHoraSchema = new mongoose.Schema(
     accionam_estimados: Number,
 
     horario_servicio: Boolean,
+
+    // medias moviles
+    media_movil_servicio: Number,
+    media_movil_completo: Number,
   },
   { timestamps: true }
 );

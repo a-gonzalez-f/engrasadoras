@@ -662,7 +662,7 @@ const snapshotId = async (req, res) => {
 
     let query = SnapshotHora.find(filtro)
       .select(
-        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio -_id"
+        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio media_movil_completo media_movil_servicio -_id"
       )
       .sort({ fecha: desde && hasta ? 1 : -1 });
 

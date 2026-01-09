@@ -32,7 +32,7 @@ const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
 
 function esHorarioServicioUTC(horaInicio) {
   const h = horaInicio.getUTCHours();
-  return h >= 8 || h < 3;
+  return h >= 9 || h < 3;
 }
 
 const horario_servicio = esHorarioServicioUTC(horaInicio);
@@ -54,7 +54,40 @@ async function generarSnapshotHora() {
       fecha: { $gte: horaInicio, $lt: horaFin },
     }).lean();
 
+    let ultimoEvento = null;
+
+    let delta_accionam = 0;
+
+    if (eventosEnVentana.length > 0) {
+      eventosEnVentana.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+      const primerEvento = eventosEnVentana[0];
+      ultimoEvento = eventosEnVentana[eventosEnVentana.length - 1];
+
+      delta_accionam =
+        (ultimoEvento.cont_accionam ?? 0) -
+        (primerEvento.cont_accionam ?? 0) +
+        1;
+
+      if (delta_accionam < 0) delta_accionam = 0;
+    }
+
     if (eventosEnVentana.length === 0) {
+      const media_movil_completo = await calcularMediaMovil({
+        id: eng.id,
+        horas: 72,
+        soloServicio: false,
+        valorActual: delta_accionam,
+        incluirActual: true,
+      });
+
+      const media_movil_servicio = await calcularMediaMovil({
+        id: eng.id,
+        horas: 54,
+        soloServicio: true,
+        valorActual: delta_accionam,
+        incluirActual: horario_servicio,
+      });
+
       await SnapshotHora.findOneAndUpdate(
         { id: eng.id, fecha: horaInicio },
         {
@@ -82,6 +115,9 @@ async function generarSnapshotHora() {
           // ( [cantidad de trenes x hora] * [24 ejes x tren] ) /  seteo de ejes engrasadora
 
           horario_servicio,
+
+          media_movil_completo,
+          media_movil_servicio,
         },
         { upsert: true, new: true }
       );
@@ -89,21 +125,21 @@ async function generarSnapshotHora() {
       continue;
     }
 
-    eventosEnVentana.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    const media_movil_completo = await calcularMediaMovil({
+      id: eng.id,
+      horas: 72,
+      soloServicio: false,
+      valorActual: delta_accionam,
+      incluirActual: true,
+    });
 
-    const primerEvento = eventosEnVentana[0];
-    const ultimoEvento = eventosEnVentana[eventosEnVentana.length - 1];
-
-    let delta_accionam =
-      (ultimoEvento.cont_accionam ?? 0) - (primerEvento.cont_accionam ?? 0) + 1;
-
-    if (delta_accionam < 0) {
-      delta_accionam = 0;
-    }
-
-    const eventosNoRepetidos = Array.from(
-      new Map(eventosEnVentana.map((e) => [e.cont_accionam, e])).values()
-    );
+    const media_movil_servicio = await calcularMediaMovil({
+      id: eng.id,
+      horas: 54,
+      soloServicio: true,
+      valorActual: delta_accionam,
+      incluirActual: horario_servicio,
+    });
 
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
@@ -128,12 +164,43 @@ async function generarSnapshotHora() {
         accionam_estimados: eng.set_ejes ? (20 * 24) / eng.set_ejes : 0,
 
         horario_servicio,
+
+        media_movil_completo,
+        media_movil_servicio,
       },
       { upsert: true, new: true }
     );
 
     console.log(`✅ Snapshot guardado para máquina ${eng.id}`);
   }
+}
+
+async function calcularMediaMovil({
+  id,
+  horas,
+  soloServicio,
+  valorActual,
+  incluirActual,
+}) {
+  const filtro = { id };
+  if (soloServicio) filtro.horario_servicio = true;
+
+  const snaps = await SnapshotHora.find(filtro)
+    .sort({ fecha: -1 })
+    .limit(horas - (incluirActual ? 1 : 0))
+    .select("delta_accionam")
+    .lean();
+
+  let valores = snaps.map((s) => s.delta_accionam || 0);
+
+  if (incluirActual && typeof valorActual === "number") {
+    valores.unshift(valorActual);
+  }
+
+  if (valores.length === 0) return null;
+
+  const suma = valores.reduce((a, b) => a + b, 0);
+  return suma / valores.length;
 }
 
 generarSnapshotHora()
