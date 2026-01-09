@@ -1,6 +1,6 @@
 // snapshotHora.js
-// require("dotenv").config({ path: "/usr/src/app/.env" }); // PARA PRODUCCIÓN -----------------------------------------------
-require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
+require("dotenv").config({ path: "/usr/src/app/.env" }); // PARA PRODUCCIÓN -----------------------------------------------
+// require("dotenv").config({ path: "../.env" }); // PARA PRUEBA LOCAL -------------------------------------------------------
 const conectarDB = require("./db");
 const mongoose = require("mongoose");
 const {
@@ -54,19 +54,40 @@ async function generarSnapshotHora() {
       fecha: { $gte: horaInicio, $lt: horaFin },
     }).lean();
 
-    const media_movil_completo = await calcularMediaMovil({
-      id: eng.id,
-      horas: 72,
-      soloServicio: false,
-    });
+    let ultimoEvento = null;
 
-    const media_movil_servicio = await calcularMediaMovil({
-      id: eng.id,
-      horas: 54,
-      soloServicio: true,
-    });
+    let delta_accionam = 0;
+
+    if (eventosEnVentana.length > 0) {
+      eventosEnVentana.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+      const primerEvento = eventosEnVentana[0];
+      ultimoEvento = eventosEnVentana[eventosEnVentana.length - 1];
+
+      delta_accionam =
+        (ultimoEvento.cont_accionam ?? 0) -
+        (primerEvento.cont_accionam ?? 0) +
+        1;
+
+      if (delta_accionam < 0) delta_accionam = 0;
+    }
 
     if (eventosEnVentana.length === 0) {
+      const media_movil_completo = await calcularMediaMovil({
+        id: eng.id,
+        horas: 72,
+        soloServicio: false,
+        valorActual: delta_accionam,
+        incluirActual: true,
+      });
+
+      const media_movil_servicio = await calcularMediaMovil({
+        id: eng.id,
+        horas: 54,
+        soloServicio: true,
+        valorActual: delta_accionam,
+        incluirActual: horario_servicio,
+      });
+
       await SnapshotHora.findOneAndUpdate(
         { id: eng.id, fecha: horaInicio },
         {
@@ -104,17 +125,21 @@ async function generarSnapshotHora() {
       continue;
     }
 
-    eventosEnVentana.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    const media_movil_completo = await calcularMediaMovil({
+      id: eng.id,
+      horas: 72,
+      soloServicio: false,
+      valorActual: delta_accionam,
+      incluirActual: true,
+    });
 
-    const primerEvento = eventosEnVentana[0];
-    const ultimoEvento = eventosEnVentana[eventosEnVentana.length - 1];
-
-    let delta_accionam =
-      (ultimoEvento.cont_accionam ?? 0) - (primerEvento.cont_accionam ?? 0) + 1;
-
-    if (delta_accionam < 0) {
-      delta_accionam = 0;
-    }
+    const media_movil_servicio = await calcularMediaMovil({
+      id: eng.id,
+      horas: 54,
+      soloServicio: true,
+      valorActual: delta_accionam,
+      incluirActual: horario_servicio,
+    });
 
     await SnapshotHora.findOneAndUpdate(
       { id: eng.id, fecha: horaInicio },
@@ -150,20 +175,32 @@ async function generarSnapshotHora() {
   }
 }
 
-async function calcularMediaMovil({ id, horas, soloServicio }) {
+async function calcularMediaMovil({
+  id,
+  horas,
+  soloServicio,
+  valorActual,
+  incluirActual,
+}) {
   const filtro = { id };
   if (soloServicio) filtro.horario_servicio = true;
 
   const snaps = await SnapshotHora.find(filtro)
     .sort({ fecha: -1 })
-    .limit(horas)
+    .limit(horas - (incluirActual ? 1 : 0))
     .select("delta_accionam")
     .lean();
 
-  if (snaps.length === 0) return null;
+  let valores = snaps.map((s) => s.delta_accionam || 0);
 
-  const suma = snaps.reduce((acc, s) => acc + (s.delta_accionam || 0), 0);
-  return suma / snaps.length;
+  if (incluirActual && typeof valorActual === "number") {
+    valores.unshift(valorActual);
+  }
+
+  if (valores.length === 0) return null;
+
+  const suma = valores.reduce((a, b) => a + b, 0);
+  return suma / valores.length;
 }
 
 generarSnapshotHora()
