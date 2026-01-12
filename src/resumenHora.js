@@ -25,12 +25,19 @@ const horaInicio = new Date(
 );
 const horaFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // +1 hora
 
-function esHorarioServicioUTC(horaInicio) {
-  const h = horaInicio.getUTCHours();
-  return h >= 9 || h < 3;
+function esHorarioServicioArgentina(fechaUTC) {
+  const fechaAR = new Date(fechaUTC.getTime() - 3 * 60 * 60 * 1000);
+
+  const h = fechaAR.getHours();
+  const d = fechaAR.getDay(); // 0 domingo, 6 sábado
+
+  const esDiaSemana = d >= 1 && d <= 5; // lun-vie
+  const esHorario = h >= 6;
+
+  return esDiaSemana && esHorario;
 }
 
-const horario_servicio = esHorarioServicioUTC(horaInicio);
+const horario_servicio = esHorarioServicioArgentina(horaInicio);
 
 async function main() {
   await conectarDB();
