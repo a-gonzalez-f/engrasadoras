@@ -82,6 +82,9 @@ async function renderAnalytics(data) {
   });
   const delta_accionam = data.map((d) => d.total_delta_accionam);
   const accionam_estimados = data.map((d) => d.accionam_estimados);
+  const media_movil = horarioEnServicio
+    ? data.map((d) => d.media_movil_servicio ?? null)
+    : data.map((d) => d.media_movil_completo ?? null);
 
   const chart = echarts.init(document.getElementById("delta-accionam"), "dark");
   chart.setOption({
@@ -105,7 +108,7 @@ async function renderAnalytics(data) {
       axisPointer: { type: "line" },
     },
     legend: {
-      data: ["Accionamientos", "Accionamientos esperados"],
+      data: ["Accionamientos", "Accionamientos esperados", "Media Movil"],
     },
     xAxis: { type: "category", data: fechas },
     yAxis: {
@@ -124,6 +127,16 @@ async function renderAnalytics(data) {
         type: "line",
         data: accionam_estimados,
         color: "#aaa",
+        smooth: true,
+        lineStyle: {
+          type: "dashed",
+        },
+      },
+      {
+        name: "Media móvil",
+        type: "line",
+        data: media_movil,
+        color: "#7dbda1",
         smooth: true,
         lineStyle: {
           type: "dashed",

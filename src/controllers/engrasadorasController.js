@@ -660,13 +660,13 @@ const resumenHora = async (req, res) => {
 
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados fecha horario_servicio porc_estado -_id"
+          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id"
         )
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados fecha horario_servicio porc_estado -_id"
+          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id"
         )
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
