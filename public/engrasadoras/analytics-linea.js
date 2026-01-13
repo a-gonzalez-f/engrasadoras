@@ -53,15 +53,14 @@ async function fetchLinea(linea) {
     if (horarioEnServicio) params.append("servicio", "true");
 
     const res = await fetch(
-      `/api/engrasadoras/resumenHora/accionam/${linea}?${params.toString()}`
+      `/api/engrasadoras/resumenHora/${linea}?${params.toString()}`
     );
     if (!res.ok) throw new Error("Error en servidor");
 
     const data = await res.json();
 
-    console.log("fetch linea", linea, horarioEnServicio);
-
     renderAnalytics(data);
+    renderPorcentajesEstados(data);
 
     message.style.display = "none";
   } catch (err) {
@@ -129,6 +128,81 @@ async function renderAnalytics(data) {
         lineStyle: {
           type: "dashed",
         },
+      },
+    ],
+  });
+}
+
+const redondearPorcentaje = (n) => Math.round(n * 100 * 100) / 100;
+
+async function renderPorcentajesEstados(data) {
+  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
+
+  const alertas = data.map((d) => redondearPorcentaje(d.porc_estado.alerta));
+  const funcs = data.map((d) => redondearPorcentaje(d.porc_estado.funcionando));
+  const fs = data.map((d) => redondearPorcentaje(d.porc_estado.fs));
+  const desc = data.map((d) => redondearPorcentaje(d.porc_estado.desconectada));
+
+  const chart = echarts.init(document.getElementById("porcentaje"), "dark");
+  chart.setOption({
+    title: { text: "Porcentajes de estados" },
+    backgroundColor: "transparent",
+    tooltip: {
+      trigger: "axis",
+      axisPointer: { type: "shadow" },
+      valueFormatter: (value) => value + "%",
+    },
+    legend: {
+      data: ["Alertas", "Funcionando", "Fuera de Servicio", "Desconectadas"],
+    },
+    xAxis: { type: "category", data: fechas },
+    yAxis: {
+      type: "value",
+      max: 100,
+      axisLabel: { formatter: "{value}%" },
+    },
+    dataZoom: [
+      {
+        type: "inside",
+      },
+      {
+        type: "slider",
+        show: false,
+      },
+    ],
+
+    series: [
+      {
+        name: "Alertas",
+        type: "bar",
+        stack: "total",
+        barWidth: "40%",
+        data: alertas,
+        color: "#fca311",
+      },
+      {
+        name: "Funcionando",
+        type: "bar",
+        stack: "total",
+        barWidth: "40%",
+        data: funcs,
+        color: "#0dae1a",
+      },
+      {
+        name: "Fuera de Servicio",
+        type: "bar",
+        stack: "total",
+        barWidth: "40%",
+        data: fs,
+        color: "#d90429",
+      },
+      {
+        name: "Desconectadas",
+        type: "bar",
+        stack: "total",
+        barWidth: "40%",
+        data: desc,
+        color: "#888",
       },
     ],
   });

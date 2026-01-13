@@ -638,6 +638,53 @@ const accionamHora = async (req, res) => {
   }
 };
 
+const resumenHora = async (req, res) => {
+  try {
+    const { linea } = req.params;
+    const { desde, hasta, servicio } = req.query;
+
+    const filtro = { linea: linea, tipo: "linea" };
+    let query;
+
+    // Filtro horario de servicio
+    if (servicio === "true") {
+      filtro.horario_servicio = true;
+    }
+
+    // Si hay rango de fechas
+    if (desde && hasta) {
+      filtro.fecha = {
+        $gte: new Date(desde),
+        $lte: new Date(hasta),
+      };
+
+      query = ResumenHora.find(filtro)
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio porc_estado -_id"
+        )
+        .sort({ fecha: 1 });
+    } else {
+      query = ResumenHora.find(filtro)
+        .select(
+          "total_delta_accionam accionam_estimados fecha horario_servicio porc_estado -_id"
+        )
+        .sort({ fecha: -1 })
+        .limit(168); // Últimos 168 snapshots (7*24hs)
+    }
+
+    let data = await query;
+
+    if (!desde || !hasta) {
+      data = data.reverse();
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Error obteniendo resumenHora" });
+  }
+};
+
 const snapshotId = async (req, res) => {
   try {
     const { id } = req.params;
@@ -704,5 +751,6 @@ module.exports = {
   accionamHora,
   resumenPorLinea,
   resumenTotal,
+  resumenHora,
   snapshotId,
 };

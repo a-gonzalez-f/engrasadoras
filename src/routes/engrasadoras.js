@@ -26,6 +26,7 @@ const {
   resumenPorLinea,
   resumenTotal,
   accionamHora,
+  resumenHora,
   snapshotId,
 } = require("../controllers/engrasadorasController");
 
@@ -59,6 +60,7 @@ router.get("/resumen/linea", resumenPorLinea);
 router.get("/resumen/linea/:linea", resumenPorLinea);
 router.get("/resumen/total", resumenTotal);
 router.get("/resumenHora/accionam/:linea", accionamHora);
+router.get("/resumenHora/:linea", resumenHora);
 router.get("/snapshots/:id", snapshotId);
 
 module.exports = router;
