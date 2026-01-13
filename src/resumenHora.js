@@ -135,6 +135,14 @@ function calcularEstadisticas(snapshots) {
   const prom_corriente = promedio(snapshots.map((s) => s.sens_corriente));
   const prom_delta_accionam = promedio(snapshots.map((s) => s.delta_accionam));
 
+  // medias
+  const media_movil_completo = suma(
+    snapshots.map((s) => s.media_movil_completo)
+  );
+  const media_movil_servicio = suma(
+    snapshots.map((s) => s.media_movil_servicio)
+  );
+
   return {
     // porcentajes
     porc_estado: porcentaje(conteoEstados, n),
@@ -153,6 +161,9 @@ function calcularEstadisticas(snapshots) {
     total_maq_func,
     total_delta_accionam,
     accionam_estimados,
+
+    media_movil_completo,
+    media_movil_servicio,
   };
 }
 
