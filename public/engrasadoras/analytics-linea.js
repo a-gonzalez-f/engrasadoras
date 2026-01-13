@@ -1,3 +1,5 @@
+// analytics-linea.js
+
 const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
 
@@ -21,16 +23,24 @@ abrirModalBtn.addEventListener("click", () => {
   message.style.display = "flex";
 
   fetchLinea(linea);
+  activarSwitch();
 });
 
 // cerrar
 cerrarBtn.addEventListener("click", () => {
   horarioEnServicio = true;
+
+  titleSwitch.innerText = "Horario en servicio";
+  iconSwitch.src =
+    "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg";
+
+  desactivarSwitch();
 });
 
 // switch horario
-btnSwitch.addEventListener("click", () => {
+function onSwitchClick() {
   horarioEnServicio = !horarioEnServicio;
+
   titleSwitch.innerText = horarioEnServicio
     ? "Horario en servicio"
     : "Horario completo";
@@ -42,9 +52,19 @@ btnSwitch.addEventListener("click", () => {
   if (linea) {
     fetchLinea(linea);
   }
-});
+}
+
+function activarSwitch() {
+  btnSwitch.removeEventListener("click", onSwitchClick);
+  btnSwitch.addEventListener("click", onSwitchClick);
+}
+
+function desactivarSwitch() {
+  btnSwitch.removeEventListener("click", onSwitchClick);
+}
 
 async function fetchLinea(linea) {
+  console.log("fetch por linea", linea);
   try {
     message.innerText = "Cargando...";
     message.style.display = "flex";
@@ -156,7 +176,7 @@ async function renderPorcentajesEstados(data) {
   const fs = data.map((d) => redondearPorcentaje(d.porc_estado.fs));
   const desc = data.map((d) => redondearPorcentaje(d.porc_estado.desconectada));
 
-  const chart = echarts.init(document.getElementById("porcentaje"), "dark");
+  const chart = echarts.init(document.getElementById("estado-chart"), "dark");
   chart.setOption({
     title: { text: "Porcentajes de estados" },
     backgroundColor: "transparent",

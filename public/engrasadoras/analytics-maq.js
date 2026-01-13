@@ -13,6 +13,8 @@ let currentIdMaq = null;
 cerrarBtn.addEventListener("click", () => {
   modal.style.display = "none";
 
+  desactivarSwitch();
+
   document.querySelectorAll(".chart").forEach((div) => {
     const instance = echarts.getInstanceByDom(div);
     if (instance) instance.dispose();
@@ -28,8 +30,9 @@ cerrarBtn.addEventListener("click", () => {
     "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg";
 });
 
-btnSwitch.addEventListener("click", () => {
+function onSwitchClick() {
   horarioEnServicio = !horarioEnServicio;
+
   titleSwitch.innerText = horarioEnServicio
     ? "Horario en servicio"
     : "Horario completo";
@@ -39,9 +42,18 @@ btnSwitch.addEventListener("click", () => {
     : "../img/icons/toggle_off_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg";
 
   if (currentIdMaq) {
-    fetchMaq();
+    fetchMaq(currentIdMaq);
   }
-});
+}
+
+function activarSwitch() {
+  btnSwitch.removeEventListener("click", onSwitchClick);
+  btnSwitch.addEventListener("click", onSwitchClick);
+}
+
+function desactivarSwitch() {
+  btnSwitch.removeEventListener("click", onSwitchClick);
+}
 
 export function abrirAnalyticsMaq(idMaq) {
   currentIdMaq = idMaq;
@@ -54,9 +66,13 @@ export function abrirAnalyticsMaq(idMaq) {
   modal.style.display = "flex";
 
   fetchMaq(idMaq);
+
+  activarSwitch();
 }
 
 async function fetchMaq() {
+  console.log("fetch por maq", currentIdMaq);
+
   try {
     message.innerText = "Cargando...";
     message.style.display = "flex";
