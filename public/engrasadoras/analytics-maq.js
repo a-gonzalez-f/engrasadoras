@@ -71,8 +71,6 @@ export function abrirAnalyticsMaq(idMaq) {
 }
 
 async function fetchMaq() {
-  console.log("fetch por maq", currentIdMaq);
-
   try {
     message.innerText = "Cargando...";
     message.style.display = "flex";
