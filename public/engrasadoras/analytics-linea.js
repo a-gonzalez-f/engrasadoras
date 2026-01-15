@@ -64,7 +64,6 @@ function desactivarSwitch() {
 }
 
 async function fetchLinea(linea) {
-  console.log("fetch por linea", linea);
   try {
     message.innerText = "Cargando...";
     message.style.display = "flex";
@@ -169,7 +168,16 @@ async function renderAnalytics(data) {
 const redondearPorcentaje = (n) => Math.round(n * 100 * 100) / 100;
 
 async function renderPorcentajesEstados(data) {
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
+  const fechas = data.map((d) => {
+    const fecha = new Date(d.fecha);
+    return fecha.toLocaleString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  });
 
   const alertas = data.map((d) => redondearPorcentaje(d.porc_estado.alerta));
   const funcs = data.map((d) => redondearPorcentaje(d.porc_estado.funcionando));
