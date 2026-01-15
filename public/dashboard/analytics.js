@@ -76,75 +76,6 @@ async function cargarResumenPorLinea() {
 const redondearPorcentaje = (n) => Math.round(n * 100 * 100) / 100;
 const redondearNumero = (n) => Math.round(n * 100) / 100;
 
-async function graficarEstadosGlobal() {
-  const data = resumenGlobal;
-
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
-  const alertas = data.map((d) => redondearNumero(d.prom_maq_alertas));
-  const funcs = data.map((d) => redondearNumero(d.prom_maq_func));
-  const fs = data.map((d) => redondearNumero(d.prom_maq_fs));
-  const desc = data.map((d) => redondearNumero(d.prom_maq_desc));
-
-  const chart = echarts.init(document.getElementById("conteo"), "dark");
-  chart.setOption({
-    title: { text: "Promedios de estados" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: ["Alertas", "Funcionando", "Fuera de Servicio", "Desconectadas"],
-    },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    xAxis: { type: "category", data: fechas },
-    yAxis: { type: "value" },
-    series: [
-      {
-        name: "Alertas",
-        type: "line",
-        smooth: true,
-        data: alertas,
-        color: "#fca311",
-      },
-      {
-        name: "Funcionando",
-        type: "line",
-        smooth: true,
-        data: funcs,
-        color: "#0dae1a",
-      },
-      {
-        name: "Fuera de Servicio",
-        type: "line",
-        smooth: true,
-        data: fs,
-        color: "#d90429",
-      },
-      {
-        name: "Desconectadas",
-        type: "line",
-        smooth: true,
-        data: desc,
-        color: "#888",
-      },
-    ],
-  });
-}
-
 async function graficarPorcentajesGlobal() {
   const data = resumenGlobal;
 
@@ -157,7 +88,7 @@ async function graficarPorcentajesGlobal() {
 
   const chart = echarts.init(document.getElementById("porcentaje"), "dark");
   chart.setOption({
-    title: { text: "Porcentajes de estados" },
+    title: { text: "Porcentajes diarios de estados" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -176,13 +107,13 @@ async function graficarPorcentajesGlobal() {
     dataZoom: [
       {
         type: "inside",
-        start: 93,
+        start: 0,
         end: 100,
       },
       {
         type: "slider",
         show: false,
-        start: 93,
+        start: 0,
         end: 100,
       },
     ],
@@ -219,77 +150,6 @@ async function graficarPorcentajesGlobal() {
         barWidth: "40%",
         data: desc,
         color: "#888",
-      },
-    ],
-  });
-}
-
-async function graficarAccionamGlobal() {
-  const data = resumenGlobal;
-
-  const fechas = data.map((d) => new Date(d.fecha).toLocaleDateString("es-AR"));
-  const total_accionam = data.map((d) =>
-    redondearNumero(d.total_delta_accionam)
-  );
-  const prom_accionam = data.map((d) => redondearNumero(d.prom_delta_accionam));
-  const accionam_estimados = data.map((d) => d.accionam_estimados);
-
-  const chart = echarts.init(
-    document.getElementById("accionam-global"),
-    "dark"
-  );
-  chart.setOption({
-    title: { text: "Accionamientos globales" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: ["Total", "Promedio por máquina", "Estimados"],
-    },
-    xAxis: { type: "category", data: fechas },
-    yAxis: {
-      type: "value",
-    },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    series: [
-      {
-        name: "Total",
-        type: "line",
-        data: total_accionam,
-        color: "#2f5671",
-        smooth: true,
-      },
-      {
-        name: "Promedio por máquina",
-        type: "line",
-        data: prom_accionam,
-        color: "#4a8a8c",
-        smooth: true,
-      },
-      {
-        name: "Estimados",
-        type: "line",
-        data: accionam_estimados,
-        color: "grey",
-        smooth: true,
-        lineStyle: {
-          type: "dashed",
-        },
       },
     ],
   });
@@ -337,7 +197,7 @@ async function graficarAccionamPorLinea() {
   );
 
   chart.setOption({
-    title: { text: "Accionamientos por línea" },
+    title: { text: "Accionamientos diarios por línea" },
     backgroundColor: "transparent",
     tooltip: {
       trigger: "axis",
@@ -351,281 +211,13 @@ async function graficarAccionamPorLinea() {
     dataZoom: [
       {
         type: "inside",
-        start: 93,
+        start: 0,
         end: 100,
       },
       {
         type: "slider",
         show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    series,
-  });
-}
-
-async function graficarAlertasPorLinea() {
-  const lineas = {
-    A: resumenLineaA,
-    B: resumenLineaB,
-    C: resumenLineaC,
-    D: resumenLineaD,
-    E: resumenLineaE,
-    H: resumenLineaH,
-  };
-
-  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
-  if (!algunaLinea) return;
-
-  const fechas = algunaLinea.map((d) =>
-    new Date(d.fecha).toLocaleDateString("es-AR")
-  );
-
-  const series = [];
-
-  for (const [linea, data] of Object.entries(lineas)) {
-    if (!data || data.length === 0) continue;
-
-    const prom_maq_alertas = data.map((d) =>
-      redondearNumero(d.prom_maq_alertas)
-    );
-
-    series.push({
-      name: `Línea ${linea}`,
-      type: "line",
-      smooth: true,
-      data: prom_maq_alertas,
-      color: coloresLineas[linea],
-    });
-  }
-
-  const chart = echarts.init(
-    document.getElementById("alertasPorLinea"),
-    "dark"
-  );
-
-  chart.setOption({
-    title: { text: "Promedio diario 'Alerta'" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: series.map((s) => s.name),
-    },
-    xAxis: { type: "category", data: fechas },
-    yAxis: { type: "value" },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    series,
-  });
-}
-
-async function graficarFuncionandoPorLinea() {
-  const lineas = {
-    A: resumenLineaA,
-    B: resumenLineaB,
-    C: resumenLineaC,
-    D: resumenLineaD,
-    E: resumenLineaE,
-    H: resumenLineaH,
-  };
-
-  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
-  if (!algunaLinea) return;
-
-  const fechas = algunaLinea.map((d) =>
-    new Date(d.fecha).toLocaleDateString("es-AR")
-  );
-
-  const series = [];
-
-  for (const [linea, data] of Object.entries(lineas)) {
-    if (!data || data.length === 0) continue;
-
-    const prom_maq_func = data.map((d) => redondearNumero(d.prom_maq_func));
-
-    series.push({
-      name: `Línea ${linea}`,
-      type: "line",
-      smooth: true,
-      data: prom_maq_func,
-      color: coloresLineas[linea],
-    });
-  }
-
-  const chart = echarts.init(
-    document.getElementById("funcionandoPorLinea"),
-    "dark"
-  );
-
-  chart.setOption({
-    title: { text: "Promedio diario 'Funcionando'" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: series.map((s) => s.name),
-    },
-    xAxis: { type: "category", data: fechas },
-    yAxis: { type: "value" },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    series,
-  });
-}
-
-async function graficarDescPorLinea() {
-  const lineas = {
-    A: resumenLineaA,
-    B: resumenLineaB,
-    C: resumenLineaC,
-    D: resumenLineaD,
-    E: resumenLineaE,
-    H: resumenLineaH,
-  };
-
-  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
-  if (!algunaLinea) return;
-
-  const fechas = algunaLinea.map((d) =>
-    new Date(d.fecha).toLocaleDateString("es-AR")
-  );
-
-  const series = [];
-
-  for (const [linea, data] of Object.entries(lineas)) {
-    if (!data || data.length === 0) continue;
-
-    const prom_maq_desc = data.map((d) => redondearNumero(d.prom_maq_desc));
-
-    series.push({
-      name: `Línea ${linea}`,
-      type: "line",
-      smooth: true,
-      data: prom_maq_desc,
-      color: coloresLineas[linea],
-    });
-  }
-
-  const chart = echarts.init(document.getElementById("descPorLinea"), "dark");
-
-  chart.setOption({
-    title: { text: "Promedio diario 'Desconectadas'" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: series.map((s) => s.name),
-    },
-    xAxis: { type: "category", data: fechas },
-    yAxis: { type: "value" },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
-        end: 100,
-      },
-    ],
-
-    series,
-  });
-}
-
-async function graficarFSPorLinea() {
-  const lineas = {
-    A: resumenLineaA,
-    B: resumenLineaB,
-    C: resumenLineaC,
-    D: resumenLineaD,
-    E: resumenLineaE,
-    H: resumenLineaH,
-  };
-
-  const algunaLinea = Object.values(lineas).find((x) => x && x.length > 0);
-  if (!algunaLinea) return;
-
-  const fechas = algunaLinea.map((d) =>
-    new Date(d.fecha).toLocaleDateString("es-AR")
-  );
-
-  const series = [];
-
-  for (const [linea, data] of Object.entries(lineas)) {
-    if (!data || data.length === 0) continue;
-
-    const prom_maq_fs = data.map((d) => redondearNumero(d.prom_maq_fs));
-
-    series.push({
-      name: `Línea ${linea}`,
-      type: "line",
-      smooth: true,
-      data: prom_maq_fs,
-      color: coloresLineas[linea],
-    });
-  }
-
-  const chart = echarts.init(document.getElementById("fsPorLinea"), "dark");
-
-  chart.setOption({
-    title: { text: "Promedio diario 'Fuera de Servicio'" },
-    backgroundColor: "transparent",
-    tooltip: {
-      trigger: "axis",
-      axisPointer: { type: "shadow" },
-    },
-    legend: {
-      data: series.map((s) => s.name),
-    },
-    xAxis: { type: "category", data: fechas },
-    yAxis: { type: "value" },
-    dataZoom: [
-      {
-        type: "inside",
-        start: 93,
-        end: 100,
-      },
-      {
-        type: "slider",
-        show: false,
-        start: 93,
+        start: 0,
         end: 100,
       },
     ],
@@ -637,24 +229,6 @@ async function graficarFSPorLinea() {
 (async () => {
   await cargarResumenGlobal();
   await cargarResumenPorLinea();
-  graficarEstadosGlobal();
   graficarPorcentajesGlobal();
-  graficarAccionamGlobal();
   graficarAccionamPorLinea();
-  graficarAlertasPorLinea();
-  graficarFuncionandoPorLinea();
-  graficarDescPorLinea();
-  graficarFSPorLinea();
 })();
-
-// swiper -------------------------------------------------
-const swiper = new Swiper(".mySwiper", {
-  loop: false,
-  spaceBetween: 30,
-  navigation: {
-    nextEl: ".swiper-button-next",
-    prevEl: ".swiper-button-prev",
-  },
-  allowTouchMove: false,
-  touchStartPreventDefault: false,
-});

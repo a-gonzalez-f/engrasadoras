@@ -44,65 +44,14 @@
     </header>
     <main class="mandatory-scroll-snapping">
       <section class="dashboard">
-        <div class="global">
-          <h3>ESTADO GLOBAL</h3>
-          <div class="container">
-            <div>
-              <canvas id="chartGlobal"></canvas>
-            </div>
-            <div id="detalle-global" class="bg g">
-              <div>
-                <div>
-                  <img
-                    src="../img/icons/check_circle_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg"
-                    alt="func"
-                    class="icon"
-                    title="Funcionando"
-                  />
-                  <span id="func-global" class="funcionando"></span>
-                </div>
-                <div>
-                  <img
-                    src="../img/icons/error_24dp_FCA311_FILL0_wght400_GRAD0_opsz24.svg"
-                    alt="alerta"
-                    class="icon"
-                    title="Alerta"
-                  />
-                  <span id="alerta-global" class="alerta"></span>
-                </div>
-              </div>
-              <div>
-                <div>
-                  <img
-                    src="../img/icons/wifi_off_24dp_888_FILL0_wght400_GRAD0_opsz24.svg"
-                    alt="desc"
-                    class="icon"
-                    title="Desconectada"
-                  />
-                  <span id="sc-global" class="desconectada"></span>
-                </div>
-                <div>
-                  <img
-                    src="../img/icons/block_24dp_D90429_FILL0_wght400_GRAD0_opsz24.svg"
-                    alt="fs"
-                    class="icon"
-                    title="Fuera de Servicio"
-                  />
-                  <span id="fs-global" class="fs"></span>
-                </div>
-              </div>
-              <div>
-                <div><span>TOTAL</span><span id="total-global"></span></div>
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="porLinea">
           <div class="containerLineas">
-            <div class="linea" onclick="location.href='/detalle?linea=A'">
-              <h4 class="circle A">A</h4>
-              <div>
-                <canvas class="donutLinea" id="chartA"></canvas>
+            <div class="linea bgA" onclick="location.href='/detalle?linea=A'">
+              <h4 class="linea-label">A</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartA"></canvas>
+                </div>
               </div>
               <div id="detalle-A" class="detalle bg">
                 <div>
@@ -147,10 +96,12 @@
                 </div>
               </div>
             </div>
-            <div class="linea" onclick="location.href='/detalle?linea=B'">
-              <h4 class="circle B">B</h4>
-              <div>
-                <canvas class="donutLinea" id="chartB"></canvas>
+            <div class="linea bgB" onclick="location.href='/detalle?linea=B'">
+              <h4 class="linea-label">B</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartB"></canvas>
+                </div>
               </div>
               <div id="detalle-B" class="detalle bg">
                 <div>
@@ -195,10 +146,12 @@
                 </div>
               </div>
             </div>
-            <div class="linea" onclick="location.href='/detalle?linea=C'">
-              <h4 class="circle C">C</h4>
-              <div>
-                <canvas class="donutLinea" id="chartC"></canvas>
+            <div class="linea bgC" onclick="location.href='/detalle?linea=C'">
+              <h4 class="linea-label">C</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartC"></canvas>
+                </div>
               </div>
               <div id="detalle-C" class="detalle bg">
                 <div>
@@ -243,10 +196,12 @@
                 </div>
               </div>
             </div>
-            <div class="linea" onclick="location.href='/detalle?linea=D'">
-              <h4 class="circle D">D</h4>
-              <div>
-                <canvas class="donutLinea" id="chartD"></canvas>
+            <div class="linea bgD" onclick="location.href='/detalle?linea=D'">
+              <h4 class="linea-label">D</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartD"></canvas>
+                </div>
               </div>
               <div id="detalle-D" class="detalle bg">
                 <div>
@@ -291,10 +246,12 @@
                 </div>
               </div>
             </div>
-            <div class="linea" onclick="location.href='/detalle?linea=E'">
-              <h4 class="circle E">E</h4>
-              <div>
-                <canvas class="donutLinea" id="chartE"></canvas>
+            <div class="linea bgE" onclick="location.href='/detalle?linea=E'">
+              <h4 class="linea-label">E</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartE"></canvas>
+                </div>
               </div>
               <div id="detalle-E" class="detalle bg">
                 <div>
@@ -339,10 +296,12 @@
                 </div>
               </div>
             </div>
-            <div class="linea" onclick="location.href='/detalle?linea=H'">
-              <h4 class="circle H">H</h4>
-              <div>
-                <canvas class="donutLinea" id="chartH"></canvas>
+            <div class="linea bgH" onclick="location.href='/detalle?linea=H'">
+              <h4 class="linea-label fontblack">H</h4>
+              <div class="centrar space-evenly">
+                <div>
+                  <canvas class="donutLinea" id="chartH"></canvas>
+                </div>
               </div>
               <div id="detalle-H" class="detalle bg">
                 <div>
@@ -391,32 +350,9 @@
         </div>
       </section>
       <section class="analytics">
-        <!-- Slider -->
-        <div class="swiper mySwiper">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <div class="analytics-container">
-                <div id="conteo" class="chart"></div>
-                <div id="porcentaje" class="chart"></div>
-                <div id="accionam-global" class="chart"></div>
-                <div id="accionam-lineas" class="chart"></div>
-              </div>
-            </div>
-
-            <div class="swiper-slide">
-              <div class="analytics-container">
-                <div class="chart" id="funcionandoPorLinea"></div>
-                <div class="chart" id="alertasPorLinea"></div>
-                <div class="chart" id="descPorLinea"></div>
-                <div class="chart" id="fsPorLinea"></div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Controles -->
-          <div class="swiper-pagination"></div>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+        <div class="analytics-container">
+          <div id="porcentaje" class="chart"></div>
+          <div id="accionam-lineas" class="chart"></div>
         </div>
       </section>
       <section class="buscador">
@@ -480,7 +416,7 @@
       <footer>
         <p>Tecnología Operativa</p>
         <p>ene 2026</p>
-        <p>v1.7.8</p>
+        <p>v1.8.0</p>
       </footer>
     </main>
     <script src="/app.js"></script>

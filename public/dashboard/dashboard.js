@@ -22,7 +22,7 @@ function actualizarDatos(data) {
 }
 
 function actualizarDonuts(data) {
-  renderDonutGlobal(data);
+  // renderDonutGlobal(data);
   renderDonutPorLinea(data);
 }
 
@@ -30,87 +30,115 @@ async function cargarEngrasadoras() {
   const data = await fetchEngrasadoras();
   actualizarDatos(data);
   actualizarDonuts(data);
-  actualizarResumenGlobal(data);
+  // actualizarResumenGlobal(data);
 }
 
-async function renderDonutGlobal(data) {
-  const total = data.length;
-  const funcionando = data.filter((e) => e.estado === "funcionando").length;
-  const alerta = data.filter((e) => e.estado === "alerta").length;
-  const sinConexion = data.filter((e) => e.estado === "desconectada").length;
-  const fs = data.filter((e) => e.estado === "fs").length;
-  const pm = data.filter((e) => e.estado === "pm").length;
+// async function renderDonutGlobal(data) {
+//   const total = data.length;
+//   const funcionando = data.filter((e) => e.estado === "funcionando").length;
+//   const alerta = data.filter((e) => e.estado === "alerta").length;
+//   const sinConexion = data.filter((e) => e.estado === "desconectada").length;
+//   const fs = data.filter((e) => e.estado === "fs").length;
+//   const pm = data.filter((e) => e.estado === "pm").length;
 
-  if (!chartGlobal) {
-    chartGlobal = new Chart(document.getElementById("chartGlobal"), {
-      type: "doughnut",
-      data: {
-        labels: [
-          "Funcionando",
-          "Alerta",
-          "Desconectada",
-          "Fuera de Servicio",
-          "Pausa Manual",
-        ],
-        datasets: [
-          {
-            data: [funcionando, alerta, sinConexion, fs, pm],
-            backgroundColor: [
-              "#0dae1a",
-              "#fca311",
-              "#888",
-              "#d90429",
-              "#5dbe65",
-            ],
-            borderWidth: 0,
-            hoverBorderWidth: 2,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        cutout: "50%",
-        plugins: { title: { display: false }, legend: { display: false } },
-      },
-      animation: {
-        animateRotate: true,
-        animateScale: true,
-      },
-    });
-  } else {
-    chartGlobal.data.datasets[0].data = [
-      funcionando,
-      alerta,
-      sinConexion,
-      fs,
-      pm,
-    ];
-    chartGlobal.update();
-  }
-}
+//   if (!chartGlobal) {
+//     chartGlobal = new Chart(document.getElementById("chartGlobal"), {
+//       type: "doughnut",
+//       data: {
+//         labels: [
+//           "Funcionando",
+//           "Alerta",
+//           "Desconectada",
+//           "Fuera de Servicio",
+//           "Pausa Manual",
+//         ],
+//         datasets: [
+//           {
+//             data: [funcionando, alerta, sinConexion, fs, pm],
+//             backgroundColor: [
+//               "#0dae1a",
+//               "#fca311",
+//               "#888",
+//               "#d90429",
+//               "#5dbe65",
+//             ],
+//             borderWidth: 0,
+//             hoverBorderWidth: 2,
+//           },
+//         ],
+//       },
+//       options: {
+//         responsive: true,
+//         cutout: "50%",
+//         plugins: { title: { display: false }, legend: { display: false } },
+//       },
+//       animation: {
+//         animateRotate: true,
+//         animateScale: true,
+//       },
+//     });
+//   } else {
+//     chartGlobal.data.datasets[0].data = [
+//       funcionando,
+//       alerta,
+//       sinConexion,
+//       fs,
+//       pm,
+//     ];
+//     chartGlobal.update();
+//   }
+// }
 
-function actualizarResumenGlobal(data) {
-  const total = data.length;
-  const funcionando = data.filter((e) => e.estado === "funcionando").length;
-  const alerta = data.filter((e) => e.estado === "alerta").length;
-  const sinConexion = data.filter((e) => e.estado === "desconectada").length;
-  const fs = data.filter((e) => e.estado === "fs").length;
-  const pm = data.filter((e) => e.estado === "pm").length;
+// function actualizarResumenGlobal(data) {
+//   const total = data.length;
+//   const funcionando = data.filter((e) => e.estado === "funcionando").length;
+//   const alerta = data.filter((e) => e.estado === "alerta").length;
+//   const sinConexion = data.filter((e) => e.estado === "desconectada").length;
+//   const fs = data.filter((e) => e.estado === "fs").length;
+//   const pm = data.filter((e) => e.estado === "pm").length;
 
-  document.getElementById("func-global").innerText = `${
-    funcionando + pm
-  } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
-  document.getElementById("alerta-global").innerText = `${alerta} (${Math.round(
-    (alerta / total) * 100
-  )}%)`;
-  document.getElementById(
-    "sc-global"
-  ).innerText = `${sinConexion} (${Math.round((sinConexion / total) * 100)}%)`;
-  document.getElementById("fs-global").innerText = `${fs} (${Math.round(
-    (fs / total) * 100
-  )}%)`;
-  document.getElementById("total-global").innerText = `${total}`;
-}
+//   document.getElementById("func-global").innerText = `${
+//     funcionando + pm
+//   } (${Math.round(((funcionando + pm) / total) * 100)}%)`;
+//   document.getElementById("alerta-global").innerText = `${alerta} (${Math.round(
+//     (alerta / total) * 100
+//   )}%)`;
+//   document.getElementById(
+//     "sc-global"
+//   ).innerText = `${sinConexion} (${Math.round((sinConexion / total) * 100)}%)`;
+//   document.getElementById("fs-global").innerText = `${fs} (${Math.round(
+//     (fs / total) * 100
+//   )}%)`;
+//   document.getElementById("total-global").innerText = `${total}`;
+// }
+
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw(chart) {
+    const { ctx } = chart;
+    const { left, right, top, bottom } = chart.chartArea;
+
+    const x = (left + right) / 2;
+    const y = (top + bottom) / 2;
+
+    const total = chart.data.datasets[0].data.reduce((a, b) => a + b, 0);
+
+    ctx.save();
+
+    // Texto principal (número)
+    ctx.font = "bold 20px Arial";
+    ctx.fillStyle = "#fff8e971";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(total, x, y - 8);
+
+    // Texto secundario ("Total")
+    ctx.font = "12px Arial";
+    ctx.fillText("Total", x, y + 12);
+
+    ctx.restore();
+  },
+};
 
 function renderDonutPorLinea(data) {
   const lineas = ["A", "B", "C", "D", "E", "H"];
@@ -155,7 +183,6 @@ function renderDonutPorLinea(data) {
       return;
     }
 
-    // Si hay datos, asegurarse de mostrar el canvas y eliminar el mensaje
     if (canvas) canvas.style.display = "block";
 
     const mensajeExistente = document.getElementById(`sinMaquinas-${linea}`);
@@ -202,6 +229,7 @@ function renderDonutPorLinea(data) {
           cutout: "50%",
           plugins: { title: { display: false }, legend: { display: false } },
         },
+        plugins: [centerTextPlugin],
       });
     } else {
       chartsPorLinea[linea].data.datasets[0].data = [
