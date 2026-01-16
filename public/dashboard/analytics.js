@@ -30,8 +30,6 @@ async function cargarResumenGlobal() {
   );
 
   resumenGlobal = await res.json();
-
-  console.log(resumenGlobal);
 }
 
 async function cargarResumenPorLinea() {
