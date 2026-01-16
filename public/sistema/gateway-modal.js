@@ -15,7 +15,7 @@ let currentGW = null;
 
 export async function abrirModalGateway(gw) {
   currentGW = gw;
-  console.log(currentGW);
+  // console.log(currentGW);
   try {
     const res = await fetch(`/api/gateways/${gw._id}`);
     if (!res.ok) throw new Error("No se pudo obtener el gateway actualizado");
@@ -92,14 +92,7 @@ function cerrarModalSiProcede() {
     const salir = confirm("¿Seguro desea salir sin aplicar los cambios?");
     if (!salir) return;
   }
-
-  modal.classList.add("hidden");
-  currentGatewayId = null;
-  currentGW = null;
-  if (historialInterval) {
-    clearInterval(historialInterval);
-    historialInterval = null;
-  }
+  cerrarModal();
 }
 
 cerrarBtn.addEventListener("click", cerrarModalSiProcede);
@@ -110,11 +103,27 @@ window.addEventListener("click", (e) => {
   }
 });
 
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.classList !== "hidden") {
+    cerrarModalSiProcede();
+  }
+});
+
+function cerrarModal() {
+  modal.classList.add("hidden");
+  currentGatewayId = null;
+  currentGW = null;
+  if (historialInterval) {
+    clearInterval(historialInterval);
+    historialInterval = null;
+  }
+}
+
 // Render engrasadoras en #conectadasContainer
 function renderizarEngrasadoras(lista) {
   containerEngrasadoras.innerHTML = "";
 
-  console.log(lista, lista.length);
+  // console.log(lista, lista.length);
 
   if (lista.length == 0) {
     const message = document.createElement("div");

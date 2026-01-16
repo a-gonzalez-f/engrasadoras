@@ -54,16 +54,28 @@ async function cargarDetalle(data) {
 }
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
-  document.getElementById("modalDetalle").style.display = "none";
-  maquinaSeleccionada = null;
+  cerrarModal();
 });
 
 document.getElementById("modalDetalle").addEventListener("click", (e) => {
   if (e.target.id === "modalDetalle") {
-    document.getElementById("modalDetalle").style.display = "none";
-    maquinaSeleccionada = null;
+    cerrarModal();
   }
 });
+
+document.addEventListener("keydown", (e) => {
+  if (
+    e.key === "Escape" &&
+    document.getElementById("modalDetalle").style.display === "flex"
+  ) {
+    cerrarModal();
+  }
+});
+
+function cerrarModal() {
+  document.getElementById("modalDetalle").style.display = "none";
+  maquinaSeleccionada = null;
+}
 
 document.getElementById("modalComentarios").addEventListener("click", (e) => {
   if (e.target.id === "modalComentarios") {
