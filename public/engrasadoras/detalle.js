@@ -195,6 +195,7 @@ function renderizarModal(maquina) {
     maquina.lora_signal,
     "icono"
   );
+  document.getElementById("perdidos").innerText = maquina.perdidos;
 
   maquinaSeleccionada.historial = maquina.historial;
   listarHistorialEnModal(maquina.historial);
