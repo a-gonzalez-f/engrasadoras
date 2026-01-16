@@ -207,7 +207,7 @@ async function calcularMediaMovil({
   if (valores.length === 0) return null;
 
   const suma = valores.reduce((a, b) => a + b, 0);
-  return suma / valores.length;
+  return Math.round((suma / valores.length) * 100) / 100;
 }
 
 generarSnapshotHora()

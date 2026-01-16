@@ -8,8 +8,14 @@ import {
 } from "./detalles-tools.js";
 import { formatearSignal } from "./formatear-signal.js";
 
+const lineas = ["A", "B", "C", "D", "E", "H"];
+
 const params = new URLSearchParams(window.location.search);
 const linea = params.get("linea");
+
+const index = lineas.indexOf(linea);
+const lineaPrevia = lineas[(index - 1 + lineas.length) % lineas.length];
+const lineaSiguiente = lineas[(index + 1) % lineas.length];
 
 let maquinaSeleccionada = null;
 
@@ -20,6 +26,15 @@ if (!linea) {
 
 document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
+document.querySelector("header").classList.add(`min-bg${linea}`);
+
+document.getElementById("linea-previa").addEventListener("click", () => {
+  location.href = `/detalle?linea=${lineaPrevia}`;
+});
+
+document.getElementById("linea-siguiente").addEventListener("click", () => {
+  location.href = `/detalle?linea=${lineaSiguiente}`;
+});
 
 async function cargarDetalle(data) {
   try {
@@ -54,16 +69,28 @@ async function cargarDetalle(data) {
 }
 
 document.getElementById("cerrarModal").addEventListener("click", () => {
-  document.getElementById("modalDetalle").style.display = "none";
-  maquinaSeleccionada = null;
+  cerrarModal();
 });
 
 document.getElementById("modalDetalle").addEventListener("click", (e) => {
   if (e.target.id === "modalDetalle") {
-    document.getElementById("modalDetalle").style.display = "none";
-    maquinaSeleccionada = null;
+    cerrarModal();
   }
 });
+
+document.addEventListener("keydown", (e) => {
+  if (
+    e.key === "Escape" &&
+    document.getElementById("modalDetalle").style.display === "flex"
+  ) {
+    cerrarModal();
+  }
+});
+
+function cerrarModal() {
+  document.getElementById("modalDetalle").style.display = "none";
+  maquinaSeleccionada = null;
+}
 
 document.getElementById("modalComentarios").addEventListener("click", (e) => {
   if (e.target.id === "modalComentarios") {
@@ -195,6 +222,7 @@ function renderizarModal(maquina) {
     maquina.lora_signal,
     "icono"
   );
+  document.getElementById("perdidos").innerText = maquina.perdidos;
 
   maquinaSeleccionada.historial = maquina.historial;
   listarHistorialEnModal(maquina.historial);

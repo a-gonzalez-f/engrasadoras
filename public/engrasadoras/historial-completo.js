@@ -189,11 +189,27 @@ export function abrirHistorialCompleto(maquina) {
   });
 
   cerrarBtn.addEventListener("click", () => {
+    cerrarModal();
+  });
+
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) {
+      cerrarModal();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && modal.style.display === "flex") {
+      cerrarModal();
+    }
+  });
+
+  function cerrarModal() {
     modal.style.display = "none";
     modal.dataset.idmaquina = "";
     tbody.innerHTML = "";
     contenedorScroll.removeEventListener("scroll", scrollHandler);
-  });
+  }
 
   fetchHistorial(true);
 }

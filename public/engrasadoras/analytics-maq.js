@@ -11,6 +11,22 @@ let horarioEnServicio = true;
 let currentIdMaq = null;
 
 cerrarBtn.addEventListener("click", () => {
+  cerrarModal();
+});
+
+modal.addEventListener("click", (e) => {
+  if (e.target === modal) {
+    cerrarModal();
+  }
+});
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape" && modal.style.display === "flex") {
+    cerrarModal();
+  }
+});
+
+function cerrarModal() {
   modal.style.display = "none";
 
   desactivarSwitch();
@@ -28,7 +44,7 @@ cerrarBtn.addEventListener("click", () => {
   titleSwitch.innerText = "Horario en servicio";
   iconSwitch.src =
     "../img/icons/toggle_on_24dp_0DAE1A_FILL0_wght400_GRAD0_opsz24.svg";
-});
+}
 
 function onSwitchClick() {
   horarioEnServicio = !horarioEnServicio;
