@@ -20,6 +20,7 @@ if (!linea) {
 
 document.title = `Detalle Línea ${linea}`;
 document.getElementById("tituloLinea").innerText = `${linea}`;
+document.querySelector("header").classList.add(`min-bg${linea}`);
 
 async function cargarDetalle(data) {
   try {
