@@ -19,7 +19,7 @@ const resumenDashboard = async (req, res) => {
 
     const engrasadoras = await Engrasadora.find(
       filtro,
-      "id nombre linea modelo date set_tiempodosif set_ejes sens_corriente sens_flujo sens_power cont_accionam estado _id"
+      "id nombre linea modelo date set_tiempodosif set_ejes sens_corriente sens_flujo sens_power cont_accionam estado _id",
     );
 
     res.json(engrasadoras);
@@ -56,7 +56,7 @@ const getPorLineaFiltrada = async (req, res) => {
 
     const engrasadoras = await Engrasadora.find(
       filtro,
-      "nombre modelo estado lora_signal sens_corriente sens_flujo sens_power cont_accionam id _id"
+      "nombre modelo estado lora_signal sens_corriente sens_flujo sens_power cont_accionam id _id",
     );
 
     res.json(engrasadoras);
@@ -486,7 +486,73 @@ const getHistorialPaginado = async (req, res) => {
 
     const { tipo, estado, fecha, flujo, power, onoff, repetidos } = req.query;
 
-    const existe = await Engrasadora.findById(id).lean();
+    const existe = await Engrasadora.findOne({ id: Number(id) }).lean();
+    if (!existe) {
+      return res.status(404).json({ error: "Engrasadora no encontrada" });
+    }
+
+    let historial = await Historial.find({ engrasadora: existe.id })
+      .sort({ fecha: -1 })
+      .lean();
+
+    if (tipo && tipo !== "todos") {
+      historial = historial.filter((h) => h.tipo_evento === tipo);
+    }
+
+    if (estado && estado !== "todos") {
+      historial = historial.filter((h) => h.estado === estado);
+    }
+
+    if (fecha) {
+      const fechaStr = new Date(fecha).toISOString().slice(0, 10);
+      historial = historial.filter((h) => {
+        const fechaEventoStr = new Date(h.fecha).toISOString().slice(0, 10);
+        return fechaEventoStr === fechaStr;
+      });
+    }
+
+    if (flujo && flujo !== "todos") {
+      historial = historial.filter((h) => String(h.sens_flujo) === flujo);
+    }
+
+    if (power && power !== "todos") {
+      historial = historial.filter((h) => String(h.sens_power) === power);
+    }
+
+    if (onoff && onoff !== "todos") {
+      historial = historial.filter((h) => String(h.on_off) === onoff);
+    }
+
+    if (repetidos === "false") {
+      const vistos = new Set();
+      historial = historial.filter((h) => {
+        if (vistos.has(h.cont_accionam)) return false;
+        vistos.add(h.cont_accionam);
+        return true;
+      });
+    }
+
+    const historialPaginado = historial.slice(offset, offset + limit);
+
+    res.json({
+      historial: historialPaginado,
+      total: historial.length,
+    });
+  } catch (err) {
+    console.error("Error obteniendo historial paginado:", err);
+    res.status(500).json({ error: "Error al obtener historial" });
+  }
+};
+
+const getHistorialPaginadoPorId = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const offset = parseInt(req.query.offset) || 0;
+    const limit = parseInt(req.query.limit) || 50;
+
+    const { tipo, estado, fecha, flujo, power, onoff, repetidos } = req.query;
+
+    const existe = await Engrasadora.findOne({ id: Number(id) }).lean();
     if (!existe) {
       return res.status(404).json({ error: "Engrasadora no encontrada" });
     }
@@ -547,7 +613,7 @@ const getHistorialPaginado = async (req, res) => {
 const ultimaVersionAll = async (req, res) => {
   try {
     const engrasadoras = await Engrasadora.find(
-      req.query.linea ? { linea: req.query.linea } : {}
+      req.query.linea ? { linea: req.query.linea } : {},
     )
       .select("id revision")
       .lean();
@@ -613,13 +679,13 @@ const accionamHora = async (req, res) => {
 
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id",
         )
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados fecha horario_servicio -_id"
+          "total_delta_accionam accionam_estimados fecha horario_servicio -_id",
         )
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
@@ -660,13 +726,13 @@ const resumenHora = async (req, res) => {
 
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id"
+          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id",
         )
         .sort({ fecha: 1 });
     } else {
       query = ResumenHora.find(filtro)
         .select(
-          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id"
+          "total_delta_accionam accionam_estimados media_movil_servicio media_movil_completo fecha horario_servicio porc_estado -_id",
         )
         .sort({ fecha: -1 })
         .limit(168); // Últimos 168 snapshots (7*24hs)
@@ -709,7 +775,7 @@ const snapshotId = async (req, res) => {
 
     let query = SnapshotHora.find(filtro)
       .select(
-        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio media_movil_completo media_movil_servicio -_id"
+        "delta_accionam set_ejes accionam_estimados estado fecha horario_servicio media_movil_completo media_movil_servicio -_id",
       )
       .sort({ fecha: desde && hasta ? 1 : -1 });
 
@@ -753,4 +819,5 @@ module.exports = {
   resumenTotal,
   resumenHora,
   snapshotId,
+  getHistorialPaginadoPorId,
 };

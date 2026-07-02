@@ -28,6 +28,7 @@ const {
   accionamHora,
   resumenHora,
   snapshotId,
+  getHistorialPaginadoPorId,
 } = require("../controllers/engrasadorasController");
 
 router.post("/setear", setear);
@@ -54,6 +55,7 @@ router.get("/consulta", consultaExterna);
 router.get("/:id", verificarId);
 
 router.get("/historial/:id", getHistorialPaginado);
+router.get("/historialPaginado/:id", getHistorialPaginadoPorId);
 
 // analytics ----------------------------------------------
 router.get("/resumen/linea", resumenPorLinea);
