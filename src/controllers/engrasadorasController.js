@@ -56,7 +56,7 @@ const getPorLineaFiltrada = async (req, res) => {
 
     const engrasadoras = await Engrasadora.find(
       filtro,
-      "nombre modelo estado lora_signal sens_corriente sens_flujo sens_power cont_accionam id _id",
+      "id linea nombre modelo ubicacion posicion via set_tiempodosif set_ejes on_off sens_peso sens_corriente sens_flujo sens_power lora_signal falla cont_accionam estado comentarios perdidos revision",
     );
 
     res.json(engrasadoras);

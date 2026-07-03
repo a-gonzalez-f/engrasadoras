@@ -25,7 +25,7 @@ const HistorialSchema = new mongoose.Schema(
     lora_signal: Number,
     falla: Boolean,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 HistorialSchema.index({ engrasadora: 1, nro_evento: 1 }, { unique: true });
@@ -46,11 +46,14 @@ const EngrasadoraSchema = new mongoose.Schema(
     nombre: String,
     modelo: String,
     ubicacion: String,
+    posicion: { type: Number, default: 0.5, min: 0, max: 1 },
+    via: { type: Number, default: 1, min: 1, max: 2 },
 
     set_tiempodosif: { type: Number, default: 0.2, max: 2 },
     set_ejes: { type: Number, default: 1, max: 128 },
     on_off: { type: Boolean, default: true },
 
+    sens_peso: { type: Number, default: 0 },
     sens_corriente: { type: Number, default: 0 },
     sens_flujo: { type: Boolean, default: false },
     sens_power: { type: Boolean, default: false },
@@ -66,7 +69,7 @@ const EngrasadoraSchema = new mongoose.Schema(
     perdidos: { type: Number, default: 0 },
     revision: { type: Number, default: 0 },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const SnapshotHoraSchema = new mongoose.Schema(
@@ -96,7 +99,7 @@ const SnapshotHoraSchema = new mongoose.Schema(
     media_movil_completo: Number,
   },
 
-  { timestamps: true }
+  { timestamps: true },
 );
 
 SnapshotHoraSchema.index({ id: 1, fecha: 1 }, { unique: true });
@@ -141,7 +144,7 @@ const ResumenHoraSchema = new mongoose.Schema(
     media_movil_servicio: Number,
     media_movil_completo: Number,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ResumenHoraSchema.index({ tipo: 1, linea: 1, fecha: 1 }, { unique: true });
@@ -181,12 +184,12 @@ const ResumenDiaSchema = new mongoose.Schema(
     total_delta_accionam: Number,
     accionam_estimados: Number,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 ResumenDiaSchema.index(
   { tipo: 1, id: 1, linea: 1, fecha: 1 },
-  { unique: true }
+  { unique: true },
 );
 
 const Engrasadora = mongoose.model("engrasadora", EngrasadoraSchema);
